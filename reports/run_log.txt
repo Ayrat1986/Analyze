@@ -1,0 +1,218 @@
+
+[2026-11-09 18:47:14] [OK] END   D:\Analyze\src\11_psych_opponents.py — OK (25.0 сек)
+[2026-11-09 18:47:14] [INFO] START D:\Analyze\src\12_coach.py
+[2026-11-09 18:47:15] [OK] END   D:\Analyze\src\12_coach.py — OK (0.5 сек)
+[2026-11-09 18:47:15] [INFO] START D:\Analyze\src\13_dashboard_final.py
+[2026-11-09 18:47:15] [ERROR] ERROR D:\Analyze\src\13_dashboard_final.py (код 1, 0.1 сек)
+[2026-11-09 18:47:15] [ERROR] СТОП: D:\Analyze\src\13_dashboard_final.py упал. Флаг --keep-going не установлен.
+[2026-11-09 18:47:15] [INFO] === ЗАВЕРШЕНО ===
+[2026-11-09 19:11:17] [INFO] === НАЧАЛО ЗАПУСКА ===
+[2026-11-09 19:11:17] [INFO] START D:\Analyze\src\00_data_quality.py
+[2026-11-09 19:11:18] [OK] END   D:\Analyze\src\00_data_quality.py — OK (0.5 сек)
+[2026-11-09 19:11:18] [INFO] START D:\Analyze\src\01_fetch_chess_api.py
+[2026-11-09 19:11:23] [OK] END   D:\Analyze\src\01_fetch_chess_api.py — OK (5.5 сек)
+[2026-11-09 19:11:23] [INFO] START D:\Analyze\src\02_analyze_stockfish.py
+[2026-11-09 19:11:24] [OK] END   D:\Analyze\src\02_analyze_stockfish.py — OK (0.6 сек)
+[2026-11-09 19:11:24] [INFO] START D:\Analyze\src\03_migrate_sqlite.py
+[2026-11-09 19:11:26] [OK] END   D:\Analyze\src\03_migrate_sqlite.py — OK (2.3 сек)
+[2026-11-09 19:11:26] [INFO] START D:\Analyze\src\04_export_csv.py
+[2026-11-09 19:11:33] [OK] END   D:\Analyze\src\04_export_csv.py — OK (6.9 сек)
+[2026-11-09 19:11:33] [INFO] START D:\Analyze\src\05_openings.py
+[2026-11-09 19:11:51] [OK] END   D:\Analyze\src\05_openings.py — OK (17.6 сек)
+[2026-11-09 19:11:51] [INFO] START D:\Analyze\src\06_middlegame.py
+[2026-11-09 19:12:19] [OK] END   D:\Analyze\src\06_middlegame.py — OK (28.0 сек)
+[2026-11-09 19:12:19] [INFO] START D:\Analyze\src\07_endgame.py
+[2026-11-09 19:12:19] [OK] END   D:\Analyze\src\07_endgame.py — OK (0.5 сек)
+[2026-11-09 19:12:19] [INFO] START D:\Analyze\src\08_psych_focus.py
+[2026-11-09 19:12:21] [OK] END   D:\Analyze\src\08_psych_focus.py — OK (2.0 сек)
+[2026-11-09 19:12:21] [INFO] START D:\Analyze\src\09_psych_state.py
+[2026-11-09 19:12:34] [OK] END   D:\Analyze\src\09_psych_state.py — OK (13.1 сек)
+[2026-11-09 19:12:34] [INFO] START D:\Analyze\src\10_psych_rating.py
+[2026-11-09 19:12:35] [OK] END   D:\Analyze\src\10_psych_rating.py — OK (0.5 сек)
+[2026-11-09 19:12:35] [INFO] START D:\Analyze\src\11_psych_opponents.py
+[2026-11-09 19:13:00] [OK] END   D:\Analyze\src\11_psych_opponents.py — OK (25.1 сек)
+[2026-11-09 19:13:00] [INFO] START D:\Analyze\src\12_coach.py
+[2026-11-09 19:13:00] [OK] END   D:\Analyze\src\12_coach.py — OK (0.5 сек)
+[2026-11-09 19:13:00] [INFO] START D:\Analyze\src\13_dashboard_final.py
+[2026-11-09 19:13:01] [OK] END   D:\Analyze\src\13_dashboard_final.py — OK (0.9 сек)
+[2026-11-09 19:13:01] [INFO] === ЗАВЕРШЕНО ===
+[2026-11-09 19:27:45] [INFO] === НАЧАЛО ЗАПУСКА ===
+[2026-11-09 19:27:45] [INFO] START D:\Analyze\src\00_data_quality.py
+[2026-11-09 19:27:46] [OK] END   D:\Analyze\src\00_data_quality.py — OK (0.5 сек)
+[2026-11-09 19:27:46] [INFO] START D:\Analyze\src\01_fetch_chess_api.py
+[2026-11-09 19:27:49] [OK] END   D:\Analyze\src\01_fetch_chess_api.py — OK (3.2 сек)
+[2026-11-09 19:27:49] [INFO] START D:\Analyze\src\02_analyze_stockfish.py
+[2026-11-09 19:27:49] [OK] END   D:\Analyze\src\02_analyze_stockfish.py — OK (0.6 сек)
+[2026-11-09 19:27:49] [INFO] START D:\Analyze\src\03_migrate_sqlite.py
+[2026-11-09 19:27:52] [OK] END   D:\Analyze\src\03_migrate_sqlite.py — OK (2.3 сек)
+[2026-11-09 19:27:52] [INFO] START D:\Analyze\src\04_export_csv.py
+[2026-11-09 19:28:00] [OK] END   D:\Analyze\src\04_export_csv.py — OK (7.9 сек)
+[2026-11-09 19:28:00] [INFO] START D:\Analyze\src\05_openings.py
+[2026-11-09 19:28:18] [OK] END   D:\Analyze\src\05_openings.py — OK (17.9 сек)
+[2026-11-09 19:28:18] [INFO] START D:\Analyze\src\06_middlegame.py
+[2026-11-09 19:28:44] [OK] END   D:\Analyze\src\06_middlegame.py — OK (26.9 сек)
+[2026-11-09 19:28:44] [INFO] START D:\Analyze\src\07_endgame.py
+[2026-11-09 19:28:45] [OK] END   D:\Analyze\src\07_endgame.py — OK (0.5 сек)
+[2026-11-09 19:28:45] [INFO] START D:\Analyze\src\08_psych_focus.py
+[2026-11-09 19:28:47] [OK] END   D:\Analyze\src\08_psych_focus.py — OK (1.9 сек)
+[2026-11-09 19:28:47] [INFO] START D:\Analyze\src\09_psych_state.py
+[2026-11-09 19:29:00] [OK] END   D:\Analyze\src\09_psych_state.py — OK (13.4 сек)
+[2026-11-09 19:29:00] [INFO] START D:\Analyze\src\10_psych_rating.py
+[2026-11-09 19:29:01] [OK] END   D:\Analyze\src\10_psych_rating.py — OK (0.6 сек)
+[2026-11-09 19:29:01] [INFO] START D:\Analyze\src\11_psych_opponents.py
+[2026-11-09 19:29:28] [OK] END   D:\Analyze\src\11_psych_opponents.py — OK (27.5 сек)
+[2026-11-09 19:29:28] [INFO] START D:\Analyze\src\12_coach.py
+[2026-11-09 19:29:29] [OK] END   D:\Analyze\src\12_coach.py — OK (0.6 сек)
+[2026-11-09 19:29:29] [INFO] START D:\Analyze\src\13_dashboard_final.py
+[2026-11-09 19:29:30] [OK] END   D:\Analyze\src\13_dashboard_final.py — OK (0.9 сек)
+[2026-11-09 19:29:30] [INFO] === ЗАВЕРШЕНО ===
+[2026-11-10 08:05:23] [INFO] === НАЧАЛО ЗАПУСКА ===
+[2026-11-10 08:05:23] [INFO] START D:\Analyze\src\00_data_quality.py
+[2026-11-10 08:05:25] [OK] END   D:\Analyze\src\00_data_quality.py — OK (1.8 сек)
+[2026-11-10 08:05:25] [INFO] START D:\Analyze\src\01_fetch_chess_api.py
+[2026-11-10 08:06:40] [OK] END   D:\Analyze\src\01_fetch_chess_api.py — OK (74.6 сек)
+[2026-11-10 08:06:40] [INFO] START D:\Analyze\src\02_analyze_stockfish.py
+[2026-11-10 08:06:41] [OK] END   D:\Analyze\src\02_analyze_stockfish.py — OK (0.8 сек)
+[2026-11-10 08:06:41] [INFO] START D:\Analyze\src\03_migrate_sqlite.py
+[2026-11-10 08:06:44] [OK] END   D:\Analyze\src\03_migrate_sqlite.py — OK (3.4 сек)
+[2026-11-10 08:06:44] [INFO] START D:\Analyze\src\04_export_csv.py
+[2026-11-10 08:06:52] [OK] END   D:\Analyze\src\04_export_csv.py — OK (7.7 сек)
+[2026-11-10 08:06:52] [INFO] START D:\Analyze\src\05_openings.py
+[2026-11-10 08:07:10] [OK] END   D:\Analyze\src\05_openings.py — OK (18.5 сек)
+[2026-11-10 08:07:10] [INFO] START D:\Analyze\src\06_middlegame.py
+[2026-11-10 08:07:39] [OK] END   D:\Analyze\src\06_middlegame.py — OK (28.4 сек)
+[2026-11-10 08:07:39] [INFO] START D:\Analyze\src\07_endgame.py
+[2026-11-10 08:07:39] [OK] END   D:\Analyze\src\07_endgame.py — OK (0.6 сек)
+[2026-11-10 08:07:39] [INFO] START D:\Analyze\src\08_psych_focus.py
+[2026-11-10 08:07:42] [OK] END   D:\Analyze\src\08_psych_focus.py — OK (2.4 сек)
+[2026-11-10 08:07:42] [INFO] START D:\Analyze\src\09_psych_state.py
+[2026-11-10 08:07:55] [OK] END   D:\Analyze\src\09_psych_state.py — OK (13.6 сек)
+[2026-11-10 08:07:55] [INFO] START D:\Analyze\src\10_psych_rating.py
+[2026-11-10 08:07:56] [OK] END   D:\Analyze\src\10_psych_rating.py — OK (0.6 сек)
+[2026-11-10 08:07:56] [INFO] START D:\Analyze\src\11_psych_opponents.py
+[2026-11-10 08:08:23] [OK] END   D:\Analyze\src\11_psych_opponents.py — OK (26.9 сек)
+[2026-11-10 08:08:23] [INFO] START D:\Analyze\src\12_coach.py
+[2026-11-10 08:08:23] [OK] END   D:\Analyze\src\12_coach.py — OK (0.5 сек)
+[2026-11-10 08:08:23] [INFO] START D:\Analyze\src\13_dashboard_final.py
+[2026-11-10 08:08:24] [OK] END   D:\Analyze\src\13_dashboard_final.py — OK (1.0 сек)
+[2026-11-10 08:08:24] [INFO] === ЗАВЕРШЕНО ===
+[2026-11-10 08:23:57] [INFO] === НАЧАЛО ЗАПУСКА ===
+[2026-11-10 08:23:57] [INFO] START D:\Analyze\src\00_data_quality.py
+[2026-11-10 08:23:58] [OK] END   D:\Analyze\src\00_data_quality.py — OK (0.5 сек)
+[2026-11-10 08:23:58] [INFO] START D:\Analyze\src\01_fetch_chess_api.py
+[2026-11-10 08:25:12] [OK] END   D:\Analyze\src\01_fetch_chess_api.py — OK (74.6 сек)
+[2026-11-10 08:25:12] [INFO] START D:\Analyze\src\02_analyze_stockfish.py
+[2026-11-10 08:25:13] [OK] END   D:\Analyze\src\02_analyze_stockfish.py — OK (0.7 сек)
+[2026-11-10 08:25:13] [INFO] START D:\Analyze\src\03_migrate_sqlite.py
+[2026-11-10 08:25:15] [OK] END   D:\Analyze\src\03_migrate_sqlite.py — OK (2.4 сек)
+[2026-11-10 08:25:15] [INFO] START D:\Analyze\src\04_export_csv.py
+[2026-11-10 08:25:22] [OK] END   D:\Analyze\src\04_export_csv.py — OK (7.2 сек)
+[2026-11-10 08:25:22] [INFO] START D:\Analyze\src\05_openings.py
+[2026-11-10 08:25:43] [OK] END   D:\Analyze\src\05_openings.py — OK (21.0 сек)
+[2026-11-10 08:25:43] [INFO] START D:\Analyze\src\06_middlegame.py
+[2026-11-10 08:26:11] [OK] END   D:\Analyze\src\06_middlegame.py — OK (27.5 сек)
+[2026-11-10 08:26:11] [INFO] START D:\Analyze\src\07_endgame.py
+[2026-11-10 08:26:12] [OK] END   D:\Analyze\src\07_endgame.py — OK (0.6 сек)
+[2026-11-10 08:26:12] [INFO] START D:\Analyze\src\08_psych_focus.py
+[2026-11-10 08:26:13] [OK] END   D:\Analyze\src\08_psych_focus.py — OK (1.9 сек)
+[2026-11-10 08:26:13] [INFO] START D:\Analyze\src\09_psych_state.py
+[2026-11-10 08:26:27] [OK] END   D:\Analyze\src\09_psych_state.py — OK (13.6 сек)
+[2026-11-10 08:26:27] [INFO] START D:\Analyze\src\10_psych_rating.py
+[2026-11-10 08:26:28] [OK] END   D:\Analyze\src\10_psych_rating.py — OK (0.6 сек)
+[2026-11-10 08:26:28] [INFO] START D:\Analyze\src\11_psych_opponents.py
+[2026-11-10 08:27:00] [OK] END   D:\Analyze\src\11_psych_opponents.py — OK (32.4 сек)
+[2026-11-10 08:27:00] [INFO] START D:\Analyze\src\12_coach.py
+[2026-11-10 08:27:01] [OK] END   D:\Analyze\src\12_coach.py — OK (0.5 сек)
+[2026-11-10 08:27:01] [INFO] START D:\Analyze\src\13_dashboard_final.py
+[2026-11-10 08:27:02] [OK] END   D:\Analyze\src\13_dashboard_final.py — OK (1.0 сек)
+[2026-11-10 08:27:02] [INFO] === ЗАВЕРШЕНО ===
+[2026-11-10 11:29:25] [INFO] === НАЧАЛО ЗАПУСКА ===
+[2026-11-10 11:29:25] [INFO] START D:\Analyze\src\00_data_quality.py
+[2026-11-10 11:29:26] [OK] END   D:\Analyze\src\00_data_quality.py — OK (0.6 сек)
+[2026-11-10 11:29:26] [INFO] START D:\Analyze\src\01_fetch_chess_api.py
+[2026-11-10 11:29:28] [OK] END   D:\Analyze\src\01_fetch_chess_api.py — OK (2.0 сек)
+[2026-11-10 11:29:28] [INFO] START D:\Analyze\src\02_analyze_stockfish.py
+[2026-11-10 11:30:27] [ERROR] ERROR D:\Analyze\src\02_analyze_stockfish.py (код 3221225786, 59.3 сек)
+[2026-11-10 11:30:27] [ERROR] СТОП: D:\Analyze\src\02_analyze_stockfish.py упал. Флаг --keep-going не установлен.
+[2026-11-10 11:33:10] [INFO] === НАЧАЛО ЗАПУСКА ===
+[2026-11-10 11:33:10] [INFO] START D:\Analyze\src\00_data_quality.py
+[2026-11-10 11:33:11] [OK] END   D:\Analyze\src\00_data_quality.py — OK (0.5 сек)
+[2026-11-10 11:33:11] [INFO] START D:\Analyze\src\01_fetch_chess_api.py
+[2026-11-10 11:33:14] [OK] END   D:\Analyze\src\01_fetch_chess_api.py — OK (2.9 сек)
+[2026-11-10 11:33:14] [INFO] START D:\Analyze\src\02_analyze_stockfish.py
+[2026-11-10 11:33:14] [OK] END   D:\Analyze\src\02_analyze_stockfish.py — OK (0.7 сек)
+[2026-11-10 11:33:14] [INFO] START D:\Analyze\src\03_migrate_sqlite.py
+[2026-11-10 11:33:17] [OK] END   D:\Analyze\src\03_migrate_sqlite.py — OK (2.4 сек)
+[2026-11-10 11:33:17] [INFO] START D:\Analyze\src\04_export_csv.py
+[2026-11-10 11:33:24] [OK] END   D:\Analyze\src\04_export_csv.py — OK (7.6 сек)
+[2026-11-10 11:33:24] [INFO] START D:\Analyze\src\05_openings.py
+[2026-11-10 11:33:43] [OK] END   D:\Analyze\src\05_openings.py — OK (18.2 сек)
+[2026-11-10 11:33:43] [INFO] START D:\Analyze\src\06_middlegame.py
+[2026-11-10 11:34:10] [OK] END   D:\Analyze\src\06_middlegame.py — OK (27.1 сек)
+[2026-11-10 11:34:10] [INFO] START D:\Analyze\src\07_endgame.py
+[2026-11-10 11:34:10] [OK] END   D:\Analyze\src\07_endgame.py — OK (0.6 сек)
+[2026-11-10 11:34:10] [INFO] START D:\Analyze\src\08_psych_focus.py
+[2026-11-10 11:34:12] [OK] END   D:\Analyze\src\08_psych_focus.py — OK (1.9 сек)
+[2026-11-10 11:34:12] [INFO] START D:\Analyze\src\09_psych_state.py
+[2026-11-10 11:34:26] [OK] END   D:\Analyze\src\09_psych_state.py — OK (13.9 сек)
+[2026-11-10 11:34:26] [INFO] START D:\Analyze\src\10_psych_rating.py
+[2026-11-10 11:34:27] [OK] END   D:\Analyze\src\10_psych_rating.py — OK (0.6 сек)
+[2026-11-10 11:34:27] [INFO] START D:\Analyze\src\11_psych_opponents.py
+[2026-11-10 11:35:00] [OK] END   D:\Analyze\src\11_psych_opponents.py — OK (33.5 сек)
+[2026-11-10 11:35:00] [INFO] START D:\Analyze\src\12_coach.py
+[2026-11-10 11:35:01] [OK] END   D:\Analyze\src\12_coach.py — OK (0.5 сек)
+[2026-11-10 11:35:01] [INFO] START D:\Analyze\src\13_dashboard_final.py
+[2026-11-10 11:35:01] [OK] END   D:\Analyze\src\13_dashboard_final.py — OK (0.9 сек)
+[2026-11-10 11:35:02] [INFO] === ЗАВЕРШЕНО ===
+[2026-11-10 12:00:35] [INFO] === НАЧАЛО ЗАПУСКА ===
+[2026-11-10 12:00:35] [INFO] START D:\Analyze\src\00_data_quality.py
+[2026-11-10 12:00:36] [OK] END   D:\Analyze\src\00_data_quality.py — OK (0.5 сек)
+[2026-11-10 12:00:36] [INFO] START D:\Analyze\src\01_fetch_chess_api.py
+[2026-11-10 12:00:38] [OK] END   D:\Analyze\src\01_fetch_chess_api.py — OK (2.8 сек)
+[2026-11-10 12:00:38] [INFO] START D:\Analyze\src\02_analyze_stockfish.py
+[2026-11-10 12:00:39] [OK] END   D:\Analyze\src\02_analyze_stockfish.py — OK (0.6 сек)
+[2026-11-10 12:00:39] [INFO] START D:\Analyze\src\03_migrate_sqlite.py
+[2026-11-10 12:00:39] [ERROR] ERROR D:\Analyze\src\03_migrate_sqlite.py (код 1, 0.2 сек)
+[2026-11-10 12:00:39] [ERROR] СТОП: D:\Analyze\src\03_migrate_sqlite.py упал. Флаг --keep-going не установлен.
+[2026-11-10 12:00:39] [INFO] === ЗАВЕРШЕНО ===
+[2026-11-10 12:01:18] [INFO] === НАЧАЛО ЗАПУСКА ===
+[2026-11-10 12:01:18] [INFO] START D:\Analyze\src\00_data_quality.py
+[2026-11-10 12:01:19] [OK] END   D:\Analyze\src\00_data_quality.py — OK (0.5 сек)
+[2026-11-10 12:01:19] [INFO] START D:\Analyze\src\01_fetch_chess_api.py
+[2026-11-10 12:01:21] [OK] END   D:\Analyze\src\01_fetch_chess_api.py — OK (2.0 сек)
+[2026-11-10 12:01:21] [INFO] START D:\Analyze\src\02_analyze_stockfish.py
+[2026-11-10 12:01:21] [OK] END   D:\Analyze\src\02_analyze_stockfish.py — OK (0.6 сек)
+[2026-11-10 12:01:21] [INFO] START D:\Analyze\src\03_migrate_sqlite.py
+[2026-11-10 12:01:22] [ERROR] ERROR D:\Analyze\src\03_migrate_sqlite.py (код 1, 0.2 сек)
+[2026-11-10 12:01:22] [ERROR] СТОП: D:\Analyze\src\03_migrate_sqlite.py упал. Флаг --keep-going не установлен.
+[2026-11-10 12:01:22] [INFO] === ЗАВЕРШЕНО ===
+[2026-11-10 12:02:01] [INFO] === НАЧАЛО ЗАПУСКА ===
+[2026-11-10 12:02:01] [INFO] START D:\Analyze\src\00_data_quality.py
+[2026-11-10 12:02:01] [OK] END   D:\Analyze\src\00_data_quality.py — OK (0.5 сек)
+[2026-11-10 12:02:01] [INFO] START D:\Analyze\src\01_fetch_chess_api.py
+[2026-11-10 12:02:04] [OK] END   D:\Analyze\src\01_fetch_chess_api.py — OK (2.9 сек)
+[2026-11-10 12:02:04] [INFO] START D:\Analyze\src\02_analyze_stockfish.py
+[2026-11-10 12:02:04] [OK] END   D:\Analyze\src\02_analyze_stockfish.py — OK (0.6 сек)
+[2026-11-10 12:02:04] [INFO] START D:\Analyze\src\03_migrate_sqlite.py
+[2026-11-10 12:02:07] [OK] END   D:\Analyze\src\03_migrate_sqlite.py — OK (2.6 сек)
+[2026-11-10 12:02:07] [INFO] START D:\Analyze\src\04_export_csv.py
+[2026-11-10 12:02:14] [OK] END   D:\Analyze\src\04_export_csv.py — OK (6.9 сек)
+[2026-11-10 12:02:14] [INFO] START D:\Analyze\src\05_openings.py
+[2026-11-10 12:02:32] [OK] END   D:\Analyze\src\05_openings.py — OK (18.2 сек)
+[2026-11-10 12:02:32] [INFO] START D:\Analyze\src\06_middlegame.py
+[2026-11-10 12:02:58] [OK] END   D:\Analyze\src\06_middlegame.py — OK (26.1 сек)
+[2026-11-10 12:02:58] [INFO] START D:\Analyze\src\07_endgame.py
+[2026-11-10 12:02:59] [OK] END   D:\Analyze\src\07_endgame.py — OK (0.6 сек)
+[2026-11-10 12:02:59] [INFO] START D:\Analyze\src\08_psych_focus.py
+[2026-11-10 12:03:01] [OK] END   D:\Analyze\src\08_psych_focus.py — OK (1.9 сек)
+[2026-11-10 12:03:01] [INFO] START D:\Analyze\src\09_psych_state.py
+[2026-11-10 12:03:14] [OK] END   D:\Analyze\src\09_psych_state.py — OK (13.7 сек)
+[2026-11-10 12:03:14] [INFO] START D:\Analyze\src\10_psych_rating.py
+[2026-11-10 12:03:15] [OK] END   D:\Analyze\src\10_psych_rating.py — OK (0.6 сек)
+[2026-11-10 12:03:15] [INFO] START D:\Analyze\src\11_psych_opponents.py
+[2026-11-10 12:03:47] [OK] END   D:\Analyze\src\11_psych_opponents.py — OK (31.6 сек)
+[2026-11-10 12:03:47] [INFO] START D:\Analyze\src\12_coach.py
+[2026-11-10 12:03:47] [OK] END   D:\Analyze\src\12_coach.py — OK (0.5 сек)
+[2026-11-10 12:03:47] [INFO] START D:\Analyze\src\13_dashboard_final.py
+[2026-11-10 12:03:48] [OK] END   D:\Analyze\src\13_dashboard_final.py — OK (0.9 сек)
+[2026-11-10 12:03:48] [INFO] === ЗАВЕРШЕНО ===

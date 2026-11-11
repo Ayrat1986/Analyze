@@ -1,0 +1,67 @@
+============================================================
+ 🛡️ ТРЕНАЖЕР ЭНДШПИЛЯ
+============================================================
+
+Найдено позиций: 50
+Загрузи FEN в Lichess Analysis и тренируй технику.
+
+#1. joonseok-j vs Ayrat_1986 (ACPL эндшпиля: 1485)
+    FEN: 1k6/2p2prp/1n3pr1/1Q3p2/1P5q/1B1P1P1P/P1P2RP1/5R1K w - - 3 31
+
+#2. Ayrat_1986 vs mamba1219 (ACPL эндшпиля: 1225)
+    FEN: 2br2k1/5ppp/p1p4r/4P3/1PQq4/7P/5PP1/R1R1B1K1 w - - 0 31
+
+#3. Ayrat_1986 vs artiksup69 (ACPL эндшпиля: 1087)
+    FEN: 1Qb3k1/6pp/4p3/p4p2/Pp1PP3/1P3P2/1BqN4/7K w - - 3 31
+
+#4. Ayrat_1986 vs boburjon1106 (ACPL эндшпиля: 708)
+    FEN: 5q2/ppQ2ppk/5brp/8/8/2N2P1K/PP5P/3R4 w - - 5 31
+
+#5. Ayrat_1986 vs ChillingBlunder (ACPL эндшпиля: 640)
+    FEN: b1r5/5pkp/p3pqp1/1p6/8/PPn1PN1P/4BPP1/1R1Q2K1 w - - 1 31
+
+#6. Matinghaffarifar vs Ayrat_1986 (ACPL эндшпиля: 532)
+    FEN: 3q4/3r1p1k/pp4pp/3p3n/2nN3P/1NP2P2/PP2R1P1/4Q1K1 w - - 4 31
+
+#7. Ayrat_1986 vs MatSekak88 (ACPL эндшпиля: 502)
+    FEN: 5nk1/6pp/2Pqp3/3pN3/3P4/8/1P2Q1PP/5RK1 w - - 1 31
+
+#8. Highland10 vs Ayrat_1986 (ACPL эндшпиля: 494)
+    FEN: 2rq2k1/5pb1/4b1p1/3p4/1RpP4/2P1Q2P/2B2P2/1R4K1 w - - 2 31
+
+#9. Ayrat_1986 vs LarsvanSchooten (ACPL эндшпиля: 489)
+    FEN: 5rr1/pp2k3/2n2p2/3Rp1q1/2P1Q3/PPB3PP/5P2/3R2K1 w - - 4 31
+
+#10. Ayrat_1986 vs isaiasdemaurizio (ACPL эндшпиля: 485)
+    FEN: r3r3/1Q6/p2b2kp/1p1P1pp1/1P3q2/P4p1P/1B2R1P1/1B2R1K1 w - - 0 31
+
+#11. Ayrat_1986 vs ChessGeo-Dallas1987 (ACPL эндшпиля: 483)
+    FEN: 3R4/5p1k/1p3np1/p6p/P1P1qN2/1P2r2P/3Q2P1/6K1 w - - 2 31
+
+#12. Ayrat_1986 vs kaustubh85 (ACPL эндшпиля: 459)
+    FEN: 5r1k/pppb4/3p1b2/3Pp2q/2P5/1P1BBPQ1/P4KP1/5R2 w - - 5 31
+
+#13. BlueBerries2012 vs Ayrat_1986 (ACPL эндшпиля: 455)
+    FEN: 2k2r2/pp1qb2R/n3p3/2p1P1p1/P1PP2P1/BP5P/2Q5/2K5 w - - 0 31
+
+#14. Ayrat_1986 vs R4nd0mM0ves (ACPL эндшпиля: 452)
+    FEN: 4k1r1/p1pb4/1p1p1R2/3PpP2/2P1P2Q/2N5/PP2N3/2K5 w - - 1 31
+
+#15. Ayrat_1986 vs zumpili (ACPL эндшпиля: 438)
+    FEN: 4r2k/6pp/8/1R1Qpq2/8/5P2/r5PP/4R1K1 w - - 5 31
+
+#16. arad_ar vs Ayrat_1986 (ACPL эндшпиля: 434)
+    FEN: 5r1k/p1r4p/1p3p1R/4pP2/8/5QP1/4R2P/3q2K1 w - - 2 31
+
+#17. brhath vs Ayrat_1986 (ACPL эндшпиля: 430)
+    FEN: 1r2k2r/Rp2q2p/2p1pp2/1p1p4/3P2P1/4P2P/3QKP2/2R5 w - - 4 31
+
+#18. GelarSagaraDwitama vs Ayrat_1986 (ACPL эндшпиля: 405)
+    FEN: 1kr4r/1p2bqp1/p3N1n1/2pQ1p2/P1P2P1p/1P1P3P/5B2/4RRK1 w - - 2 31
+
+#19. bulletknight5522 vs Ayrat_1986 (ACPL эндшпиля: 404)
+    FEN: 1k6/1p4RQ/4p3/1p1qP3/3P4/b3P2P/2r3PK/8 w - - 3 31
+
+#20. Ayrat_1986 vs FalconChessFM (ACPL эндшпиля: 386)
+    FEN: 5r2/pp4kp/4Q1p1/8/5p2/3b4/PP3PPP/2R3K1 w - - 3 31
+

@@ -1,0 +1,33 @@
+# Домашняя работа: D38
+# Winrate: 47.4%
+# ACPL: деб 11 / мит 88 / энд 93
+# Eval после дебюта: +60.9
+# Линия-убийца: d2d4 e7e6 c2c4 d7d5 b1c3 g8f6 g1f3 f8b4 c1g5 c7c6 e2e3 b8d7 d1b3 b4c3 b2c3 e8g8 f1d3 d8b6 b3c2 d5c4 (15 зевков)
+# Окно уязвимости: 31+ (34 зевков)
+# Точка невозврата: после 34-го хода (100% поражений)
+
+# Позиция 1: Ход 34, потеря 1390 CP
+FEN: 4r1k1/5pp1/5n1p/4NQ2/5B2/5R1P/5qP1/1r5K w - - 2 34
+Лучший ход (Stockfish): Qxb1
+Ссылка: https://lichess.org/analysis/standard/4r1k1/5pp1/5n1p/4NQ2/5B2/5R1P/5qP1/1r5K_w_-_-_2_34
+
+# Позиция 2: Ход 40, потеря 1079 CP
+FEN: 8/1b3p1k/7p/4PP2/p6q/P1RQ3P/1P4r1/4RK2 w - - 2 40
+Лучший ход (Stockfish): f6+
+Ссылка: https://lichess.org/analysis/standard/8/1b3p1k/7p/4PP2/p6q/P1RQ3P/1P4r1/4RK2_w_-_-_2_40
+
+# Позиция 3: Ход 41, потеря 1017 CP
+FEN: 6k1/1b3p2/7p/p3n1p1/1p2P3/3BKP1P/PB4P1/8 w - - 4 41
+Лучший ход (Stockfish): Bxe5
+Ссылка: https://lichess.org/analysis/standard/6k1/1b3p2/7p/p3n1p1/1p2P3/3BKP1P/PB4P1/8_w_-_-_4_41
+
+# Позиция 4: Ход 33, потеря 910 CP
+FEN: 5rk1/1p3pp1/2b5/7p/p5rq/P2R4/1PQ2RP1/6K1 w - - 0 33
+Лучший ход (Stockfish): Re3
+Ссылка: https://lichess.org/analysis/standard/5rk1/1p3pp1/2b5/7p/p5rq/P2R4/1PQ2RP1/6K1_w_-_-_0_33
+
+# Позиция 5: Ход 41, потеря 883 CP
+FEN: 4r2k/1p2B1p1/2p4p/p2bQ3/P2P1P2/3q1P2/4RK2/8 w - - 4 41
+Лучший ход (Stockfish): Re3
+Ссылка: https://lichess.org/analysis/standard/4r2k/1p2B1p1/2p4p/p2bQ3/P2P1P2/3q1P2/4RK2/8_w_-_-_4_41
+

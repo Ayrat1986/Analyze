@@ -1,0 +1,13 @@
+metric,value,detail
+total_games,1043,
+wins,471,45.2%
+draws,46,4.4%
+avg_opp_rating,2555.0,
+avg_my_rating,2539.0,
+avg_acpl,63.6,
+avg_accuracy,88.2,
+performance_rating,2534,
+lost_from_winning,295,28.3%
+flags_won_by_time,168,
+flags_lost_by_time,295,
+avg_momentum_after_blunder,129.6,средний ACPL на 5 ходах после зевка

@@ -1,0 +1,11 @@
+{
+  "player": "Ayrat_1986",
+  "email": "89274032037@yandex.ru",
+  "depth": 14,
+  "days_to_fetch": 95,
+  "stockfish_path": "d:\\Analyze\\stockfish\\stockfish-windows-x86-64-universal.exe",
+  "engines": 4,
+  "hash_mb": 64,
+  "use_tor": false,
+  "max_bullet_base_time": 120
+}

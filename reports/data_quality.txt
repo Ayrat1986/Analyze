@@ -1,0 +1,19 @@
+============================================================
+ DATA QUALITY REPORT (v19.5)
+============================================================
+
+✅ OK  БД найдена: 16.2 МБ
+✅ OK  PRAGMA integrity_check: ok (файл БД цел)
+✅ OK  PRAGMA foreign_key_check: 0 нарушений (FK работают)
+✅ OK  FK целостность: 10927 зевков, 0 orphans
+✅ OK  Уникальность games: 2535 партий, 0 дубликатов
+✅ OK  Дубликаты PGN: 0 (все партии уникальны)
+✅ OK  next_move_time: 10432/10927 (95.5%) заполнено
+✅ OK  ACPL: n=2454, min=6, avg=65, max=300
+✅ OK  opening_line: 2454/2454 (100.0%) заполнено
+✅ OK  trainer_progress: 0 записей
+⚠️  WARN blunder_report_windows.txt не найден — пропуск сверки
+✅ OK  metrics.json: валиден
+✅ OK  stockfish_cache: 2535 партий (25.8 МБ)
+
+Итог: passed=12, warnings=1, failed=0

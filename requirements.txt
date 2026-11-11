@@ -1,0 +1,7 @@
+streamlit>=1.32
+pandas>=2.0
+plotly>=5.20
+python-chess>=1.999
+requests>=2.31
+curl_cffi>=0.5
+matplotlib>=3.8

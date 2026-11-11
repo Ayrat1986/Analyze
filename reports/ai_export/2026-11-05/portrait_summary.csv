@@ -1,0 +1,23 @@
+metric,value,detail
+total_games,2205,
+wins,1024,46.4%
+draws,103,4.7%
+avg_opp_rating,2560.0,
+avg_my_rating,2553.0,
+avg_acpl,65.5,
+avg_accuracy,87.9,
+avg_acpl_opponent,66.9,
+avg_accuracy_opponent,87.6,
+total_opp_blunders,9925,
+performance_rating,2550,
+lost_from_winning,575,26.1%
+flags_won_by_time,366,
+flags_lost_by_time,526,
+avg_momentum_after_blunder,136.3,средний ACPL на 5 ходах после зевка
+endurance_1-5_acpl,66.8,334 партий
+endurance_6-10_acpl,64.1,268 партий
+endurance_11-20_acpl,64.7,410 партий
+endurance_21-30_acpl,67.2,329 партий
+endurance_31-50_acpl,64.5,477 партий
+endurance_51+_acpl,66.2,387 партий
+avg_chaos_index,4.3,скачков оценки >= 200 CP

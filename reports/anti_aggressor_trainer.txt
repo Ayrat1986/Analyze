@@ -1,0 +1,36 @@
+============================================================
+ 🛡️ ТРЕНАЖЕР АНТИ-АГРЕССОРА
+============================================================
+Найдено зевков против агрессоров: 539
+Топ-5 позиций для разбора (открой в Lichess):
+
+• Ход 30 (потеря 1462 CP). Паттерн: lost_piece
+  Соперник: breadfather
+  FEN: r7/3Q2kp/1p2p3/1P2N3/2PP2P1/rNK1n3/7q/3R4 b - - 1 30
+  Лучший ход: g7h8
+  Тренируй: https://lichess.org/analysis/standard/r7/3Q2kp/1p2p3/1P2N3/2PP2P1/rNK1n3/7q/3R4_b_-_-_1_30
+
+• Ход 25 (потеря 1403 CP). Паттерн: positional
+  Соперник: nguyenson10a1
+  FEN: 5rk1/1p1q2bp/p2p2p1/3P4/P1P5/1PN2Nnb/1B4PK/1QR5 w - - 2 25
+  Лучший ход: c1g1
+  Тренируй: https://lichess.org/analysis/standard/5rk1/1p1q2bp/p2p2p1/3P4/P1P5/1PN2Nnb/1B4PK/1QR5_w_-_-_2_25
+
+• Ход 34 (потеря 1390 CP). Паттерн: positional
+  Соперник: swadanusar9_youtube
+  FEN: 4r1k1/5pp1/5n1p/4NQ2/5B2/5R1P/5qP1/1r5K w - - 2 34
+  Лучший ход: f5b1
+  Тренируй: https://lichess.org/analysis/standard/4r1k1/5pp1/5n1p/4NQ2/5B2/5R1P/5qP1/1r5K_w_-_-_2_34
+
+• Ход 34 (потеря 1373 CP). Паттерн: lost_piece
+  Соперник: elizabeththink
+  FEN: 5r1k/pp1q1rp1/2p1R2p/8/8/2P4Q/PP5P/4R2K b - - 1 34
+  Лучший ход: d7d5
+  Тренируй: https://lichess.org/analysis/standard/5r1k/pp1q1rp1/2p1R2p/8/8/2P4Q/PP5P/4R2K_b_-_-_1_34
+
+• Ход 25 (потеря 1313 CP). Паттерн: positional
+  Соперник: 1yarayaraphonk
+  FEN: 2r1r1k1/1p3p2/5p1p/p2Bb2P/2Pp4/P6q/1PQN1P2/4RRK1 w - - 0 25
+  Лучший ход: c2g6
+  Тренируй: https://lichess.org/analysis/standard/2r1r1k1/1p3p2/5p1p/p2Bb2P/2Pp4/P6q/1PQN1P2/4RRK1_w_-_-_0_25
+
