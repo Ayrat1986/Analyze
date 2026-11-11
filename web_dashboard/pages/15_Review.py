@@ -1,6 +1,4 @@
-# ============================================================
-# web_dashboard/pages/15_Review.py — Разбор партии
-# ============================================================
+# web_dashboard/pages/15_Review.py
 import sys
 import os
 
@@ -70,24 +68,17 @@ if game["hist"]:
     moves = [h[0] for h in game["hist"]]
     evals = [h[1] / 100.0 for h in game["hist"]]
     
-    # Определяем цвет графика
-    colors = ['#00CC96' if e >= 0 else '#EF553B' for e in evals]
-    
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=moves, y=evals, mode='lines+markers', line=dict(color='#636EFA', width=2), name='Eval'))
     fig.add_hline(y=0, line_dash="dash", line_color="gray")
     
-    # Подсвечиваем зевки
     blunder_moves = {b["move_num"]: b for b in game["blunders"] if b["is_my_blunder"]}
     for bm in blunder_moves:
         fig.add_vline(x=bm, line_dash="dot", line_color="red", opacity=0.5)
     
     fig.update_layout(
-        height=400,
-        xaxis_title="Номер хода",
-        yaxis_title="Оценка (+ = лучше)",
-        margin=dict(l=0, r=0, t=30, b=0),
-        showlegend=False
+        height=400, xaxis_title="Номер хода", yaxis_title="Оценка (+ = лучше)",
+        margin=dict(l=0, r=0, t=30, b=0), showlegend=False
     )
     st.plotly_chart(fig, use_container_width=True)
 else:
@@ -107,11 +98,19 @@ else:
             st.markdown(f"**Паттерн:** {b['pattern_tag']}")
             st.markdown(f"**Что случилось:** {b['what']}")
             st.markdown(f"**Время на ход:** {b['time_spent']} сек")
-            st.markdown(f"[🔗 Открыть партию на Lichess]({game['url']})")
+            
+            # Ссылка на Lichess анализ позиции перед зевком
+            if b.get("fen_before"):
+                fen_url = b["fen_before"].replace(' ', '_')
+                st.markdown(f"[🔗 Открыть позицию в Lichess](https://lichess.org/analysis/standard/{fen_url})")
 
 st.divider()
 
-# --- Ссылка на PGN ---
+# --- PGN и кнопка Анализатора ---
 if game["pgn"]:
-    with st.expander("📄 PGN партии"):
+    with st.expander("📄 PGN партии и Анализ"):
         st.code(game["pgn"], language="text")
+        if st.button("🔬 Открыть в Анализаторе", type="primary"):
+            st.session_state["analyze_pgn"] = game["pgn"]
+            st.session_state["analyze_fen"] = None
+            st.switch_page("pages/6_Analysis.py")

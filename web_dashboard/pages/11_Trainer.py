@@ -1,8 +1,4 @@
-# ============================================================
 # web_dashboard/pages/11_Trainer.py
-# Гибрид: 5 вкладок (Колода, Худшие, Эндшпиль, Прогресс, Архив)
-# Колода теперь берется из Smart Deck (свежие + агрессоры + час X).
-# ============================================================
 import sys
 import os
 import pandas as pd
@@ -36,9 +32,7 @@ st.caption("Решённые задачи уходят в архив. Не ре�
 
 trainer_db.ensure_table()
 
-REPORTS_DIR = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), "..", "..", "reports"
-))
+REPORTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "reports"))
 SMART_DECK_CSV = os.path.join(REPORTS_DIR, "training", "smart_deck.csv")
 
 with st.sidebar:
@@ -62,25 +56,16 @@ with st.sidebar:
 ts = cutoff_ts(days)
 
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "📚 Умная Колода",
-    "🔥 Худшие зевки",
-    "🛡️ Эндшпиль",
-    "📊 Прогресс",
-    "🗄️ Архив",
+    "📚 Умная Колода", "🔥 Худшие зевки", "🛡️ Эндшпиль", "📊 Прогресс", "🗄️ Архив",
 ])
 
-
-# ==========================================
-# ХЕЛПЕР: рендер карточки задачи с кнопками
-# ==========================================
-def render_task_card(task_type: str, fen: str, title: str, subtitle: str,
-                     best_move: str = None, url: str = None):
+def render_task_card(task_type: str, fen: str, title: str, subtitle: str, best_move: str = None, url: str = None):
     status = trainer_db.get_status(task_type, fen)
     
     if status and status["status"] == "solved":
         return False
     
-    if status and status["next_review"] and status["next_review"] > int(time.time()):
+    if status and status.get("next_review") and status["next_review"] > int(time.time()):
         return False
     
     h = trainer_db.task_hash(task_type, fen)
@@ -99,8 +84,20 @@ def render_task_card(task_type: str, fen: str, title: str, subtitle: str,
             st.info(f"💡 Лучший ход: {best_move}")
         st.code(fen, language="text")
         st.markdown(f"[🔗 Тренировать в Lichess](https://lichess.org/analysis/standard/{fen.replace(' ', '_')})")
+        
         if url:
-            st.markdown(f"[🔗 Партия]({url})")
+            if st.button("🔬 Открыть партию в Анализаторе", key=f"open_{h}", use_container_width=True):
+                import sqlite3
+                from utils.db import DB_PATH
+                conn = sqlite3.connect(DB_PATH)
+                cur = conn.cursor()
+                cur.execute("SELECT pgn FROM games WHERE url=?", (url,))
+                row = cur.fetchone()
+                if row and row[0]:
+                    st.session_state["analyze_pgn"] = row[0]
+                    st.session_state["analyze_fen"] = None
+                    st.switch_page("pages/6_Analysis.py")
+                conn.close()
         
         if status:
             st.caption(f"Попыток: {status['attempts']}")
@@ -125,10 +122,6 @@ def render_task_card(task_type: str, fen: str, title: str, subtitle: str,
     st.divider()
     return True
 
-
-# ==========================================
-# ВКЛАДКА 1: УМНАЯ КОЛОДА (Smart Deck)
-# ==========================================
 with tab1:
     st.subheader("📚 Умная Колода на сегодня")
     st.markdown("Здесь собраны твои самые опасные зевки: **свежие (7 дней) + против агрессоров + на 'Час X' (21-25 ход)**.")
@@ -137,7 +130,6 @@ with tab1:
         st.warning("Колода ещё не сгенерирована. Нажми кнопку **'🔄 Обновить Умную колоду'** в левом меню.")
     else:
         df = pd.read_csv(SMART_DECK_CSV)
-        
         if df.empty:
             st.success("🎉 Поздравляю! В этой выборке нет грубых зевков.")
         else:
@@ -148,7 +140,6 @@ with tab1:
                 st.success("✅ Все задачи умной колоды решены! Нажми 'Обновить', чтобы найти новые.")
             else:
                 st.markdown(f"**Осталось: {len(visible)} из {len(df)}**")
-                
                 for i, r in visible.iterrows():
                     best_san = None
                     if r["best_move"]:
@@ -165,12 +156,8 @@ with tab1:
                         best_move=best_san, url=r["url"],
                     )
 
-# ==========================================
-# ВКЛАДКА 2: ХУДШИЕ ЗЕВКИ
-# ==========================================
 with tab2:
     st.subheader(f"🔥 Топ-{n_tasks} худших зевков за период")
-    
     worst = query_df(f"""
         SELECT b.fen_before, b.move_num, b.loss_cp, b.best_move_uci,
                b.pattern_tag, g.white, g.black, g.url, g.end_time
@@ -207,12 +194,8 @@ with tab2:
                     best_move=best_san, url=r["url"],
                 )
 
-# ==========================================
-# ВКЛАДКА 3: ЭНДШПИЛЬ
-# ==========================================
 with tab3:
     st.subheader("🛡️ Эндшпильный тренажёр")
-    
     endgame_path = os.path.join(REPORTS_DIR, "training", "endgame_positions.csv")
     if os.path.exists(endgame_path):
         eg_df = pd.read_csv(endgame_path)
@@ -236,80 +219,33 @@ with tab3:
     else:
         st.warning("endgame_positions.csv не найден. Запусти 07_endgame.py.")
 
-# ==========================================
-# ВКЛАДКА 4: ПРОГРЕСС
-# ==========================================
 with tab4:
     st.subheader("📊 Прогресс тренировок")
-    
     stats = trainer_db.get_stats()
     if stats["total"] == 0:
         st.info("Ты ещё не решил ни одной задачи. Начни с колоды.")
     else:
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Всего задач", stats["total"])
-        c2.metric("✅ Решено", stats["solved"]["n"],
-                  f"{stats['solved']['n']/stats['total']*100:.0f}%")
-        c3.metric("❌ Не решено", stats["failed"]["n"],
-                  f"{stats['failed']['n']/stats['total']*100:.0f}%")
-        c4.metric("⏭ Отложено", stats["skipped"]["n"],
-                  f"{stats['skipped']['n']/stats['total']*100:.0f}%")
+        c2.metric("✅ Решено", stats["solved"]["n"], f"{stats['solved']['n']/stats['total']*100:.0f}%")
+        c3.metric("❌ Не решено", stats["failed"]["n"], f"{stats['failed']['n']/stats['total']*100:.0f}%")
+        c4.metric("⏭ Отложено", stats["skipped"]["n"], f"{stats['skipped']['n']/stats['total']*100:.0f}%")
         
         solved_pct = stats["solved"]["n"] / stats["total"] * 100
         st.progress(min(solved_pct / 100, 1.0))
         st.caption(f"Решено {solved_pct:.0f}% всех задач")
-        
-        by_type = trainer_db.get_stats_by_type()
-        if by_type:
-            st.markdown("### По типам задач")
-            type_names = {"deck": "📚 Колода", "smart_deck": "🧠 Умная Колода", "worst": "🔥 Худшие", "endgame": "🛡️ Эндшпиль"}
-            rows = []
-            for tt, d in by_type.items():
-                total = sum(d.values())
-                if total > 0:
-                    rows.append({
-                        "Тип": type_names.get(tt, tt),
-                        "Всего": total,
-                        "Решено": d.get("solved", 0),
-                        "Не решено": d.get("failed", 0),
-                        "Отложено": d.get("skipped", 0),
-                        "% решено": f"{d.get('solved', 0)/total*100:.0f}%",
-                    })
-            if rows:
-                st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
-        
-        st.divider()
-        if solved_pct > 80:
-            st.success("🔥 Отлично! Ты разобрал 80%+ задач. Пора добавлять новые.")
-        elif solved_pct > 50:
-            st.info("➡️ Хороший темп. Продолжай.")
-        else:
-            st.warning("⚠️ Много нерешённых задач. Сфокусируйся на 5-10 в день.")
 
-# ==========================================
-# ВКЛАДКА 5: АРХИВ
-# ==========================================
 with tab5:
     st.subheader("🗄️ Архив решённых задач")
-    st.caption("Задачи, которые ты пометил '✅ Решено'. Они больше не показываются.")
-    
+    st.caption("Задачи, которые ты пометил '✅ Решено'.")
     archive = trainer_db.get_archive(limit=100)
     if not archive:
         st.info("Архив пуст. Реши первую задачу — она появится здесь.")
     else:
         st.markdown(f"**Всего решено: {len(archive)}**")
-        
         for i, item in enumerate(archive[:20], 1):
-            with st.expander(
-                f"#{i}. {item['task_type']} — попыток: {item['attempts']}, "
-                f"дата: {pd.to_datetime(item['last_seen'], unit='s').strftime('%d.%m.%y')}"
-            ):
+            with st.expander(f"#{i}. {item['task_type']} — попыток: {item['attempts']}, дата: {pd.to_datetime(item['last_seen'], unit='s').strftime('%d.%m.%y')}"):
                 st.code(item["fen"], language="text")
-                st.markdown(
-                    f"[🔗 Открыть в Lichess]"
-                    f"(https://lichess.org/analysis/standard/"
-                    f"{item['fen'].replace(' ', '_')})"
-                )
                 if st.button("↩️ Вернуть в очередь", key=f"reset_{i}_{item['fen'][:10]}"):
                     trainer_db.reset_task(item["task_type"], item["fen"])
                     st.success("Задача возвращена в очередь.")
