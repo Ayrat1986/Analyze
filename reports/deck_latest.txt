@@ -1,7 +1,7 @@
 ============================================================
  🎯 КОЛОДА НА СЕГОДНЯ (20 FEN)
 ============================================================
-Сформирована: 2026-11-11 09:12
+Сформирована: 2026-11-12 07:57
 Формат: FEN + лучший ход (Stockfish).
 Свежих (7 дней): 10  |  Случайных из топ-100: 10
 
@@ -11,101 +11,101 @@
      Лучший ход: a1a8
      Тренируй: https://lichess.org/analysis/standard/8/7k/4q1p1/7p/2p1p2P/2BbbrP1/6K1/R2B2Q1_w_-_-_0_37
 
-  2. Ayrat_1986 vs KRD93RUS (04.11.26, ход 23, потеря 1717 CP)
-     FEN: 2k1r1r1/1p5p/p1b5/2P1Bp2/1P1p2q1/N7/P1PQR1PP/R5K1 w - - 7 23
-     Лучший ход: a3c4
-     Тренируй: https://lichess.org/analysis/standard/2k1r1r1/1p5p/p1b5/2P1Bp2/1P1p2q1/N7/P1PQR1PP/R5K1_w_-_-_7_23
-
-  3. elseres vs Ayrat_1986 (08.11.26, ход 36, потеря 1564 CP)
+  2. elseres vs Ayrat_1986 (08.11.26, ход 36, потеря 1564 CP)
      FEN: 6k1/ppn3p1/8/1q2N3/8/PP1Q3P/6P1/5K2 b - - 2 36
      Лучший ход: b5e5
      Тренируй: https://lichess.org/analysis/standard/6k1/ppn3p1/8/1q2N3/8/PP1Q3P/6P1/5K2_b_-_-_2_36
 
-  4. Benkaito2010 vs Ayrat_1986 (06.11.26, ход 28, потеря 1503 CP)
+  3. Benkaito2010 vs Ayrat_1986 (06.11.26, ход 28, потеря 1503 CP)
      FEN: 5Q2/3n1kpp/p3bp2/3qp3/1B6/6P1/P4P1P/2R2BK1 b - - 2 28
      Лучший ход: d7f8
      Тренируй: https://lichess.org/analysis/standard/5Q2/3n1kpp/p3bp2/3qp3/1B6/6P1/P4P1P/2R2BK1_b_-_-_2_28
 
-  5. joonseok-j vs Ayrat_1986 (05.11.26, ход 31, потеря 1485 CP)
+  4. joonseok-j vs Ayrat_1986 (05.11.26, ход 31, потеря 1485 CP)
      FEN: 1k6/2p2prp/1n3pr1/1Q3p2/PP5q/1B1P1P1P/2P2RP1/5R1K b - - 0 31
      Лучший ход: g6g2
      Тренируй: https://lichess.org/analysis/standard/1k6/2p2prp/1n3pr1/1Q3p2/PP5q/1B1P1P1P/2P2RP1/5R1K_b_-_-_0_31
 
-  6. BREADFATHER vs Ayrat_1986 (08.11.26, ход 30, потеря 1462 CP)
+  5. BREADFATHER vs Ayrat_1986 (08.11.26, ход 30, потеря 1462 CP)
      FEN: r7/3Q2kp/1p2p3/1P2N3/2PP2P1/rNK1n3/7q/3R4 b - - 1 30
      Лучший ход: g7h8
      Тренируй: https://lichess.org/analysis/standard/r7/3Q2kp/1p2p3/1P2N3/2PP2P1/rNK1n3/7q/3R4_b_-_-_1_30
 
-  7. Ayrat_1986 vs VlasoffChess (05.11.26, ход 24, потеря 1432 CP)
+  6. Ayrat_1986 vs VlasoffChess (05.11.26, ход 24, потеря 1432 CP)
      FEN: 3r3k/pp2p1b1/4Nr2/3B3p/6pP/3Q2P1/PP3q2/R2K3R w - - 2 24
      Лучший ход: e6d8
      Тренируй: https://lichess.org/analysis/standard/3r3k/pp2p1b1/4Nr2/3B3p/6pP/3Q2P1/PP3q2/R2K3R_w_-_-_2_24
 
-  8. Ayrat_1986 vs SwadanusaR9_You (04.11.26, ход 34, потеря 1390 CP)
-     FEN: 4r1k1/5pp1/5n1p/4NQ2/5B2/5R1P/5qP1/1r5K w - - 2 34
-     Лучший ход: f5b1
-     Тренируй: https://lichess.org/analysis/standard/4r1k1/5pp1/5n1p/4NQ2/5B2/5R1P/5qP1/1r5K_w_-_-_2_34
-
-  9. 1869UKD vs Ayrat_1986 (05.11.26, ход 35, потеря 1335 CP)
-     FEN: 6r1/2R1kp2/p3p2p/P2nN3/3PpP2/4P2b/1N5P/7K b - - 2 35
-     Лучший ход: d5c7
-     Тренируй: https://lichess.org/analysis/standard/6r1/2R1kp2/p3p2p/P2nN3/3PpP2/4P2b/1N5P/7K_b_-_-_2_35
-
-  10. Ayrat_1986 vs Daddy_H0me (08.11.26, ход 42, потеря 1328 CP)
+  7. Ayrat_1986 vs Daddy_H0me (08.11.26, ход 42, потеря 1328 CP)
      FEN: Q3nk2/5p1p/4pPp1/2q3P1/ppr3B1/7P/PP4K1/4R3 w - - 3 42
      Лучший ход: a8b7
      Тренируй: https://lichess.org/analysis/standard/Q3nk2/5p1p/4pPp1/2q3P1/ppr3B1/7P/PP4K1/4R3_w_-_-_3_42
 
-🎲 СЛУЧАЙНЫЕ ИЗ ТОП-100:
-  1. Ahmed_Farag2003 vs Ayrat_1986 (19.08.26, ход 33, потеря 1623 CP)
-     FEN: 8/1b1nb1p1/pk2q3/1p1nN3/3P4/8/4QP2/2R1K2B b - - 5 33
-     Лучший ход: d7e5
-     Тренируй: https://lichess.org/analysis/standard/8/1b1nb1p1/pk2q3/1p1nN3/3P4/8/4QP2/2R1K2B_b_-_-_5_33
-
-  2. Ayrat_1986 vs Khachikyan-Hayk (19.08.26, ход 15, потеря 1243 CP)
-     FEN: r1b2rk1/2pn1ppp/p7/2bPN3/3q1B2/2N3P1/PP4KP/R2Q3R w - - 3 15
-     Лучший ход: d1d4
-     Тренируй: https://lichess.org/analysis/standard/r1b2rk1/2pn1ppp/p7/2bPN3/3q1B2/2N3P1/PP4KP/R2Q3R_w_-_-_3_15
-
-  3. prepredeni vs Ayrat_1986 (29.09.26, ход 35, потеря 1410 CP)
-     FEN: 8/pp2r1k1/6q1/n2B1R2/2Pp1Q2/3P4/P7/4bK2 b - - 4 35
-     Лучший ход: e1g3
-     Тренируй: https://lichess.org/analysis/standard/8/pp2r1k1/6q1/n2B1R2/2Pp1Q2/3P4/P7/4bK2_b_-_-_4_35
-
-  4. MdChess1734 vs Ayrat_1986 (20.09.26, ход 39, потеря 1398 CP)
-     FEN: 5k1r/1p1r1pp1/p2N2p1/3RP1Q1/6P1/P6P/1P3PK1/1q6 b - - 0 39
-     Лучший ход: h8h3
-     Тренируй: https://lichess.org/analysis/standard/5k1r/1p1r1pp1/p2N2p1/3RP1Q1/6P1/P6P/1P3PK1/1q6_b_-_-_0_39
-
-  5. Ayrat_1986 vs Al3xnder (22.10.26, ход 44, потеря 1486 CP)
-     FEN: 3R3R/2p2rk1/1pb1q1p1/7p/P1P3P1/1P2P3/2B1K3/8 w - - 2 44
-     Лучший ход: d8g8
-     Тренируй: https://lichess.org/analysis/standard/3R3R/2p2rk1/1pb1q1p1/7p/P1P3P1/1P2P3/2B1K3/8_w_-_-_2_44
-
-  6. mahanesh50 vs Ayrat_1986 (22.10.26, ход 42, потеря 1553 CP)
-     FEN: 6k1/p5p1/1p2pn2/6P1/8/1P1P1QK1/q6P/8 b - - 0 42
-     Лучший ход: a2b3
-     Тренируй: https://lichess.org/analysis/standard/6k1/p5p1/1p2pn2/6P1/8/1P1P1QK1/q6P/8_b_-_-_0_42
-
-  7. md2007 vs Ayrat_1986 (23.10.26, ход 21, потеря 1581 CP)
-     FEN: 2kr3r/2p2ppp/pp1b1q2/8/4R3/PQ3B1P/2R2PP1/6K1 b - - 1 21
-     Лучший ход: f6a1
-     Тренируй: https://lichess.org/analysis/standard/2kr3r/2p2ppp/pp1b1q2/8/4R3/PQ3B1P/2R2PP1/6K1_b_-_-_1_21
-
-  8. GJEOPH vs Ayrat_1986 (20.08.26, ход 27, потеря 1411 CP)
-     FEN: 1r2k1r1/5p2/2Q1p2p/1p1pP3/4n1q1/4P3/PP2R1Pp/R3B2K b - - 5 27
-     Лучший ход: e8f8
-     Тренируй: https://lichess.org/analysis/standard/1r2k1r1/5p2/2Q1p2p/1p1pP3/4n1q1/4P3/PP2R1Pp/R3B2K_b_-_-_5_27
-
-  9. Ayrat_1986 vs sabhya507 (06.11.26, ход 39, потеря 1254 CP)
+  8. Ayrat_1986 vs sabhya507 (06.11.26, ход 39, потеря 1254 CP)
      FEN: 1q1r2k1/3P1p2/pP4p1/P2R3p/1P1Q4/5P1P/6PK/8 w - - 1 39
      Лучший ход: f3f4
      Тренируй: https://lichess.org/analysis/standard/1q1r2k1/3P1p2/pP4p1/P2R3p/1P1Q4/5P1P/6PK/8_w_-_-_1_39
 
-  10. Elizabeththink vs Ayrat_1986 (29.10.26, ход 34, потеря 1373 CP)
-     FEN: 5r1k/pp1q1rp1/2p1R2p/8/8/2P4Q/PP5P/4R2K b - - 1 34
-     Лучший ход: d7d5
-     Тренируй: https://lichess.org/analysis/standard/5r1k/pp1q1rp1/2p1R2p/8/8/2P4Q/PP5P/4R2K_b_-_-_1_34
+  9. Ayrat_1986 vs ogabe_jon1 (05.11.26, ход 32, потеря 1234 CP)
+     FEN: 3b1r1k/6R1/1p2n2p/p2Q1p1q/6R1/P4P1P/5PK1/8 w - - 1 32
+     Лучший ход: d5e6
+     Тренируй: https://lichess.org/analysis/standard/3b1r1k/6R1/1p2n2p/p2Q1p1q/6R1/P4P1P/5PK1/8_w_-_-_1_32
+
+  10. Ayrat_1986 vs kadenscott7 (09.11.26, ход 42, потеря 1233 CP)
+     FEN: 8/5ppp/1p6/1k1pPP2/3K3P/8/8/8 w - - 1 42
+     Лучший ход: d4d5
+     Тренируй: https://lichess.org/analysis/standard/8/5ppp/1p6/1k1pPP2/3K3P/8/8/8_w_-_-_1_42
+
+🎲 СЛУЧАЙНЫЕ ИЗ ТОП-100:
+  1. Ayrat_1986 vs GBNTomM (31.10.26, ход 39, потеря 1404 CP)
+     FEN: 2r3k1/5pP1/6qp/pN2Q3/P7/4P2P/3r2P1/5RK1 w - - 1 39
+     Лучший ход: g2g4
+     Тренируй: https://lichess.org/analysis/standard/2r3k1/5pP1/6qp/pN2Q3/P7/4P2P/3r2P1/5RK1_w_-_-_1_39
+
+  2. MichealKaiser_1 vs Ayrat_1986 (23.10.26, ход 29, потеря 1257 CP)
+     FEN: 8/pp3r1p/5p1k/7q/7P/1P2P1Q1/5PP1/3R2K1 b - - 6 29
+     Лучший ход: h5d1
+     Тренируй: https://lichess.org/analysis/standard/8/pp3r1p/5p1k/7q/7P/1P2P1Q1/5PP1/3R2K1_b_-_-_6_29
+
+  3. Ayrat_1986 vs ChelsieMonica (13.10.26, ход 54, потеря 1243 CP)
+     FEN: 8/7k/1p1p2rp/p1pP1Q2/2P5/1P6/P5PK/8 w - - 5 54
+     Лучший ход: f5d7
+     Тренируй: https://lichess.org/analysis/standard/8/7k/1p1p2rp/p1pP1Q2/2P5/1P6/P5PK/8_w_-_-_5_54
+
+  4. DarkLeft vs Ayrat_1986 (24.09.26, ход 29, потеря 1258 CP)
+     FEN: 3r4/kpq3bp/p4p2/P1pP4/2N3P1/1QP1Rp1P/1P6/2K5 b - - 1 29
+     Лучший ход: g7h6
+     Тренируй: https://lichess.org/analysis/standard/3r4/kpq3bp/p4p2/P1pP4/2N3P1/1QP1Rp1P/1P6/2K5_b_-_-_1_29
+
+  5. Ayrat_1986 vs edris8809 (16.08.26, ход 33, потеря 1509 CP)
+     FEN: r7/ppp3bk/3p2n1/3P4/2P2rPq/1P1QNn2/PB1N1RK1/3R4 w - - 0 33
+     Лучший ход: d2f3
+     Тренируй: https://lichess.org/analysis/standard/r7/ppp3bk/3p2n1/3P4/2P2rPq/1P1QNn2/PB1N1RK1/3R4_w_-_-_0_33
+
+  6. Ayrat_1986 vs historicodeatle (26.09.26, ход 30, потеря 1286 CP)
+     FEN: 2rq1rk1/1p1b1p1n/p2pp2Q/3Nn1PP/2P1P3/1P4K1/P3B3/2R4R w - - 0 30
+     Лучший ход: d5f6
+     Тренируй: https://lichess.org/analysis/standard/2rq1rk1/1p1b1p1n/p2pp2Q/3Nn1PP/2P1P3/1P4K1/P3B3/2R4R_w_-_-_0_30
+
+  7. advay2005 vs Ayrat_1986 (28.10.26, ход 37, потеря 1946 CP)
+     FEN: kr6/p1pK4/q4B2/8/3R4/2PQ3P/5P2/8 b - - 2 37
+     Лучший ход: a6f6
+     Тренируй: https://lichess.org/analysis/standard/kr6/p1pK4/q4B2/8/3R4/2PQ3P/5P2/8_b_-_-_2_37
+
+  8. Ayrat_1986 vs user_460214070 (26.09.26, ход 18, потеря 1273 CP)
+     FEN: 4rrk1/ppbnqp1p/2p2np1/2Pp4/1P1NbP2/P1N1P1RP/1B2B1P1/R2Q2K1 w - - 0 18
+     Лучший ход: c3e4
+     Тренируй: https://lichess.org/analysis/standard/4rrk1/ppbnqp1p/2p2np1/2Pp4/1P1NbP2/P1N1P1RP/1B2B1P1/R2Q2K1_w_-_-_0_18
+
+  9. Ayrat_1986 vs ChessForLife200 (03.10.26, ход 47, потеря 1952 CP)
+     FEN: 8/6pk/5p1p/8/2p5/3q2R1/6PP/5Q1K w - - 8 47
+     Лучший ход: g3d3
+     Тренируй: https://lichess.org/analysis/standard/8/6pk/5p1p/8/2p5/3q2R1/6PP/5Q1K_w_-_-_8_47
+
+  10. matmard12 vs Ayrat_1986 (19.10.26, ход 60, потеря 1311 CP)
+     FEN: 2Q5/6pk/5pqp/4p3/8/8/5K2/8 b - - 5 60
+     Лучший ход: g6g5
+     Тренируй: https://lichess.org/analysis/standard/2Q5/6pk/5pqp/4p3/8/8/5K2/8_b_-_-_5_60
 
 🎯 КАК ТРЕНИРОВАТЬ:
   1. Открой Lichess Analysis (ссылка выше).
