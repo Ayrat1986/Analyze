@@ -1,0 +1,34 @@
+name: Fast Update Database
+
+on:
+  workflow_dispatch: # Это создаст кнопку ручного запуска
+  schedule:
+    - cron: '0 20 * * *' # Автоматический запуск каждый день в 23:00 по МСК
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install curl_cffi
+
+      - name: Run Light Update
+        run: |
+          python src/update_light.py
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add data/chess.db data/chess_api_cache.json
+          git commit -m "Auto-update database with new games" || echo "No changes"
+          git push
