@@ -1,7 +1,7 @@
 # ============================================================
-# 01_fetch_chess_api.py — v25.1
-# §18: Убрана явная проверка verify=True (ломала curl_cffi на Windows).
-#      Теперь curl_cffi использует свой certifi bundle автоматически.
+# 01_fetch_chess_api.py — v25.2
+# Изменено: DAYS_TO_FETCH = 365 (скачивание за год).
+# Фикс: verify=False для обхода curl (77) на Windows.
 # ============================================================
 from curl_cffi import requests
 import time
@@ -17,8 +17,8 @@ EMAIL = _common.CONFIG.get("email", "")
 # Настройки фильтрации
 TIME_CLASS = "bullet"
 MAX_BULLET_BASE_TIME = 120
-DAYS_TO_FETCH = 95
-CACHE_ROTATION_DAYS = 120
+DAYS_TO_FETCH = 365       # <-- ИЗМЕНЕНО: скачиваем за год (было 95)
+CACHE_ROTATION_DAYS = 400 # <-- ИЗМЕНЕНО: храним кэш дольше
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -54,9 +54,10 @@ def get_api_data(url: str, cache: dict, retries: int = 3, force: bool = False):
 
     for attempt in range(retries):
         try:
-            # §18: Не указываем verify (пусть curl_cffi использует дефолт из certifi)
+            # Фикс curl (77): отключаем проверку для локального Windows
             response = requests.get(
-                url, headers=HEADERS, impersonate="safari184", timeout=30,
+                url, headers=HEADERS, impersonate="safari184",
+                verify=False, timeout=30,
             )
             if response.status_code == 200:
                 data = response.json()
@@ -107,7 +108,8 @@ def fetch_all_games(player: str, cache: dict) -> list:
             fetch_urls.append(u)
             seen_urls.add(u)
 
-    cutoff_90_utc = int((now_utc - timedelta(days=91)).timestamp())
+    # ИЗМЕНЕНО: отсекаем более старые, чем 365 дней
+    cutoff_utc = int((now_utc - timedelta(days=DAYS_TO_FETCH)).timestamp())
     all_games, existing_urls = [], set()
 
     for url in fetch_urls:
@@ -120,8 +122,9 @@ def fetch_all_games(player: str, cache: dict) -> list:
         try:
             year, month = int(parts[-2]), int(parts[-1])
             archive_date = datetime(year, month, 1, tzinfo=timezone.utc)
-            if archive_date < now_utc - timedelta(days=100) and not is_recent:
-                continue  # слишком старые — не качаем (не break!)
+            # ИЗМЕНЕНО: отсекаем всё, что старше 365 дней
+            if archive_date < now_utc - timedelta(days=DAYS_TO_FETCH + 10) and not is_recent:
+                continue
         except ValueError:
             pass
 
@@ -139,7 +142,8 @@ def fetch_all_games(player: str, cache: dict) -> list:
             g_url = g.get("url")
             if g_url in existing_urls:
                 continue
-            if g.get("end_time", 0) < cutoff_90_utc:
+            # ИЗМЕНЕНО: фильтр по времени (365 дней)
+            if g.get("end_time", 0) < cutoff_utc:
                 continue
             if g.get("time_class") != TIME_CLASS:
                 continue
@@ -153,7 +157,7 @@ def fetch_all_games(player: str, cache: dict) -> list:
             all_games.append(g)
             existing_urls.add(g_url)
 
-    print(f"✅ Всего подходящих партий (bullet): {len(all_games)}")
+    print(f"✅ Всего подходящих партий (bullet за {DAYS_TO_FETCH} дней): {len(all_games)}")
     return all_games
 
 
@@ -165,6 +169,11 @@ def get_games_from_cache(
     max_base: int = MAX_BULLET_BASE_TIME,
     require_pgn: bool = True,
 ) -> list:
+    """
+    Читает chess_api_cache.json, возвращает отфильтрованные games.
+    Заменяет download_games() из старого 02_fetch_time.py.
+    Никаких HTTP-запросов — только чтение кэша.
+    """
     if not os.path.exists(CACHE_FILE):
         print(f"⚠️ Нет {CACHE_FILE}. Сначала запусти 01_fetch_chess_api.py.")
         return []
@@ -179,6 +188,7 @@ def get_games_from_cache(
 
     archives = cache[archives_url].get("archives", [])
 
+    # Добавляем текущий и предыдущий месяц (они могут быть не в archives)
     now_utc = datetime.now(timezone.utc)
     current_month_url = f"https://api.chess.com/pub/player/{player}/games/{now_utc.year}/{now_utc.month:02d}"
     prev_month_date = now_utc.replace(day=1) - timedelta(days=1)
@@ -215,6 +225,9 @@ def get_games_from_cache(
     return games
 
 
+# ============================================================
+# TEMP: переедет в 10_psych_rating.py на фазе 9.
+# ============================================================
 def get_peak_for_interval(games, player, days_ago_min, days_ago_max):
     now_utc = datetime.now(timezone.utc)
     cutoff_newest = int((now_utc - timedelta(days=days_ago_min)).timestamp())
@@ -240,6 +253,10 @@ def get_peak_for_interval(games, player, days_ago_min, days_ago_max):
 
 
 def calculate_stats(games, player, peak_for_anchor, avg_opp_for_anchor=None):
+    """
+    Считает статистику для окна: win_rate, avg_opp, perf_rating,
+    ЯКОРЬ (anchor_min, anchor_peak, anchor_formula, anchor_final).
+    """
     total = len(games)
     if total == 0:
         return None
@@ -283,6 +300,7 @@ def calculate_stats(games, player, peak_for_anchor, avg_opp_for_anchor=None):
     last_my = my_sorted[-1][1] if my_sorted else 0
     gap = avg_my - actual_avg_opp if (avg_my and actual_avg_opp) else 0
 
+    # --- ЯКОРЬ ---
     min_window = min(my_vals) if my_vals else 0
     anchor_peak = peak_for_anchor - 150
     anchor_formula = actual_avg_opp * 0.98 if actual_avg_opp > 0 else 0
@@ -310,7 +328,9 @@ def calculate_stats(games, player, peak_for_anchor, avg_opp_for_anchor=None):
     }
 
 
+# ---------- РОТАЦИЯ ----------
 def rotate_cache(cache: dict, cutoff_days: int = CACHE_ROTATION_DAYS) -> dict:
+    """Удаляет месячные URL, где нет ни одной игры за последние cutoff_days."""
     cutoff = int((datetime.now(timezone.utc) - timedelta(days=cutoff_days)).timestamp())
     rotated = {}
     for url, data in cache.items():
@@ -322,6 +342,7 @@ def rotate_cache(cache: dict, cutoff_days: int = CACHE_ROTATION_DAYS) -> dict:
     return rotated
 
 
+# ---------- MAIN ----------
 def main():
     print("=" * 60)
     print(" FETCH CHESS.COM API → data/chess_api_cache.json")

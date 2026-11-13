@@ -1,5 +1,6 @@
 # ============================================================
 # analysis/constants.py — общие константы анализа Stockfish
+# v25.0: TRUE_BERSERK_CLOCK (10 сек) — исключение из ACPL.
 # ============================================================
 
 # Глубина анализа
@@ -10,11 +11,15 @@ BLUNDER_THRESHOLD = 150
 
 # Временные пороги
 NORMAL_TIME = 1.0         # > 1 сек = нормальное время
-BERSERK_TIME = 0.5        # < 0.5 сек = берсерк
-INSTANT_TIME = 0.2        # < 0.2 сек = мгновенный ход
+BERSERK_TIME = 0.5        # < 0.5 сек = мгновенный ход (true berserk)
+INSTANT_TIME = 0.2        # < 0.2 сек = паника
+
+# Зона берсерка (исключение из ACPL)
+TRUE_BERSERK_CLOCK = 10.0 # < 10 сек на часах = зона берсерка
+                          # ACPL в этой зоне НЕ считается (только флаги)
 
 # Истинный берсерк (по длине)
 TRUE_BERSERK_MIN_MOVES = 15
 
 # Версия схемы (для инвалидации кэша в будущем)
-TIME_THRESHOLDS_VERSION = "v18_sprint_c"
+TIME_THRESHOLDS_VERSION = "v25_berserk_exclude_acpl"

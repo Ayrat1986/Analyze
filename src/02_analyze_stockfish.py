@@ -1,8 +1,7 @@
 # ============================================================
-# 02_analyze_stockfish.py — v25.0
-# P2: HASH_MB=32 (было 64) — 4 движка × 32 = 128MB (безопасно для Windows).
-# P2: SAVE_EVERY=5 (было 20) — потеря при крэше ≤4 партии, не 19.
-# A1: pool.mark_processed() после успешного анализа.
+# 02_analyze_stockfish.py — v25.1
+# §32: Принудительный пересчет кэша, если версия схемы устарела
+#      (для применения правила "исключение берсерка из ACPL").
 # ============================================================
 import os
 import sys
@@ -18,7 +17,9 @@ sys.path.insert(0, SRC_DIR)
 
 import _common
 from analysis.constants import DEPTH
-from analysis.cache import load_cache, save_cache, game_cache_ok, cache_needs_recalc
+from analysis.cache import (
+    load_cache, save_cache, game_cache_ok, cache_needs_recalc, CACHE_SCHEMA_VERSION
+)
 from analysis.game import analyze_game
 from analysis.engine_pool import EnginePool
 
@@ -30,15 +31,11 @@ STOCKFISH_PATH = _common.CONFIG.get("stockfish_path", "")
 # Настройки параллелизации
 NUM_ENGINES = 4          # 4 движка × 1 поток = 4 CPU
 THREADS_PER_ENGINE = 1   # 1 поток на движок
-HASH_MB = 32             # P2: было 64, теперь 32MB (4×32 = 128MB)
-SAVE_EVERY = 5           # P2: было 20, теперь каждые 5 партий
+HASH_MB = 32             # P2: 32MB (4×32 = 128MB)
+SAVE_EVERY = 5           # P2: каждые 5 партий
 
 
 def _analyze_one(pool: EnginePool, game_data: dict, player: str):
-    """
-    Анализ одной партии с автоматическим возвратом движка в пул.
-    Возвращает (url, result_or_None, error_str_or_None).
-    """
     url = game_data.get("url", "")
     engine = pool.get(timeout=30.0)
     if engine is None:
@@ -56,7 +53,7 @@ def _analyze_one(pool: EnginePool, game_data: dict, player: str):
 
 def main():
     print("=" * 60)
-    print(" 02_analyze_stockfish.py — Stockfish-анализ (v25.0, параллельный)")
+    print(" 02_analyze_stockfish.py — Stockfish-анализ (v25.1)")
     print("=" * 60)
 
     if not os.path.exists(STOCKFISH_PATH):
@@ -71,7 +68,13 @@ def main():
     cache = load_cache(STOCKFISH_CACHE_FILE)
     print(f"📂 В кэше уже: {len(cache)} партий")
 
+    # ФИКС §32: Проверка версии схемы
     force_recalc = cache_needs_recalc(cache)
+    if cache.get("_schema_version") != CACHE_SCHEMA_VERSION:
+        force_recalc = True
+        print(f"🔄 Версия схемы кэша изменилась ({cache.get('_schema_version')} -> {CACHE_SCHEMA_VERSION}).")
+        print("   Все партии будут пересчитаны для применения нового правила.")
+        
     if force_recalc:
         print("🔄 Кэш требует пересчёта — будут пересчитаны ВСЕ партии.")
 
@@ -150,6 +153,8 @@ def main():
 
                 # Батчинг save_cache (P2: было 20)
                 if i - last_save >= SAVE_EVERY:
+                    # Сохраняем маркер версии вместе с кэшем
+                    cache["_schema_version"] = CACHE_SCHEMA_VERSION
                     save_cache(STOCKFISH_CACHE_FILE, cache)
                     last_save = i
 
@@ -157,6 +162,7 @@ def main():
         print("\n⚠️ Прервано пользователем. Сохраняю что есть...")
     finally:
         # Финальное сохранение (независимо от результата)
+        cache["_schema_version"] = CACHE_SCHEMA_VERSION
         save_cache(STOCKFISH_CACHE_FILE, cache)
         pool.close()
 

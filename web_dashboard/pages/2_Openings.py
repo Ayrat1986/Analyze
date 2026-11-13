@@ -2,40 +2,28 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-import json, os, chess
+import json, os, chess, io
 import chess.pgn
-import io
 import re
 from utils.chess_vis import render_board_html
-
-st.set_page_config(page_title="Дебюты (Openings)", page_icon="♟️", layout="wide")
+import _common
 from utils.db import query_df, cutoff_ts
 
+st.set_page_config(page_title="Дебюты (Openings)", page_icon="♟️", layout="wide")
 st.title("♟️ Дебюты (Openings)")
 
-config_path = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), "..", "..", "data", "config.json"
-))
-PLAYER = "ayrat_1986"
-if os.path.exists(config_path):
-    with open(config_path, "r", encoding="utf-8") as f:
-        PLAYER = json.load(f).get("player", "ayrat_1986").lower()
+# ФИКС: Берем PLAYER из конфига, без хардкода
+PLAYER = _common.CONFIG.get("player", "unknown").lower()
 
 with st.sidebar:
     days = st.slider("Период (дней)", 7, 365, 90, 1)
-
 ts = cutoff_ts(days)
 
 df = query_df("""
-    SELECT opening, eco,
-           CASE WHEN LOWER(white) = LOWER(?) THEN 'Белые' ELSE 'Чёрные' END AS color,
-           MAX(opening_line) AS opening_line,
-           COUNT(*) AS games, SUM(won) AS wins, AVG(acpl) AS acpl
-    FROM games
-    WHERE end_time >= ? AND is_lag=0 AND is_cheater=0
-      AND opening IS NOT NULL AND opening != ''
-    GROUP BY opening, eco, color
-    ORDER BY games DESC
+    SELECT opening, eco, CASE WHEN LOWER(white) = LOWER(?) THEN 'Белые' ELSE 'Чёрные' END AS color,
+           MAX(opening_line) AS opening_line, COUNT(*) AS games, SUM(won) AS wins, AVG(acpl) AS acpl
+    FROM games WHERE end_time >= ? AND is_lag=0 AND is_cheater=0 AND opening IS NOT NULL AND opening != ''
+    GROUP BY opening, eco, color ORDER BY games DESC
 """, (PLAYER, ts))
 
 if df.empty:
@@ -44,7 +32,6 @@ if df.empty:
 
 df["win_rate"] = (df["wins"] / df["games"] * 100).round(1)
 df["acpl"] = df["acpl"].round(0)
-
 df_reliable = df[df["games"] >= 5]
 df_white = df_reliable[df_reliable["color"] == "Белые"]
 df_black = df_reliable[df_reliable["color"] == "Чёрные"]

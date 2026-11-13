@@ -7,7 +7,7 @@ import json
 
 
 # Версия схемы кэша. Меняется при поломке формата (не при фиксах).
-CACHE_SCHEMA_VERSION = 2
+CACHE_SCHEMA_VERSION = 3
 
 # Все поля, которые обязаны быть в каждой записи кэша
 V10_FIELDS = (
@@ -149,6 +149,12 @@ def load_cache(path: str) -> dict:
         if not isinstance(data, dict):
             print("?? Кэш повреждён — начинаем с нуля")
             return {}
+        
+        # ФИКС: Добавляем маркер версии, если его нет
+        if "_schema_version" not in data:
+            data["_schema_version"] = CACHE_SCHEMA_VERSION
+            print(f"🔧 Кэш обновлен до версии {CACHE_SCHEMA_VERSION}")
+            
         return data
     except json.JSONDecodeError as e:
         print(f"?? Кэш повреждён (JSON): {e}")
@@ -163,7 +169,6 @@ def load_cache(path: str) -> dict:
     except Exception as e:
         print(f"?? Кэш не загружен: {e}")
         return {}
-
 
 def save_cache(path: str, cache: dict) -> None:
     """

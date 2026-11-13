@@ -1,7 +1,7 @@
 # ============================================================
-# run.py — Оркестратор конвейера (v25.3)
-# v25.2: Изоляция sys.argv для шагов с argparse.
-# v25.3: Восстановлено логирование в reports/run_log.txt.
+# run.py — Оркестратор конвейера (v25.5)
+# ФИКС: Устранена проблема с регистром папки (Analyze / analyze).
+#       Теперь sys.path всегда знает, где лежат _common и src.
 # ============================================================
 import os
 import sys
@@ -10,14 +10,10 @@ import argparse
 import traceback
 from datetime import datetime
 
-# --- ИСПРАВЛЕНИЕ ПУТЕЙ ---
+# --- ИСПРАВЛЕНИЕ ПУТЕЙ (v25.5) ---
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-if os.path.basename(CURRENT_DIR) == "Analyze":
-    BASE_DIR = CURRENT_DIR
-    SRC_DIR = os.path.join(CURRENT_DIR, "src")
-else:
-    SRC_DIR = CURRENT_DIR
-    BASE_DIR = os.path.dirname(CURRENT_DIR)
+BASE_DIR = os.path.dirname(CURRENT_DIR) if os.path.basename(CURRENT_DIR).lower() == "src" else CURRENT_DIR
+SRC_DIR = os.path.join(BASE_DIR, "src")
 
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
@@ -69,19 +65,16 @@ def _run_step(step_key, name, filename, fast_mode, force=False):
     print(f"  ШАГ {step_key}: {name} ({filename})")
     print(f"{'='*60}")
 
-    # Логирование старта (v25.3)
     _common.log_start(filename)
     
     start_time = time.time()
     
-    # Изоляция sys.argv
     old_argv = sys.argv.copy()
     sys.argv = [os.path.join(SRC_DIR, filename)]
     
     try:
         import importlib.util
-        spec = importlib.util.spec_from_file_location(
-            "mod", os.path.join(SRC_DIR, filename))
+        spec = importlib.util.spec_from_file_location("mod", os.path.join(SRC_DIR, filename))
         mod = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mod)
         if hasattr(mod, "main"):
@@ -89,7 +82,6 @@ def _run_step(step_key, name, filename, fast_mode, force=False):
         elapsed = time.time() - start_time
         print(f"\n✅ ШАГ {step_key} завершен за {elapsed:.1f} сек")
         
-        # Логирование успеха
         _common.log_end(filename, "OK")
 
         if not always_run:
@@ -110,7 +102,6 @@ def _run_step(step_key, name, filename, fast_mode, force=False):
         elapsed = time.time() - start_time
         print(f"\n❌ ОШИБКА в шаге {step_key} ({elapsed:.1f} сек): {e}")
         traceback.print_exc()
-        # Логирование ошибки
         _common.log_end(filename, f"ERROR: {e}")
         return False, elapsed
     finally:
@@ -158,7 +149,7 @@ def main():
         return
 
     print("=" * 60)
-    print(" ЗАПУСК КОНВЕЙЕРА (v25.3)")
+    print(" ЗАПУСК КОНВЕЙЕРА (v25.5)")
     print("=" * 60)
     print(f"Игрок: {_common.CONFIG.get('player', '?')}")
     print(f"Время: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
