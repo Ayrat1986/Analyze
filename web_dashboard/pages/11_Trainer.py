@@ -1,6 +1,8 @@
 # ============================================================
-# web_dashboard/pages/11_Trainer.py (v29.1)
-# - Доска блокируется после того, как мы и бот сделали ходы (окончание задачи).
+# web_dashboard/pages/11_Trainer.py (v29.2)
+# - Серия из 3 правильных ходов для решения тактической задачи.
+# - На каждом шаге бот отвечает и рассчитывает лучший ход для проверки следующего шага игрока.
+# - Режим Эндшпиля работает без лимита в 3 хода (доигрывание).
 # ============================================================
 import sys
 import os
@@ -38,8 +40,9 @@ st.divider()
 with st.sidebar:
     st.header("⚙️ Настройки")
     board_size = st.slider("Размер доски (px)", 400, 1000, 500, 50)
+    target_moves = st.slider("Ходов для решения задачи", 1, 5, 3)
 
-def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> str:
+def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500, max_moves: int = 3, is_endgame: bool = False) -> str:
     fen_json = json.dumps(fen)
     
     valid_best_move = None
@@ -54,6 +57,7 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
     best_move_js = json.dumps(valid_best_move) if valid_best_move else "null"
     turn = fen.split()[1] if len(fen.split()) > 1 else 'w'
     orientation = 'white' if turn == 'w' else 'black'
+    is_endgame_js = "true" if is_endgame else "false"
     
     html = f"""
     <!DOCTYPE html>
@@ -67,10 +71,10 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
         <style>
             body {{ text-align: center; font-family: sans-serif; margin: 0; padding: 0; background-color: transparent; }}
             #board-container {{ width: {size}px; margin: 0 auto; }}
-            .status {{ font-size: 16px; font-weight: bold; margin-top: 10px; height: 25px; }}
+            .status {{ font-size: 16px; font-weight: bold; margin-top: 10px; min-height: 28px; }}
             .correct {{ color: #2ecc71; }}
             .wrong {{ color: #e74c3c; }}
-            .task-complete {{ color: #fff; background-color: #2ecc71; padding: 5px; border-radius: 5px; display: inline-block; }}
+            .task-complete {{ color: #fff; background-color: #2ecc71; padding: 6px 12px; border-radius: 5px; display: inline-block; }}
             .controls {{ margin-top: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }}
             button {{ padding: 6px 12px; font-size: 14px; cursor: pointer; border-radius: 4px; border: 1px solid #ccc; background: #f8f9fa; }}
             button:hover {{ background: #e2e6ea; }}
@@ -90,13 +94,19 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
             var game = new Chess({fen_json});
             var dbBestMove = {best_move_js};
             var board = null;
-            var botThinking = false;
             var stockfish = null;
-            var currentEval = 0; 
-            var engineBestMove = null; 
-            var waitingForEval = false; 
+            
             var originalTurn = game.turn();
-            var taskSolved = false; // Флаг решения задачи
+            var userMovesCount = 0;
+            var targetMoves = {max_moves};
+            var isEndgame = {is_endgame_js};
+            var taskSolved = false;
+            
+            // Режимы работы движка: 'idle' | 'eval_player_turn' | 'bot_reply' | 'check_alt'
+            var sfState = 'idle';
+            var engineBestMove = null;
+            var bestEvalBefore = null;
+            var altEvalAfter = null;
             
             $(document).ready(function() {{
                 board = Chessboard('board-container', {{
@@ -105,7 +115,7 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
                     orientation: '{orientation}',
                     pieceTheme: 'https://lichess1.org/assets/piece/cburnett/{{piece}}.svg',
                     onDragStart: function(source, piece, position, orientation) {{
-                        if (game.game_over() || botThinking || waitingForEval || taskSolved) return false;
+                        if (game.game_over() || sfState === 'bot_reply' || sfState === 'check_alt' || taskSolved) return false;
                         if ((game.turn() === 'w' && piece.search(/^b/) !== -1) || (game.turn() === 'b' && piece.search(/^w/) !== -1)) {{
                             return false;
                         }}
@@ -123,135 +133,197 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
                         stockfish = new Worker(blobUrl);
                         stockfish.onmessage = function(event) {{
                             var msg = event.data;
-                            if (typeof msg === 'string' && msg.indexOf('info depth') !== -1) {{
-                                var scoreCpMatch = msg.match(/score cp (-?\d+)/);
-                                var scoreMateMatch = msg.match(/score mate (-?\d+)/);
+                            if (typeof msg !== 'string') return;
+                            
+                            // Читаем оценку и лучшую линию
+                            if (msg.indexOf('info depth') !== -1) {{
+                                var scoreCpMatch = msg.match(/score cp (-?\\d+)/);
+                                var scoreMateMatch = msg.match(/score mate (-?\\d+)/);
                                 var pvMatch = msg.match(/ pv (.*)/);
-                                if (scoreCpMatch) currentEval = parseInt(scoreCpMatch[1]);
-                                else if (scoreMateMatch) currentEval = parseInt(scoreMateMatch[1]) * 10000;
-                                if (pvMatch) engineBestMove = pvMatch[1].trim().split(' ')[0];
+                                
+                                var score = null;
+                                if (scoreCpMatch) score = parseInt(scoreCpMatch[1]);
+                                else if (scoreMateMatch) {{
+                                    var m = parseInt(scoreMateMatch[1]);
+                                    score = (m > 0 ? 10000 - m : -10000 - m);
+                                }}
+                                
+                                if (sfState === 'eval_player_turn') {{
+                                    if (score !== null) bestEvalBefore = score;
+                                    if (pvMatch) engineBestMove = pvMatch[1].trim().split(' ')[0];
+                                }} else if (sfState === 'check_alt') {{
+                                    if (score !== null) altEvalAfter = score;
+                                }}
                             }}
-                            if (typeof msg === 'string' && msg.indexOf('bestmove') === 0) {{
+                            
+                            // Завершение расчета движка
+                            if (msg.indexOf('bestmove') === 0) {{
                                 var bm = msg.split(' ')[1];
                                 
-                                if (waitingForEval) {{
-                                    waitingForEval = false;
-                                    $('#status').text('Альтернативный ход принят. Бот отвечает...').removeClass('wrong').addClass('correct');
-                                    botThinking = true;
-                                    stockfish.postMessage('position fen ' + game.fen());
-                                    stockfish.postMessage('go depth 10');
-                                }} else if (botThinking) {{
+                                if (sfState === 'eval_player_turn') {{
+                                    if (!engineBestMove && bm && bm !== '(none)') {{
+                                        engineBestMove = bm;
+                                    }}
+                                    sfState = 'idle';
+                                }} 
+                                else if (sfState === 'check_alt') {{
+                                    // Сравниваем оценку до хода (bestEvalBefore) и после хода соперника (-altEvalAfter)
+                                    var playerEvalAfter = (altEvalAfter !== null) ? -altEvalAfter : null;
+                                    // Допускаем потерю до 60 сантипешек для альтернативного хода
+                                    var isGoodAlt = (bestEvalBefore !== null && playerEvalAfter !== null && (bestEvalBefore - playerEvalAfter) <= 60);
+                                    
+                                    if (isGoodAlt) {{
+                                        acceptPlayerMove('✅ Хороший ход!');
+                                    }} else {{
+                                        sfState = 'idle';
+                                        $('#status').text('❌ Ошибка. Есть ход намного сильнее. Пробуй еще.').removeClass('correct').addClass('wrong');
+                                        game.undo();
+                                        board.position(game.fen());
+                                        startPlayerTurnEval();
+                                    }}
+                                }} 
+                                else if (sfState === 'bot_reply') {{
                                     if (bm && bm !== '(none)') {{
                                         game.move({{ from: bm.substring(0,2), to: bm.substring(2,4), promotion: 'q' }});
                                         board.position(game.fen());
                                     }}
-                                    botThinking = false;
-                                    // Задача завершена. Блокируем доску.
-                                    taskSolved = true;
-                                    $('#status').html('<span class="task-complete">🎉 Задача решена! Жми зеленую кнопку "Решено" внизу.</span>');
+                                    
+                                    if (game.game_over()) {{
+                                        taskSolved = true;
+                                        sfState = 'idle';
+                                        $('#status').html('<span class="task-complete">🎉 Партия окончена! Жми зеленую кнопку "Решено".</span>');
+                                    }} else {{
+                                        $('#status').text('Твой ход (' + (userMovesCount + 1) + ' из ' + targetMoves + ')').removeClass('correct wrong');
+                                        startPlayerTurnEval();
+                                    }}
                                 }}
                             }}
                         }};
                         stockfish.postMessage('uci');
-                        stockfish.postMessage('position fen ' + game.fen());
-                        stockfish.postMessage('go depth 12');
-                        $('#status').text('Сделай ход').removeClass('correct wrong');
+                        $('#status').text(isEndgame ? 'Эндшпиль: твой ход' : 'Сделай ход (1 из ' + targetMoves + ')').removeClass('correct wrong');
+                        startPlayerTurnEval();
                     }}).catch(e => console.log('Ошибка движка:', e));
             }});
 
+            function startPlayerTurnEval() {{
+                if (!stockfish || taskSolved) return;
+                sfState = 'eval_player_turn';
+                engineBestMove = null;
+                bestEvalBefore = null;
+                stockfish.postMessage('stop');
+                stockfish.postMessage('position fen ' + game.fen());
+                stockfish.postMessage('go depth 12');
+            }}
+
+            function acceptPlayerMove(msgText) {{
+                userMovesCount++;
+                
+                // На 2-м и 3-м ходу старый ход из БД больше не актуален
+                dbBestMove = null; 
+                
+                if (!isEndgame && (userMovesCount >= targetMoves || game.game_over())) {{
+                    taskSolved = true;
+                    sfState = 'idle';
+                    $('#status').html('<span class="task-complete">🎉 Задача решена (' + userMovesCount + '/' + targetMoves + ')! Жми "Решено" справа.</span>');
+                    return;
+                }}
+                
+                $('#status').text(msgText + ' Бот отвечает... (' + userMovesCount + '/' + (isEndgame ? '∞' : targetMoves) + ')').removeClass('wrong').addClass('correct');
+                sfState = 'bot_reply';
+                if (stockfish) {{
+                    stockfish.postMessage('stop');
+                    stockfish.postMessage('position fen ' + game.fen());
+                    stockfish.postMessage('go depth 10');
+                }}
+            }}
+
             function onDrop(source, target) {{
-                if (botThinking || waitingForEval || taskSolved) return 'snapback';
+                if (sfState === 'bot_reply' || sfState === 'check_alt' || taskSolved) return 'snapback';
                 var move = game.move({{ from: source, to: target, promotion: 'q' }});
                 if (move === null) return 'snapback';
                 
                 var moveUci = move.from + move.to + (move.promotion || '');
-                var status = $('#status');
                 
-                if (dbBestMove && moveUci === dbBestMove) {{
-                    status.text('✅ Правильно! Бот отвечает...').removeClass('wrong').addClass('correct');
-                    botThinking = true;
-                    if (stockfish) {{
-                        stockfish.postMessage('stop');
-                        stockfish.postMessage('position fen ' + game.fen());
-                        stockfish.postMessage('go depth 10');
-                    }}
-                }} else if (engineBestMove && moveUci === engineBestMove) {{
-                     status.text('✅ Правильно (по движку). Бот отвечает...').removeClass('wrong').addClass('correct');
-                     botThinking = true;
-                     if (stockfish) {{
-                         stockfish.postMessage('stop');
-                         stockfish.postMessage('position fen ' + game.fen());
-                         stockfish.postMessage('go depth 10');
-                     }}
+                if (isEndgame) {{
+                    acceptPlayerMove('Ход сделан.');
+                    return;
+                }}
+                
+                // 1. Проверяем совпадение с БД (только на 1-м ходу) или с лучшим ходом движка
+                var activeBest = (userMovesCount === 0 && dbBestMove) ? dbBestMove : engineBestMove;
+                
+                if ((activeBest && moveUci === activeBest) || (engineBestMove && moveUci === engineBestMove)) {{
+                    acceptPlayerMove('✅ Отлично!');
                 }} else if (stockfish) {{
-                    status.text('Анализирую альтернативный ход...').removeClass('correct wrong');
-                    waitingForEval = true;
+                    // Проверяем альтернативный ход по оценке (если есть несколько равных ходов, как при шахе)
+                    $('#status').text('Проверка хода...').removeClass('correct wrong');
+                    sfState = 'check_alt';
+                    altEvalAfter = null;
                     stockfish.postMessage('stop');
                     stockfish.postMessage('position fen ' + game.fen());
-                    setTimeout(function() {{
-                         if (waitingForEval) {{
-                             waitingForEval = false;
-                             status.text('❌ Ошибка. Это не лучший ход. Пробуй еще.').removeClass('correct').addClass('wrong');
-                             game.undo(); 
-                             board.position(game.fen());
-                             stockfish.postMessage('position fen ' + game.fen());
-                             stockfish.postMessage('go depth 12');
-                         }}
-                    }}, 600); 
+                    stockfish.postMessage('go depth 10');
                 }} else {{
-                    status.text('❌ Ошибка.').removeClass('correct').addClass('wrong');
-                    setTimeout(function() {{ game.undo(); board.position(game.fen()); }}, 1000);
+                    $('#status').text('❌ Ошибка. Пробуй еще.').removeClass('correct').addClass('wrong');
+                    setTimeout(function() {{ game.undo(); board.position(game.fen()); }}, 800);
                 }}
             }}
 
             function undoMove() {{
-                if (taskSolved) return; // После решения откатывать нельзя
+                if (taskSolved) return;
+                if (game.history().length === 0) return;
+                
                 game.undo(); 
-                if (game.turn() !== originalTurn) game.undo(); 
-                board.position(game.fen());
-                $('#status').text('Сделай ход').removeClass('correct wrong task-complete');
-                botThinking = false;
-                waitingForEval = false;
-                if (stockfish) {{
-                    stockfish.postMessage('stop');
-                    stockfish.postMessage('position fen ' + game.fen());
-                    stockfish.postMessage('go depth 12');
+                if (game.turn() !== originalTurn && game.history().length > 0) {{
+                    game.undo();
                 }}
+                if (userMovesCount > 0) userMovesCount--;
+                if (userMovesCount === 0) dbBestMove = {best_move_js};
+                
+                board.position(game.fen());
+                $('#status').text('Сделай ход (' + (userMovesCount + 1) + ' из ' + targetMoves + ')').removeClass('correct wrong task-complete');
+                startPlayerTurnEval();
             }}
 
             function showHint() {{
                 if (taskSolved) return;
-                var best = dbBestMove || engineBestMove;
+                var best = (userMovesCount === 0 && dbBestMove) ? dbBestMove : engineBestMove;
                 if (best) {{
                     var from = best.substring(0, 2);
-                    $('#status').text('💡 Посмотри на фигуру на поле ' + from).addClass('correct').removeClass('wrong');
+                    $('#status').text('💡 Подсказка: посмотри на фигуру на поле ' + from).addClass('correct').removeClass('wrong');
                     $('.square-' + from).css('box-shadow', 'inset 0 0 0 4px #ffeb3b');
                     setTimeout(function() {{ $('.square-' + from).css('box-shadow', ''); }}, 2000);
                 }} else {{
-                    $('#status').text('⚠️ Подсказка недоступна. Движок еще думает.').addClass('wrong').removeClass('correct');
+                    $('#status').text('⏳ Движок еще считает лучший ход, подожди секунду...').addClass('wrong').removeClass('correct');
                 }}
             }}
 
             function showBest() {{
                 if (taskSolved) return;
-                var best = dbBestMove || engineBestMove;
+                var best = (userMovesCount === 0 && dbBestMove) ? dbBestMove : engineBestMove;
                 if (best) {{
                     var from = best.substring(0, 2);
                     var to = best.substring(2, 4);
                     var move = game.move({{ from: from, to: to, promotion: 'q' }});
                     if (move) {{
                         board.position(game.fen());
-                        $('#status').text('✅ Лучший ход: ' + from + ' → ' + to + '. Бот отвечает...').addClass('correct').removeClass('wrong');
-                        botThinking = true;
-                        if (stockfish) {{
-                            stockfish.postMessage('position fen ' + game.fen());
-                            stockfish.postMessage('go depth 10');
-                        }}
+                        acceptPlayerMove('✅ Лучший ход: ' + from + ' → ' + to + '.');
                     }} else {{
-                         $('#status').text('⚠️ Ошибка: предложенный ход нелегален.').addClass('wrong');
+                        // Если ход из БД оказался битым, берем ход от движка
+                        if (engineBestMove && engineBestMove !== best) {{
+                            var f2 = engineBestMove.substring(0, 2);
+                            var t2 = engineBestMove.substring(2, 4);
+                            var m2 = game.move({{ from: f2, to: t2, promotion: 'q' }});
+                            if (m2) {{
+                                board.position(game.fen());
+                                acceptPlayerMove('✅ Лучший ход: ' + f2 + ' → ' + t2 + '.');
+                                return;
+                            }}
+                        }}
+                        $('#status').text('⚠️ Подожди секунду, движок уточняет ход...').addClass('wrong');
+                        startPlayerTurnEval();
                     }}
                 }} else {{
-                    $('#status').text('⚠️ Ошибка: лучший ход неизвестен.').addClass('wrong');
+                    $('#status').text('⏳ Движок еще думает, нажми через секунду.').addClass('wrong');
                 }}
             }}
         </script>
@@ -260,7 +332,7 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
     """
     return html
 
-def render_single_task(task_type: str, fen: str, title: str, subtitle: str, best_move: str = None):
+def render_single_task(task_type: str, fen: str, title: str, subtitle: str, best_move: str = None, is_endgame: bool = False):
     h = trainer_db.task_hash(task_type, fen)
     st.markdown(f"### {title}")
     st.caption(subtitle)
@@ -272,17 +344,20 @@ def render_single_task(task_type: str, fen: str, title: str, subtitle: str, best
             try:
                 b = chess.Board(fen)
                 try:
-                    best_uci = b.parse_san(best_move).uci()
+                    best_uci = b.parse_san(str(best_move)).uci()
                 except ValueError:
-                    if chess.Move.from_uci(best_move) in b.legal_moves:
-                        best_uci = best_move
+                    if chess.Move.from_uci(str(best_move)) in b.legal_moves:
+                        best_uci = str(best_move)
             except Exception:
                 best_uci = None 
                 
-        components.html(render_smart_board(fen, best_uci, size=board_size), height=board_size + 120)
+        components.html(render_smart_board(fen, best_uci, size=board_size, max_moves=target_moves, is_endgame=is_endgame), height=board_size + 120)
         
     with c2:
-        st.info("💡 Твоя цель — найти лучший ход в этой позиции.")
+        if is_endgame:
+            st.info("💡 Режим Эндшпиля: разыграй позицию против движка без ограничения по ходам.")
+        else:
+            st.info(f"💡 Цель — сделать серию из **{target_moves}** сильных ходов подряд против Stockfish.")
         st.code(fen, language="text")
         
         if st.button("🔬 Открыть позицию в Анализаторе", key=f"open_{h}", use_container_width=True):
@@ -352,7 +427,7 @@ with tab3:
                 match_names = query_df("SELECT white, black FROM games WHERE url=?", (r['url'],))
                 match_str = f"{match_names.iloc[0]['white']} vs {match_names.iloc[0]['black']}" if not match_names.empty else "Партия"
                 st.markdown(f"**Осталось: {len(visible)} из {len(eg_df)}**")
-                render_single_task("endgame", r["fen"], match_str, f"ACPL {r['acpl_endgame']:.0f}", best_move=None)
+                render_single_task("endgame", r["fen"], match_str, f"ACPL {r['acpl_endgame']:.0f}", best_move=None, is_endgame=True)
     else: st.warning("Файл эндшпиля не найден.")
 
 with tab4:
