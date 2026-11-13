@@ -1,7 +1,7 @@
 ============================================================
  PHASE DEEP DIVE: миттельшпиль > 75 CP
 ============================================================
-Всего: 2473, провалов: 979 (39.6%)
+Всего: 2497, провалов: 991 (39.7%)
 
 📊 ТОП-15 ДЕБЮТОВ (где провал):
   A43 Old Benoni Defense                                39п / 16поб
@@ -10,7 +10,7 @@
   B01 Scandinavian Defense Mieses Kotrc Main Line 4.    15п / 2поб
   D37 Queens Gambit Declined Three Knights Variation    13п / 7поб
   A56 Benoni Defense                                    12п / 4поб
-  B01 Scandinavian Defense Mieses Kotrc Main Line       10п / 6поб
+  B01 Scandinavian Defense Mieses Kotrc Main Line       11п / 6поб
   B15 Caro Kann Defense Main Line 4...Nf6                9п / 1поб
   B01 Scandinavian Defense Mieses Kotrc Main Line 4.     9п / 3поб
   D11 Slav Defense Modern Line 3...dxc4 4.Nc3            9п / 2поб
@@ -21,11 +21,11 @@
   E61 Kings Indian Defense Semi Classical Variation      7п / 2поб
 
 📊 ТИПЫ ЗЕВКОВ В МИТТЕЛЬШПИЛЕ:
-  blunder                   3564 (58.6%)
-  positional                1558 (25.6%)
-  lost_piece                 892 (14.7%)
-  lost_queen                  63 (1.0%)
+  blunder                   3611 (58.6%)
+  positional                1578 (25.6%)
+  lost_piece                 905 (14.7%)
+  lost_queen                  64 (1.0%)
   missed_mate                  8 (0.1%)
 
-📊 СЛИВ ПЕРЕВЕСА: 311/660 (47.1%)
+📊 СЛИВ ПЕРЕВЕСА: 315/667 (47.2%)
   (учитываются только поражения — ничьи с перевесом = «недобрал», не «слил»)

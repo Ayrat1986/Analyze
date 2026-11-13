@@ -1,5 +1,7 @@
 # ============================================================
-# analysis/opponents/weakness.py — слабости, deep, crushed_by (v19.5)
+# analysis/opponents/weakness.py (v25.0)
+# §4 (уточнение): opponent_deep анализирует ТОЛЬКО тех,
+# кто в crushed_by.txt. Ищем паттерны, как они нас ломают.
 # ============================================================
 import os
 from .common import _conn, _style_csv, REPORTS_DIR, PLAYER
@@ -58,75 +60,6 @@ def report_opponent_weakness():
     conn.close(); print(f"\n✅ {path}")
 
 
-def report_opponent_deep():
-    conn = _conn(); cur = conn.cursor()
-    path = os.path.join(REPORTS_DIR, "opponent_deep.txt")
-
-    with open(path, "w", encoding="utf-8") as f:
-        def w(line=""):
-            print(line); f.write(line + "\n")
-        w("=" * 60); w(" ПРОФИЛИ ТОП-10 СОПЕРНИКОВ"); w("=" * 60); w()
-
-        cur.execute("SELECT ROUND(AVG(acpl), 1) FROM games WHERE is_lag=0 AND is_cheater=0")
-        my_avg_acpl = cur.fetchone()[0] or 0
-        w(f"Твой средний ACPL: {my_avg_acpl:.0f}")
-        w()
-
-        cur.execute("""
-            SELECT opp_username, opp_rating, COUNT(*) AS games,
-                   SUM(won) AS wins,
-                   SUM(draw) AS draws,
-                   ROUND(AVG(acpl), 1) AS my_acpl,
-                   ROUND(AVG(acpl_opponent_total), 1) AS opp_acpl
-            FROM games
-            WHERE is_lag=0 AND is_cheater=0
-              AND opp_username IS NOT NULL AND opp_username != ''
-            GROUP BY opp_username
-            ORDER BY games DESC LIMIT 10
-        """)
-        opps = cur.fetchall()
-
-        for opp, rating, games, wins, draws, my_acpl, opp_acpl in opps:
-            if not games:
-                continue
-            wins = wins or 0
-            draws = draws or 0
-            losses = games - wins - draws
-            w(f"♟️ {opp} ({rating if rating else '?'}, {games} партий, W:{wins} D:{draws} L:{losses})")
-            wr = wins / games * 100
-            my_acpl = my_acpl if my_acpl is not None else 0
-            opp_acpl = opp_acpl if opp_acpl is not None else 0
-
-            acpl_delta = my_acpl - my_avg_acpl
-            mark_acpl = ""
-            if acpl_delta > 5: mark_acpl = " ⚠️ хуже среднего"
-            elif acpl_delta < -5: mark_acpl = " ✅ лучше среднего"
-            w(f"  Win rate: {wr:.0f}%")
-            w(f"  Мой ACPL: {my_acpl:.0f} ({acpl_delta:+.0f}){mark_acpl}")
-            w(f"  ACPL соперника: {opp_acpl:.0f}")
-
-            cur.execute("""
-                SELECT opening, COUNT(*), SUM(won)
-                FROM games
-                WHERE is_lag=0 AND is_cheater=0 AND opp_username = ?
-                  AND opening IS NOT NULL AND opening != ''
-                GROUP BY opening HAVING COUNT(*) >= 2
-                ORDER BY COUNT(*) DESC LIMIT 5
-            """, (opp,))
-            openings = cur.fetchall()
-            if openings:
-                w("  Дебюты:")
-                for op, g, wr_ in openings:
-                    w(f"    {op[:40]:<42} {g}п, {wr_:.0f}поб")
-            w()
-
-        w("🎯 ВЕРДИКТ:")
-        w("  Против кого win rate < 40% — разбери 3 партии (08_psych_focus.py --review --url).")
-        w("  В каких дебютах чаще проигрываешь — избегай или учи.")
-
-    conn.close(); print(f"\n✅ {path}")
-
-
 def report_crushed_by():
     conn = _conn(); cur = conn.cursor()
     path = os.path.join(REPORTS_DIR, "crushed_by.txt")
@@ -174,5 +107,79 @@ def report_crushed_by():
             w("  • Разбери 3-5 партий против каждого (08_psych_focus.py --review).")
             w("  • Ищи паттерн: один и тот же дебют? один и тот же тип ошибки?")
             w("  • Не пытайся 'победить их в их игре' — меняй дебют или план.")
+
+    conn.close(); print(f"\n✅ {path}")
+
+
+def report_opponent_deep():
+    """
+    v25.0 (уточнение §4): анализируем ТОЛЬКО тех, кто в crushed_by.
+    Цель — раскрыть, где они видят наши слабые стороны (дебюты, тип позиции).
+    """
+    conn = _conn(); cur = conn.cursor()
+    path = os.path.join(REPORTS_DIR, "opponent_deep.txt")
+
+    # 1. Сначала получаем список тех, кто нас ломает
+    cur.execute("""
+        SELECT opp_username, COUNT(*) as g, SUM(won) as w, SUM(draw) as d
+        FROM games
+        WHERE is_lag=0 AND is_cheater=0 AND opp_username IS NOT NULL AND opp_username != ''
+        GROUP BY opp_username
+        HAVING g >= 5 AND (CAST(SUM(won) AS REAL) + 0.5 * SUM(draw)) / g < 0.30
+        ORDER BY g DESC
+    """)
+    crushed = cur.fetchall()
+
+    with open(path, "w", encoding="utf-8") as f:
+        def w(line=""):
+            print(line); f.write(line + "\n")
+        w("=" * 60); w(" 🩸 РАЗБОР ТЕХ, КТО РАСКАЛЫВАЕТ"); w("=" * 60)
+        w("Анализ только соперников из crushed_by.txt (score < 30%).")
+        w("Ищем паттерн: в каких дебютах они ломают твою игру?\n")
+
+        if not crushed:
+            w("✅ Таких соперников нет.")
+            conn.close()
+            return
+
+        w(f"Найдено 'раскалывающих': {len(crushed)}\n")
+
+        for opp, g, wins, draws in crushed:
+            wins = wins or 0
+            draws = draws or 0
+            score = (wins + 0.5 * draws) / g * 100
+
+            w(f"♟️ {opp} ({g} партий, Score {score:.0f}%)")
+            w("  Дебюты, где он тебя ломает:")
+
+            # Ищем дебюты, где score против него < 30%
+            cur.execute("""
+                SELECT opening, COUNT(*) as g, SUM(won) as w, SUM(draw) as d
+                FROM games
+                WHERE opp_username = ? AND is_lag=0 AND is_cheater=0
+                  AND opening IS NOT NULL AND opening != ''
+                GROUP BY opening
+                HAVING g >= 2 AND (CAST(SUM(won) AS REAL) + 0.5 * SUM(draw)) / g < 0.30
+                ORDER BY g DESC
+            """, (opp,))
+            bad_openings = cur.fetchall()
+
+            if bad_openings:
+                for op, og, ow, od in bad_openings:
+                    wr = ((ow or 0) + 0.5 * (od or 0)) / og * 100
+                    w(f"    {op[:45]:<47} {og}п, Score {wr:.0f}%")
+            else:
+                w("    (нет явно слабых дебютов — проблема в миттельшпиле)")
+
+            # Средний финальный перевес (по eval_final)
+            cur.execute("""
+                SELECT AVG(eval_final) FROM games
+                WHERE opp_username = ? AND is_lag=0 AND is_cheater=0
+            """, (opp,))
+            avg_eval = cur.fetchone()[0]
+            if avg_eval is not None and avg_eval < -200:
+                w(f"  📉 Средний финальный перевес: {avg_eval/100:.1f} "
+                  f"(ты часто доминируешь в начале)")
+            w()
 
     conn.close(); print(f"\n✅ {path}")

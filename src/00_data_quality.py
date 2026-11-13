@@ -1,5 +1,7 @@
 # ============================================================
-# 00_data_quality.py — Кросс-проверки целостности (v19.5)
+# 00_data_quality.py — Кросс-проверки целостности (v25.0)
+# Удалены: check_aggregation_consistency, check_metrics_json,
+#          check_trainer_progress (см. PROJECT_RULES §28).
 # ============================================================
 import sqlite3
 import os
@@ -16,9 +18,7 @@ import _common
 
 DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
 STOCKFISH_CACHE = str(_common.BASE_DIR / "data" / "stockfish_cache.json")
-METRICS_JSON = str(_common.BASE_DIR / "reports" / "metrics.json")
 REPORTS_DIR = str(_common.REPORTS_DIR)
-PLAYER = _common.CONFIG.get("player", "")
 
 try:
     import colorama
@@ -223,43 +223,6 @@ def check_opening_line(chk: Checker, conn: sqlite3.Connection):
         chk.fail(f"opening_line: только {filled}/{total} ({pct:.1f}%)")
 
 
-def check_trainer_progress(chk: Checker, conn: sqlite3.Connection):
-    """Проверка таблицы trainer_progress (v19.5)."""
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT name FROM sqlite_master 
-        WHERE type='table' AND name='trainer_progress'
-    """)
-    if not cur.fetchone():
-        chk.warn("trainer_progress: таблица не найдена (создастся при первом запуске 11_Trainer.py)")
-        return
-
-    cur.execute("SELECT COUNT(*) FROM trainer_progress")
-    n = cur.fetchone()[0] or 0
-    chk.ok(f"trainer_progress: {n} записей")
-
-
-def check_metrics_json(chk: Checker):
-    if not os.path.exists(METRICS_JSON):
-        chk.warn(f"metrics.json не найден: {METRICS_JSON}")
-        return
-
-    try:
-        with open(METRICS_JSON, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        if not isinstance(data, dict):
-            chk.fail(f"metrics.json: не dict, а {type(data).__name__}")
-            return
-        expected = {"open_king_percent", "isolated_pawn_acpl"}
-        missing = expected - set(data.keys())
-        if missing:
-            chk.warn(f"metrics.json: нет полей {missing}")
-        else:
-            chk.ok(f"metrics.json: валиден")
-    except json.JSONDecodeError as e:
-        chk.fail(f"metrics.json: битый JSON — {e}")
-
-
 def check_stockfish_cache(chk: Checker):
     if not os.path.exists(STOCKFISH_CACHE):
         chk.warn(f"stockfish_cache.json не найден")
@@ -285,52 +248,9 @@ def check_stockfish_cache(chk: Checker):
         chk.fail(f"stockfish_cache: битый JSON — {e}")
 
 
-def check_aggregation_consistency(chk: Checker, conn: sqlite3.Connection):
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT COUNT(*) FROM blunders b
-        JOIN games g ON g.url = b.game_url
-        WHERE g.is_lag=0 AND g.is_cheater=0
-          AND b.is_my_blunder=1 AND b.is_berserk=0 AND b.is_instant=0
-    """)
-    db_blunders = cur.fetchone()[0] or 0
-
-    path = os.path.join(REPORTS_DIR, "blunder_report_windows.txt")
-    if not os.path.exists(path):
-        chk.warn("blunder_report_windows.txt не найден — пропуск сверки")
-        return
-
-    report_total = None
-    in_90d_window = False
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            for line in f:
-                if "ОКНО: 90 ДНЕЙ" in line:
-                    in_90d_window = True
-                elif in_90d_window and "Всего зевков (моих" in line:
-                    report_total = int(line.split(":")[-1].strip())
-                    break
-    except Exception:
-        pass
-
-    if report_total is None:
-        chk.warn("Не удалось найти окно 90 дней в blunder_report_windows.txt")
-        return
-
-    if db_blunders == 0:
-        chk.warn("БД: 0 зевков — пропуск сверки")
-        return
-
-    diff_pct = abs(db_blunders - report_total) / max(db_blunders, report_total) * 100
-    if diff_pct <= 5:
-        chk.ok(f"Сверка зевков (90д): БД={db_blunders}, отчёт={report_total} (Δ {diff_pct:.1f}%)")
-    else:
-        chk.warn(f"Сверка зевков (90д): БД={db_blunders}, отчёт={report_total} (Δ {diff_pct:.1f}% > 5%)")
-
-
 def main():
     print("=" * 60)
-    print(" 00_data_quality.py — Кросс-проверки целостности (v19.5)")
+    print(" 00_data_quality.py — Кросс-проверки целостности (v25.0)")
     print("=" * 60)
     print()
 
@@ -349,12 +269,9 @@ def main():
         check_next_move_time(chk, conn)
         check_acpl_sanity(chk, conn)
         check_opening_line(chk, conn)
-        check_trainer_progress(chk, conn)
-        check_aggregation_consistency(chk, conn)
     finally:
         conn.close()
 
-    check_metrics_json(chk)
     check_stockfish_cache(chk)
 
     ok = chk.summary()
@@ -363,7 +280,7 @@ def main():
     os.makedirs(REPORTS_DIR, exist_ok=True)
     with open(report_path, "w", encoding="utf-8") as f:
         f.write("=" * 60 + "\n")
-        f.write(" DATA QUALITY REPORT (v19.5)\n")
+        f.write(" DATA QUALITY REPORT (v25.0)\n")
         f.write("=" * 60 + "\n\n")
         for m in chk.messages:
             clean = m

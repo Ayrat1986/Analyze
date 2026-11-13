@@ -1,9 +1,11 @@
 ================================================================
  PROJECT RULES — Что НЕ предлагать и НЕ спрашивать
- Версия: v24.0 (Синхронизация с Кодексом)
+ Версия: v25.0 (Фиксы аудита + PROJECT_RULES §17-31)
+ Обновлён: 2026-11-12
+ Синхронизация: Кодекс Пули v1.2
 ================================================================
 
-Эти пункты установлены после долгого диалога.
+Эти пункты установлены после долгого диалога и аудита v24.3.
 Не спрашивай «а может стоит...» — ответ уже дан.
 
 ================================================================
@@ -29,15 +31,30 @@
 ❌ НЕ предлагай «выкинь дебют X».
 ❌ НЕ предлагай «изучи новый дебют».
    Факт: проблема не в дебютах, а в переходе в миттельшпиль.
+   ⚠️ v25.0: отчёт opening_recommendations.txt УДАЛЁН.
+       Он противоречил этому правилу.
 
 ================================================================
  4. СОПЕРНИКИ
 ================================================================
-❌ НЕ предлагай «изучай соперников».
-   Факт: только crushed_by (≥5 партий, score < 30%).
-✅ НО: агрессия против сильных (2600+) — это не «изучение»,
-   а стратегия. Она разрешена и поощряется.
+❌ НЕ предлагай «изучай случайных соперников».
+   Факт: разбор случайных 10 профилей — это трата внимания
+   без пользы для роста (PROJECT_RULES §7, N<5 = шум).
 
+✅ РАЗРЕШЕНО изучать ТОЛЬКО тех, кто тебя раскалывает:
+   • список из crushed_by.txt (≥5 партий, score < 30%)
+   • opponent_deep.txt (разбор только этих соперников)
+   • trainer.py (FEN-позиции против агрессоров)
+
+🎯 СМЫСЛ: мы не изучаем соперника, чтобы «обыграть его».
+   Мы смотрим на себя через призму того, кто умеет
+   использовать твои слабые зоны. Это инструмент
+   поиска собственных слепых пятен (путь к 3000).
+
+✅ Агрессия против сильных (2600+) — стратегия, разрешена.
+
+❌ НЕ предлагай изучать соперников с score ≥ 50%
+   (там нет проблемы — ты их и так обыгрываешь).
 ================================================================
  5. ЧЕСТНОСТЬ И «ПОМОЩЬ» ВО ВРЕМЯ ИГРЫ
 ================================================================
@@ -53,48 +70,62 @@
  7. КОМБИНАЦИИ МЕТРИК
 ================================================================
 ❌ НЕ предлагай «стиль × тип позиции × рейтинг × время суток».
-   Максимум: 3 измерения (opponents/position_type.py).
+   Максимум: 3 измерения (opponents/position_type.py — УДАЛЁН).
+   ⚠️ v25.0: правило усилено — минимум N=10 в отчёте,
+       N=5 в ячейке матрицы (§29).
 
 ================================================================
  8. АГРЕССИЯ И ВРЕМЯ
 ================================================================
 ❌ НЕ предлагай «играй быстрее против агрессоров».
 ❌ НЕ предлагай «расслабься, если агрессор играет тихо».
-✅ НО: «Против сильных (2600+) играй агрессивнее» — 
+✅ НО: «Против сильных (2600+) играй агрессивнее» —
    это новая рекомендация, основанная на данных.
    Факт: твоя агрессия падает с 28.3 (против 2400) до 25.7 (против 2800+),
    а винрейт падает с 67.6% до 15.9%. Это прямая корреляция.
 
 ================================================================
- 9. МЕТРИКИ, КОТОРЫЕ УЖЕ РАБОТАЮТ
+ 9. МЕТРИКИ, КОТОРЫЕ УЖЕ РАБОТАЮТ (v25.0)
 ================================================================
-  • psych_state/time_management.py   — lag_report, panic_curve
+  • psych_state/time_management.py   — lag_report, time_profile
   • psych_state/time_target.py       — целевое время
-  • psych_state/speed_rating.py      — SpeedR
-  • psych_state/combined_rating.py   — CombinedR
-  • psych_state/endurance.py         — behavior_tracker
-  • psych_state/psych_tilt.py        — cascade_tilt
-  • opponents/position_type.py       — style_position_type
-  • opponents/time_deficit.py        — style_time_deficit
-  • opponents/weakness.py            — crushed_by
-  • psych_focus/missed.py            — missed_threats
+  • psych_state/speed_rating.py      — SpeedR (формула в core/метрики)
+  • psych_state/combined_rating.py   — CombinedR (информационный)
+  • psych_state/endurance.py         — behavior_tracker (только)
+  • psych_state/psych_tilt.py        — cascade_tilt, panic_curve,
+                                        aggression_profile
+  • opponents/weakness.py            — crushed_by, opponent_weakness
+  • opponents/trainer.py             — anti_aggressor_trainer (FEN)
+  • psych_focus/missed.py            — missed_mates, missed_threats
   • psych_focus/blunder_anatomy.py   — blunder_anatomy
   • psych_focus/first_blunder.py     — first_blunder
-  • 15_daily_monitor.py              — Снапшоты (НОВОЕ)
+  • psych_rating/monitoring.py       — Снапшоты (v25.0, слито из
+                                        15_daily_monitor.py)
+  ⚠️ v25.0 УДАЛЕНЫ: time_report_windows, hours_overview,
+      daily_checkin, tilt_timer, report_endurance, phase_deep,
+      plan_retention, piece_activity, long_vs_short,
+      positional_weaknesses, opponent_deep, style_vs_rating,
+      style_position_type, style_time_deficit, anti_aggressor,
+      weak_spots_matrix, opening_performance,
+      openings_winrate_trend, rating_by_opening,
+      opening_recommendations.
 
 ================================================================
- 10. ТРИ РЕЙТИНГОВЫЕ МЕТРИКИ (v24.0)
+ 10. ТРИ РЕЙТИНГОВЫЕ МЕТРИКИ (v25.0)
 ================================================================
-  1. GameR = 3200 − ACPL × 10 (только точность, потенциал)
-  2. SpeedR = 3178 − 545 × avg_time (только скорость)
-  3. CombinedR = 0.5 × GameR + 0.5 × SpeedR (истинный рейтинг)
+  1. GameR  = 3200 − ACPL × 10        (только точность)
+  2. SpeedR = speed_rating(avg_time)  (только скорость)
+  3. CombR  = combined_rating(game_r, speed_r)
 
-  Реальный рейтинг (my_rating) ≈ Perf = avg_opp + (score − 0.5) × 800.
+  ⚠️ v25.0: ВСЕ формулы — ТОЛЬКО из core/метрики.py.
+     Локальные формулы SpeedR (3178-545t, 2547-2t, 3100-380t)
+     ЗАПРЕЩЕНЫ (§17).
+
+  Реальный рейтинг (my_rating) ≈ Perf = perf_rating(...).
   ⚠️ GameR ≠ Chess.com рейтинг. Это только точность.
-     Твой рейтинг = Комбинация (GameR + SpeedR) × Агрессия.
 
 ================================================================
- 11. ГЛАВНАЯ МЕТРИКА (v24.0)
+ 11. ГЛАВНАЯ МЕТРИКА (v25.0)
 ================================================================
   Δ (Delta) = GameR − SpeedR.
      • Δ > +30 → медлишь (риск цейтнота).
@@ -104,20 +135,22 @@
   Главная задача: завершить калибровку и вернуть Δ в ±30.
 
 ================================================================
- 12. АРХИТЕКТУРНЫЕ ОГРАНИЧЕНИЯ (v24.0)
+ 12. АРХИТЕКТУРНЫЕ ОГРАНИЧЕНИЯ (v25.0)
 ================================================================
 Структура src/analysis/ зафиксирована в v22.1.
 ❌ НЕ предлагай:
    • Разносить/объединять подпакеты.
    • Убирать общий слой helpers.py / cache.py / engine_pool.py /
      game.py / constants.py / common.py.
-   • Смешивать position_type (opponents/) и position_types (middlegame/).
+   • Смешивать position_type (opponents/, УДАЛЁН) и
+     position_types (middlegame/).
    • Добавлять SQL в новые модули доменов.
    • Переделывать пакет analysis/dashboards/.
    • Возвращать старые «толстые» файлы > 600 строк.
+   • Возвращать удалённые файлы (§28).
 
 ================================================================
- 13. ФОРМАТ ВЫДАЧИ КОДА (v24.0)
+ 13. ФОРМАТ ВЫДАЧИ КОДА (v25.0)
 ================================================================
 ❌ НЕ давать пошаговых инструкций типа «замени строку 42».
 ✅ НУЖНО давать готовый скрипт целиком.
@@ -125,7 +158,7 @@
 ✅ Один файл = одно сообщение.
 
 ================================================================
- 14. ЧТО МОНИТОРИТЬ КАЖДЫЙ ДЕНЬ (v24.0)
+ 14. ЧТО МОНИТОРИТЬ КАЖДЫЙ ДЕНЬ (v25.0)
 ================================================================
   1. CombinedR vs Perf vs Реальный.
   2. Δ (Delta). Держать в пределах ±30.
@@ -134,18 +167,289 @@
   5. StdDev. Смотреть в 16_Monitoring.py.
   6. Пик / Дом / Дно. Пик=2676, Дом=2545, Дно=2410.
   7. Рейтинг vs Время.
+  ⚠️ v25.0: 15_daily_monitor.py УДАЛЁН. Снапшоты делает
+      10_psych_rating.py через analysis/psych_rating/monitoring.py.
+      16_Monitoring.py — читает monitoring_log (не изменился).
 
 ================================================================
- 15. ЕДИНЫЕ ОКНА И БАКЕТЫ (v24.0)
+ 15. ЕДИНЫЕ ОКНА И БАКЕТЫ (v25.0)
 ================================================================
   WINDOWS = [1, 2, 7, 30, 90, 365] — из analysis/common.py.
   RATING_BUCKETS — из analysis/common.py.
   ❌ НЕ добавляй локальные списки окон или бакетов.
 
 ================================================================
- 16. ФОРМАТ ВРЕМЕНИ (v24.0)
+ 16. ФОРМАТ ВРЕМЕНИ (v25.0)
 ================================================================
   ОСНОВНОЙ КОНТРОЛЬ: 1+0 (bullet).
   ТУРНИРНЫЙ КОНТРОЛЬ: 3+2 (blitz).
   ❌ НЕ предлагай смешать 1+0 и 3+2 в одном отчёте.
+  ⚠️ v25.0: 3+2 физически не попадает в БД (фильтр в
+      01_fetch_chess_api: TIME_CLASS="bullet", MAX_BULLET_BASE_TIME=120).
+
+================================================================
+ 17. ЕДИНЫЙ ИСТОЧНИК ФОРМУЛ (v25.0)
+================================================================
+Все формулы — ТОЛЬКО в src/core/метрики.py:
+
+  game_rating(acpl)           → GameR
+  speed_rating(avg_time, coefs=None) → SpeedR  ← ДОБАВИТЬ
+  perf_rating(avg_opp, wins, draws, total) → Perf
+  combined_rating(game_r, speed_r, coefs=None) → CombR ← ДОБАВИТЬ
+  anchor(min_window, peak, avg_opp) → якорь
+  home_zone(hist_peak, avg_my) → домашняя зона
+
+❌ ЗАПРЕЩЕНО писать формулу в модуле домена:
+   if (3178 - 545 * t) > ...              — баг
+   if (2547 - 2 * t) > ...                — баг
+   if (3100 - 380 * t) > ...              — баг
+
+✅ РАЗРЕШЕНО только:
+   from core.метрики import speed_rating
+   speed_r = speed_rating(avg_time)
+
+================================================================
+ 18. БЕЗОПАСНОСТЬ HTTP (v25.0)
+================================================================
+❌ `requests.get(..., verify=False)` — ЗАПРЕЩЁН.
+   MITM-риск, особенно на GitHub Actions (репо публичный).
+✅ Если проблема с CA:
+   requests.get(..., verify="/path/to/ca-bundle.crt")
+✅ Если совсем нет CA:
+   requests.get(..., verify=True)  # default
+
+================================================================
+ 19. STOCKFISH — TIMEOUT ОБЯЗАТЕЛЕН (v25.0)
+================================================================
+❌ `engine.analyse(board, chess.engine.Limit(depth=14))`
+   Без timeout — вечное зависание при BrokenPipe.
+✅ Только:
+   engine.analyse(
+       board,
+       chess.engine.Limit(depth=DEPTH),
+       timeout=30.0,
+   )
+
+================================================================
+ 20. ЗАПИСЬ В GAMES — ТОЛЬКО ON CONFLICT (v25.0)
+================================================================
+❌ `INSERT OR REPLACE INTO games` — ЗАПРЕЩЁН.
+   Стирает все поля, триггерит ON DELETE CASCADE на blunders.
+✅ Только:
+   INSERT INTO games (...) VALUES (...)
+   ON CONFLICT(url) DO UPDATE SET
+       end_time = excluded.end_time,
+       acpl = excluded.acpl,
+       ...;
+
+================================================================
+ 21. ВАЛИДНОСТЬ КЭША STOCKFISH (v25.0)
+================================================================
+game_cache_ok(r) возвращает True ТОЛЬКО если:
+  • все поля V10_FIELDS присутствуют
+  • r.get("acpl", 0) > 0         ← ДОБАВИТЬ
+  • для blunders: все bf-поля есть
+
+❌ Поля есть, acpl = 0 → это «недосчитано», не «ok».
+
+================================================================
+ 22. КЭШИ ВАЛИДИРУЮТСЯ ПО mtime(chess.db) (v25.0)
+================================================================
+❌ Только TTL без mtime — устаревшие данные после run.py.
+✅ Обязательно:
+   if (now - os.path.getmtime(CACHE_FILE)) < 86400 \
+      AND os.path.getmtime(CACHE_FILE) > os.path.getmtime(DB_FILE):
+       return load(CACHE_FILE)
+
+Применяется к:
+  • data/agg_cache.json
+  • data/stockfish_positions_cache.json.gz
+  • data/chess_api_cache.json (косвенно, через run.py)
+
+================================================================
+ 23. ПОРОГИ — ТОЛЬКО ИЗ core/пороги.py (v25.0)
+================================================================
+❌ constants.py:BLUNDER_THRESHOLD = 150 — УДАЛИТЬ.
+✅ В game.py:
+   from core.пороги import get as get_threshold
+   BLUNDER = get_threshold("blunder_threshold_cp", 150)
+
+Любой новый порог — в data/пороги.json, не в коде.
+constants.py оставляет только DEPTH=14 (глубина анализа).
+
+================================================================
+ 24. REPORTS — ЕДИНЫЙ ИСТОЧНИК В dashboards/*.py (v25.0)
+================================================================
+Список отчётов живёт в:
+  • analysis/dashboards/openings.py:REPORTS
+  • analysis/dashboards/middlegame.py:REPORTS
+  • ...
+  • analysis/dashboards/coach.py:REPORTS
+
+dashboard.py:build_all() ДОЛЖЕН использовать:
+  with report_context("01_openings", subdir="dashboards") as w:
+      build_openings(w)
+
+❌ Свой список groups в dashboard.py:build_all — УДАЛИТЬ.
+✅ Единственный источник — REPORTS в каждом сборщике.
+
+================================================================
+================================================================
+ 25. 02a_check_cheaters.py — РУЧНОЙ ЗАПУСК (v25.1)
+================================================================
+❌ НЕ добавлять 02a_check_cheaters.py в run.py:STEPS.
+   Причина: HTTP-запросы к chess.com + time.sleep(0.8) на каждого
+   соперника. На 200+ новых = 3-4 минуты на каждый run.py.
+   Игрок запускает вручную, когда удобно.
+
+✅ Запуск вручную, когда есть 5+ новых соперников:
+   python src/02a_check_cheaters.py
+   python src/02a_check_cheaters.py --force     (перепроверить всех)
+   python src/02a_check_cheaters.py --limit 50  (не более 50 за раз)
+
+✅ cheaters.txt читается автоматически в 02_analyze_stockfish.py
+   (через _chess_utils.load_known_cheaters). Если файл есть —
+   читеры помечаются в БД при следующем run.py.
+
+💡 Рекомендация: раз в неделю, или когда в БД появились новые соперники.
+================================================================
+ 26. ЕЖЕДНЕВНЫЙ СНАПШОТ — В 10_psych_rating.py (v25.0)
+================================================================
+❌ 15_daily_monitor.py — УДАЛЁН.
+✅ analysis/psych_rating/monitoring.py — новый модуль:
+   • calc_metrics_for_window(conn, end_date_str, window_days)
+   • save_snapshot(conn, date_str, m, notes)
+   • save_daily_snapshot() — сегодня, 1-дневное окно
+   • backfill_data(conn, days=90) — CLI-backfill
+
+10_psych_rating.py:
+   print("\n── 7/7. Monitoring Snapshot ──")
+   from analysis.psych_rating.monitoring import save_daily_snapshot
+   save_daily_snapshot()
+
+Backfill — вручную:
+   python -m analysis.psych_rating.monitoring --backfill 90
+
+00_INDEX.txt и 16_Monitoring.py читают monitoring_log из БД.
+Они НЕ изменились.
+
+================================================================
+ 27. PDF-ЭКСПОРТ НЕ НУЖЕН (v25.0)
+================================================================
+14_export_pdf.py — УДАЛЁН.
+
+❌ Не предлагать восстановить PDF, LaTeX, HTML-экспорт.
+❌ Не предлагать установку fpdf2, reportlab.
+✅ reports/temp_pdf/, reports/dashboard_report.pdf — удалить.
+✅ src/fonts/ — удалить (если создавался).
+✅ graphs/*.png — удалить (создавались только для PDF).
+
+================================================================
+ 28. УДАЛЁННЫЕ ФАЙЛЫ — НЕ ВОССТАНАВЛИВАТЬ (v25.0)
+================================================================
+Список 41 удаления (не возвращать):
+
+Отчёты (report_* функции, 20 шт.):
+  1. opening_recommendations
+  2. hours_overview
+  3. style_vs_rating
+  4. time_report_windows
+  5. phase_deep_dive
+  6. plan_retention
+  7. endurance (report_endurance — оставить behavior_tracker)
+  8. piece_activity
+  9. long_vs_short
+ 10. tilt_timer (оставить panic_curve)
+ 11. daily_checkin
+ 12. weak_spots_matrix
+ 13. opening_performance
+ 14. openings_winrate_trend
+ 15. style_position_type
+ 16. style_time_deficit
+ 17. rating_by_opening
+ 18. positional_weaknesses
+ 19. opponent_deep
+ 20. anti_aggressor
+
+Dashboards-файлы (8 шт.) — переключить на REPORTS (§24):
+  • analysis/dashboards/openings.py
+  • analysis/dashboards/middlegame.py
+  • analysis/dashboards/endgame.py
+  • analysis/dashboards/psych_focus.py
+  • analysis/dashboards/psych_state.py
+  • analysis/dashboards/psych_rating.py
+  • analysis/dashboards/opponents.py
+  • analysis/dashboards/coach.py
+
+Файлы (5 шт.):
+  • 14_export_pdf.py
+  • 15_daily_monitor.py
+  • analysis/middlegame/plan_retention.py
+  • analysis/middlegame/positional_weaknesses.py
+  • analysis/psych_focus/graphs.py
+
+CSV-экспортёры (10 шт.) в 04_export_csv.py — удалить функции:
+  export_portrait, export_coach_insights,
+  export_acpl_by_phase, export_acpl_phase_weekly,
+  export_patterns, export_opening_tree,
+  export_time_of_day, export_timeouts,
+  export_timeout_by_move, export_timing_patterns
+
+Оставить только:
+  • export_openings (читается openings/reports.py)
+  • export_opponent_style (читается opponents/weakness.py)
+
+================================================================
+ 29. МИНИМАЛЬНОЕ N ДЛЯ ВЫВОДОВ (v25.0)
+================================================================
+❌ N < 5 в ячейке матрицы — писать «⚠️ мало данных», не вывод.
+❌ N < 10 в отчёте — «⚠️ отчёт не сформирован», не публиковать.
+✅ Общий отчёт — N ≥ 10 партий.
+✅ Ячейка матрицы — N ≥ 5.
+
+Причина: при N=5 95% CI ≈ ±40%. Шум выдаётся за сигнал.
+Примеры (удалены в v25.0): weak_spots_matrix (N=5),
+style_position_type (N=3-13), anti_aggressor (N=3).
+
+================================================================
+ 30. КАСКАДНЫЙ ТИЛЬТ — % ПАРТИЙ, НЕ % ЗЕВКОВ (v25.0)
+================================================================
+CODEX.txt §3.2: «каскадный тильт (59.2% партий)».
+
+⚠️ v24.3 считал: cascades / total_blunders (вкл. берсерк)
+   → 3668 / 6200 = 59.2% зевков, а не партий.
+
+✅ v25.0 считает:
+   total_games_with_blunder = COUNT(DISTINCT game_url)
+                             WHERE is_my_blunder=1 AND is_berserk=0
+   cascade_games = COUNT(DISTINCT game_url)
+                  WHERE ≥1 каскад (два зевка ≤5 ходов)
+   pct = cascade_games / total_games_with_blunder * 100
+
+Отчёт cascade_tilt.txt и CODEX.txt §3.2, 00_INDEX.txt
+должны показать обновлённую цифру.
+
+================================================================
+ 31. verify=False — ТОЛЬКО С КОММЕНТАРИЕМ (v25.0)
+================================================================
+Дублирует §18 для акцента.
+
+❌ `verify=False` без объяснения — запрещён.
+✅ Если реально нужно (например, корпоративный прокси):
+   requests.get(..., verify=False)
+   # Причина: <корпоративный CA не в корневом store>
+   # TODO: заменить на verify="/etc/ssl/corp-ca.crt"
+
+Но лучше сразу:
+   requests.get(..., verify="/etc/ssl/corp-ca.crt")
+
+================================================================
+ ИНСТРУКЦИЯ ДЛЯ LLM:
+ Если нужно написать код, пиши файлы целиком.
+ Не предлагай ML и live-помощь — это запрещено.
+ Не давай пошаговых инструкций «замени строку» — только файлы целиком.
+ Файлы ≤ 600 строк. Один файл = одно сообщение.
+ Не предлагай стоп-краны и ограничения по времени (играет в удовольствие).
+ Не предлагай восстанавливать удалённые файлы (§28).
+ Все формулы — только из core/метрики.py (§17).
 ================================================================

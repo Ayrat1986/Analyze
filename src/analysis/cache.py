@@ -1,9 +1,13 @@
 # ============================================================
-# analysis/cache.py — работа с кэшем Stockfish-анализа
+# analysis/cache.py — работа с кэшем Stockfish-анализа (v25.0)
+# §21: game_cache_ok требует acpl > 0 (а не только наличие полей).
 # ============================================================
 import os
 import json
 
+
+# Версия схемы кэша. Меняется при поломке формата (не при фиксах).
+CACHE_SCHEMA_VERSION = 2
 
 # Все поля, которые обязаны быть в каждой записи кэша
 V10_FIELDS = (
@@ -15,20 +19,50 @@ V10_FIELDS = (
     "timeout_at_move", "timeout_with_clock", "eval_after_opening",
     "momentum_after_blunder", "moves_in_winning_position", "opening_line",
     "pgn", "clocks", "eval_history", "critical_moments", "time_control",
-    # Sprint C
     "flag_result", "my_clock_at_timeout", "opp_clock_at_timeout",
+)
+
+BLUNDER_FIELDS = (
+    "is_my_blunder", "pattern_tag", "eval_swing",
+    "next_move_time", "is_next_move_blunder", "missed_threat",
 )
 
 
 def game_cache_ok(r: dict) -> bool:
-    """Проверка одной записи: все поля на месте?"""
+    """
+    Проверка одной записи.
+
+    v25.0 (§21): запись валидна, только если:
+      1) все поля V10_FIELDS присутствуют
+      2) acpl > 0  ← если Stockfish упал и записал 0, это НЕ «ok»
+      3) для каждого blunder есть все BLUNDER_FIELDS
+    """
+    if not isinstance(r, dict):
+        return False
+
+    # 1. Все поля на месте
     if not all(f in r for f in V10_FIELDS):
         return False
-    for b in r.get("blunders", []):
-        for bf in ("is_my_blunder", "pattern_tag", "eval_swing",
-                   "next_move_time", "is_next_move_blunder", "missed_threat"):
+
+    # 2. acpl > 0 (фикс §21)
+    acpl = r.get("acpl", 0)
+    try:
+        if float(acpl) <= 0:
+            return False
+    except (TypeError, ValueError):
+        return False
+
+    # 3. blunders корректны
+    blunders = r.get("blunders", [])
+    if not isinstance(blunders, list):
+        return False
+    for b in blunders:
+        if not isinstance(b, dict):
+            return False
+        for bf in BLUNDER_FIELDS:
             if bf not in b:
                 return False
+
     return True
 
 
@@ -37,30 +71,57 @@ def cache_needs_recalc(cache: dict) -> bool:
     Проверяет, нужен ли пересчёт всего кэша.
 
     1. Если кэш пуст > пересчёт.
-    2. Если хоть одно поле V10_FIELDS отсутствует в первых 5 записях > пересчёт.
-    3. ПАТЧ v18.4: если в кэше 50+ «моих» зевков, но next_move_time НИ У ОДНОГО
+    2. Если версия схемы не совпадает > пересчёт.
+    3. Если хоть одно поле V10_FIELDS отсутствует в первых 5 записях > пересчёт.
+    4. Если ни в одной из первых 5 записей acpl > 0 > пересчёт.
+    5. Патч v18.4: если в кэше 50+ «моих» зевков, но next_move_time НИ У ОДНОГО
        не заполнен — это кэш v18.2 (сломанная формула). Пересчёт.
     """
     if not cache:
         return True
 
-    # 1. Стандартная проверка наличия полей
+    # 2. Версия схемы (если поле появится в будущем)
+    if "_schema_version" in cache:
+        try:
+            if int(cache["_schema_version"]) != CACHE_SCHEMA_VERSION:
+                return True
+        except (TypeError, ValueError):
+            return True
+
+    # 3. Проверка полей в первых 5 записях
+    sample = []
     for i, r in enumerate(cache.values()):
         if i >= 5:
             break
+        sample.append(r)
         for f in V10_FIELDS:
             if f not in r:
                 return True
         for b in r.get("blunders", []):
-            for bf in ("is_my_blunder", "pattern_tag", "eval_swing",
-                       "next_move_time", "is_next_move_blunder", "missed_threat"):
+            for bf in BLUNDER_FIELDS:
                 if bf not in b:
                     return True
 
-    # 2. ПАТЧ: проверяем, что next_move_time РЕАЛЬНО заполнен
+    # 4. Хотя бы в одной из sample acpl > 0 (иначе — кэш сломан)
+    if sample:
+        has_positive = False
+        for r in sample:
+            try:
+                if float(r.get("acpl", 0)) > 0:
+                    has_positive = True
+                    break
+            except (TypeError, ValueError):
+                continue
+        if not has_positive:
+            print(f"   ?? В первых {len(sample)} записях acpl = 0. Кэш битый — пересчёт.")
+            return True
+
+    # 5. Патч v18.4: next_move_time
     total_blunders = 0
     filled_nmt = 0
     for r in cache.values():
+        if r is None or r == "_schema_version":
+            continue
         for b in r.get("blunders", []):
             if not b.get("is_my_blunder"):
                 continue
@@ -68,7 +129,7 @@ def cache_needs_recalc(cache: dict) -> bool:
             if b.get("next_move_time") is not None:
                 filled_nmt += 1
                 if filled_nmt >= 20:
-                    return False  # нашли примеры — кэш новый
+                    return False
 
     if total_blunders >= 50 and filled_nmt == 0:
         print(f"   ?? В кэше {total_blunders} зевков, но next_move_time не заполнен ни у одного.")
@@ -105,8 +166,11 @@ def load_cache(path: str) -> dict:
 
 
 def save_cache(path: str, cache: dict) -> None:
-    """Атомарная запись: сначала .tmp, потом os.replace."""
+    """
+    Атомарная запись: сначала .tmp, потом os.replace.
+    §17: компактный JSON (без indent) — экономия 50% размера.
+    """
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(cache, f, ensure_ascii=False, indent=2)
+        json.dump(cache, f, ensure_ascii=False, separators=(",", ":"))
     os.replace(tmp, path)

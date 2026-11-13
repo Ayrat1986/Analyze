@@ -1,12 +1,12 @@
 {
   "w1": 0.7,
   "w2": 0.3,
-  "mae": 327.1,
-  "game_r_mae": 335.8,
-  "speed_r_mae": 366.3,
-  "n": 2473,
-  "speed_k": -2.1,
-  "speed_b": 2546.7,
-  "calibrated_at": "2026-11-12T04:57:26.491712+00:00",
+  "mae": 327.7,
+  "game_r_mae": 336.6,
+  "speed_r_mae": 366.6,
+  "n": 2486,
+  "speed_k": -2.5,
+  "speed_b": 2546.4,
+  "calibrated_at": "2026-11-13T05:40:08.661436+00:00",
   "is_default": false
 }

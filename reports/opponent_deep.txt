@@ -1,93 +1,66 @@
 ============================================================
- ПРОФИЛИ ТОП-10 СОПЕРНИКОВ
+ 🩸 РАЗБОР ТЕХ, КТО РАСКАЛЫВАЕТ
 ============================================================
+Анализ только соперников из crushed_by.txt (score < 30%).
+Ищем паттерн: в каких дебютах они ломают твою игру?
 
-Твой средний ACPL: 65
+Найдено 'раскалывающих': 13
 
-♟️ strigoi100 (2557, 22 партий, W:10 D:1 L:11)
-  Win rate: 45%
-  Мой ACPL: 66 (+1)
-  ACPL соперника: 63
-  Дебюты:
-    B01 Scandinavian Defense Mieses Kotrc Ma   4п, 3поб
-    E00 Catalan Opening...6.Nc3 g6 7.Bg2 Bg7   3п, 1поб
-    B01 Scandinavian Defense                   3п, 2поб
-    B01 Scandinavian Defense Mieses Kotrc Ma   2п, 0поб
-    B01 Scandinavian Defense Closed 2...d4 3   2п, 1поб
+♟️ bopielmarionglero2 (11 партий, Score 18%)
+  Дебюты, где он тебя ломает:
+    D18 Slav Defense Modern Alapin Variation Czec   3п, Score 0%
+    B01 Scandinavian Defense Mieses Kotrc Main Li   2п, Score 0%
 
-♟️ 1minjunkie (2536, 17 партий, W:7 D:1 L:9)
-  Win rate: 41%
-  Мой ACPL: 57 (-8) ✅ лучше среднего
-  ACPL соперника: 63
-  Дебюты:
-    D11 Slav Defense Modern Quiet Pin Defens   5п, 3поб
-    A46 Indian Game Yusupov Rubinstein Syste   2п, 0поб
+♟️ zumpili (11 партий, Score 27%)
+  Дебюты, где он тебя ломает:
+    B01 Scandinavian Defense Modern Portuguese Va   2п, Score 0%
+    A43 Old Benoni Defense                          2п, Score 0%
 
-♟️ plattton1 (2598, 12 партий, W:6 D:1 L:5)
-  Win rate: 50%
-  Мой ACPL: 53 (-12) ✅ лучше среднего
-  ACPL соперника: 55
-  Дебюты:
-    B01 Scandinavian Defense Modern Portugue   2п, 0поб
+♟️ advay2005 (9 партий, Score 28%)
+  Дебюты, где он тебя ломает:
+    A40 Englund Gambit                              4п, Score 25%
 
-♟️ bopielmarionglero2 (2511, 11 партий, W:2 D:0 L:9)
-  Win rate: 18%
-  Мой ACPL: 83 (+18) ⚠️ хуже среднего
-  ACPL соперника: 86
-  Дебюты:
-    D18 Slav Defense Modern Alapin Variation   3п, 0поб
-    B01 Scandinavian Defense Mieses Kotrc Ma   3п, 2поб
-    B01 Scandinavian Defense Mieses Kotrc Ma   2п, 0поб
+♟️ canadiandragon (9 партий, Score 17%)
+  Дебюты, где он тебя ломает:
+    A56 Benoni Defense                              2п, Score 0%
+  📉 Средний финальный перевес: -7.6 (ты часто доминируешь в начале)
 
-♟️ chessforlife2006 (2531, 11 партий, W:6 D:0 L:5)
-  Win rate: 55%
-  Мой ACPL: 79 (+14) ⚠️ хуже среднего
-  ACPL соперника: 88
-  Дебюты:
-    E43 Nimzo Indian Defense St Petersburg V   2п, 0поб
+♟️ blakmore (7 партий, Score 29%)
+  Дебюты, где он тебя ломает:
+    (нет явно слабых дебютов — проблема в миттельшпиле)
 
-♟️ etmasterl (2580, 11 партий, W:4 D:0 L:7)
-  Win rate: 36%
-  Мой ACPL: 74 (+9) ⚠️ хуже среднего
-  ACPL соперника: 76
-  Дебюты:
-    A43 Old Benoni Defense                     3п, 1поб
-    B01 Scandinavian Defense Mieses Kotrc Ma   2п, 0поб
-    B01 Nimzowitsch Defense Scandinavian Exc   2п, 1поб
-    A40 Englund Gambit                         2п, 2поб
+♟️ gidel33 (7 партий, Score 21%)
+  Дебюты, где он тебя ломает:
+    E46 Nimzo Indian Defense Normal Line 4...O O    2п, Score 25%
 
-♟️ user_460214070 (2543, 11 партий, W:6 D:0 L:5)
-  Win rate: 55%
-  Мой ACPL: 79 (+14) ⚠️ хуже среднего
-  ACPL соперника: 90
-  Дебюты:
-    D45 Semi Slav Defense Main Line 5...Bd6    4п, 3поб
-    D10 Slav Defense Exchange Variation 3...   4п, 2поб
-    A40 Queens Pawn Opening 1...c6             2п, 1поб
+♟️ honzaslanec (7 партий, Score 29%)
+  Дебюты, где он тебя ломает:
+    B01 Scandinavian Defense                        4п, Score 0%
+  📉 Средний финальный перевес: -2.6 (ты часто доминируешь в начале)
 
-♟️ zumpili (2603, 11 партий, W:3 D:0 L:8)
-  Win rate: 27%
-  Мой ACPL: 56 (-9) ✅ лучше среднего
-  ACPL соперника: 57
-  Дебюты:
-    B01 Scandinavian Defense Modern Portugue   2п, 0поб
-    A43 Old Benoni Defense                     2п, 0поб
+♟️ ren_tur (7 партий, Score 29%)
+  Дебюты, где он тебя ломает:
+    (нет явно слабых дебютов — проблема в миттельшпиле)
 
-♟️ swinghigh11 (2628, 10 партий, W:6 D:0 L:4)
-  Win rate: 60%
-  Мой ACPL: 58 (-6) ✅ лучше среднего
-  ACPL соперника: 58
-  Дебюты:
-    E61 Kings Indian Defense Semi Classical    3п, 2поб
-    D00 Queens Pawn Opening Chigorin Variati   2п, 1поб
+♟️ blitzmind1 (6 партий, Score 17%)
+  Дебюты, где он тебя ломает:
+    (нет явно слабых дебютов — проблема в миттельшпиле)
 
-♟️ canadiandragon (2552, 9 партий, W:1 D:1 L:7)
-  Win rate: 11%
-  Мой ACPL: 56 (-9) ✅ лучше среднего
-  ACPL соперника: 36
-  Дебюты:
-    A56 Benoni Defense                         2п, 0поб
+♟️ frenchamiralramon (6 партий, Score 25%)
+  Дебюты, где он тебя ломает:
+    (нет явно слабых дебютов — проблема в миттельшпиле)
+  📉 Средний финальный перевес: -13.2 (ты часто доминируешь в начале)
 
-🎯 ВЕРДИКТ:
-  Против кого win rate < 40% — разбери 3 партии (08_psych_focus.py --review --url).
-  В каких дебютах чаще проигрываешь — избегай или учи.
+♟️ igarami10 (6 партий, Score 17%)
+  Дебюты, где он тебя ломает:
+    (нет явно слабых дебютов — проблема в миттельшпиле)
+
+♟️ jonathanwesterberg (6 партий, Score 17%)
+  Дебюты, где он тебя ломает:
+    (нет явно слабых дебютов — проблема в миттельшпиле)
+  📉 Средний финальный перевес: -6.1 (ты часто доминируешь в начале)
+
+♟️ gbntomm (5 партий, Score 20%)
+  Дебюты, где он тебя ломает:
+    D31 Queens Gambit Declined Semi Slav Defense    2п, Score 0%
+

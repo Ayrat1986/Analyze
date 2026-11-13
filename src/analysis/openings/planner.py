@@ -1,6 +1,7 @@
 # ============================================================
-# analysis/openings/planner.py — Opening Planner (v19.1, ядро)
-# FenCache + EnginePool + analyze_opening (18 SQL-запросов)
+# analysis/openings/planner.py — Opening Planner (v25.0)
+# §P3: analyze_fen — time.sleep(0.5) между попытками.
+#      Без sleep — busy-loop при пустом пуле (спин на CPU).
 # ============================================================
 import os
 import sys
@@ -11,6 +12,7 @@ import queue
 import threading
 import sqlite3
 import statistics
+import time
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -125,19 +127,29 @@ def analyze_fen(fen):
     cached = FEN_CACHE.get(fen)
     if cached is not None:
         return cached
-    for _ in range(MAX_RETRIES):
+    for attempt in range(MAX_RETRIES):
         engine = ENGINE_POOL.get()
         if not engine:
+            # §P3: sleep, чтобы не спинить CPU при пустом пуле
+            time.sleep(0.5)
             continue
         try:
             board = chess.Board(fen)
-            info = engine.analyse(board, chess.engine.Limit(depth=12))
+            info = engine.analyse(
+                board,
+                chess.engine.Limit(depth=12),
+                timeout=30.0,  # §19: обязательно
+            )
             if info.get("pv"):
                 best = board.san(info["pv"][0])
                 FEN_CACHE.put(fen, best)
                 return best
-        except Exception:
-            pass
+        except chess.engine.EngineTerminatedError:
+            print(f"⚠️ Движок умер при анализе FEN")
+            time.sleep(1.0)
+        except Exception as e:
+            print(f"⚠️ Ошибка анализа: {e}")
+            time.sleep(0.5)
         finally:
             ENGINE_POOL.put(engine)
     return None

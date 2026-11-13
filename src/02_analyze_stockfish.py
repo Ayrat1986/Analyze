@@ -1,8 +1,8 @@
 # ============================================================
-# 02_analyze_stockfish.py
-# Stockfish-анализ всех партий из chess_api_cache.json
-# → data/stockfish_cache.json
-# v18.6 (Параллельный анализ через EnginePool + батчинг save_cache)
+# 02_analyze_stockfish.py — v25.0
+# P2: HASH_MB=32 (было 64) — 4 движка × 32 = 128MB (безопасно для Windows).
+# P2: SAVE_EVERY=5 (было 20) — потеря при крэше ≤4 партии, не 19.
+# A1: pool.mark_processed() после успешного анализа.
 # ============================================================
 import os
 import sys
@@ -28,10 +28,10 @@ STOCKFISH_CACHE_FILE = str(_common.BASE_DIR / "data" / "stockfish_cache.json")
 STOCKFISH_PATH = _common.CONFIG.get("stockfish_path", "")
 
 # Настройки параллелизации
-NUM_ENGINES = 4          # было 1 — теперь 4
-THREADS_PER_ENGINE = 1   # 1 поток на движок (4 движка × 1 = 4 CPU)
-HASH_MB = 64             # 64 MB hash на движок
-SAVE_EVERY = 20          # батчинг: сохранять раз в 20 партий (TODO #2)
+NUM_ENGINES = 4          # 4 движка × 1 поток = 4 CPU
+THREADS_PER_ENGINE = 1   # 1 поток на движок
+HASH_MB = 32             # P2: было 64, теперь 32MB (4×32 = 128MB)
+SAVE_EVERY = 5           # P2: было 20, теперь каждые 5 партий
 
 
 def _analyze_one(pool: EnginePool, game_data: dict, player: str):
@@ -46,6 +46,7 @@ def _analyze_one(pool: EnginePool, game_data: dict, player: str):
     
     try:
         result = analyze_game(game_data, engine, player)
+        pool.mark_processed()  # A1: для диагностики
         return (url, result, None)
     except Exception as e:
         return (url, None, str(e))
@@ -55,7 +56,7 @@ def _analyze_one(pool: EnginePool, game_data: dict, player: str):
 
 def main():
     print("=" * 60)
-    print(" 02_analyze_stockfish.py — Stockfish-анализ (v18.6, параллельный)")
+    print(" 02_analyze_stockfish.py — Stockfish-анализ (v25.0, параллельный)")
     print("=" * 60)
 
     if not os.path.exists(STOCKFISH_PATH):
@@ -104,7 +105,7 @@ def main():
         return
 
     # Запускаем пул
-    print(f"\n🚀 Запуск {NUM_ENGINES} движков Stockfish...")
+    print(f"\n🚀 Запуск {NUM_ENGINES} движков Stockfish (Hash {HASH_MB}MB)...")
     try:
         pool = EnginePool(
             STOCKFISH_PATH,
@@ -147,7 +148,7 @@ def main():
                 print(f"  {i}/{total}: ✅ ACPL {acpl_val:.0f} | "
                       f"ETA {eta/60:.1f} мин (ср. {avg_per_game:.1f} сек/партия)")
 
-                # Батчинг save_cache (TODO #2)
+                # Батчинг save_cache (P2: было 20)
                 if i - last_save >= SAVE_EVERY:
                     save_cache(STOCKFISH_CACHE_FILE, cache)
                     last_save = i

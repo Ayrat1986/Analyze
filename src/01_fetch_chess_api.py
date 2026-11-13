@@ -1,5 +1,7 @@
 # ============================================================
-# 01_fetch_chess_api.py
+# 01_fetch_chess_api.py — v25.1
+# §18: Убрана явная проверка verify=True (ломала curl_cffi на Windows).
+#      Теперь curl_cffi использует свой certifi bundle автоматически.
 # ============================================================
 from curl_cffi import requests
 import time
@@ -52,9 +54,9 @@ def get_api_data(url: str, cache: dict, retries: int = 3, force: bool = False):
 
     for attempt in range(retries):
         try:
+            # §18: Не указываем verify (пусть curl_cffi использует дефолт из certifi)
             response = requests.get(
-                url, headers=HEADERS, impersonate="safari184",
-                verify=False, timeout=30,
+                url, headers=HEADERS, impersonate="safari184", timeout=30,
             )
             if response.status_code == 200:
                 data = response.json()
@@ -163,11 +165,6 @@ def get_games_from_cache(
     max_base: int = MAX_BULLET_BASE_TIME,
     require_pgn: bool = True,
 ) -> list:
-    """
-    Читает chess_api_cache.json, возвращает отфильтрованные games.
-    Заменяет download_games() из старого 02_fetch_time.py.
-    Никаких HTTP-запросов — только чтение кэша.
-    """
     if not os.path.exists(CACHE_FILE):
         print(f"⚠️ Нет {CACHE_FILE}. Сначала запусти 01_fetch_chess_api.py.")
         return []
@@ -181,15 +178,14 @@ def get_games_from_cache(
         return []
 
     archives = cache[archives_url].get("archives", [])
-    
-    # Добавляем текущий и предыдущий месяц (они могут быть не в archives)
+
     now_utc = datetime.now(timezone.utc)
     current_month_url = f"https://api.chess.com/pub/player/{player}/games/{now_utc.year}/{now_utc.month:02d}"
     prev_month_date = now_utc.replace(day=1) - timedelta(days=1)
     prev_month_url = f"https://api.chess.com/pub/player/{player}/games/{prev_month_date.year}/{prev_month_date.month:02d}"
-    
+
     all_urls = [current_month_url, prev_month_url] + list(reversed(archives))
-    
+
     cutoff_ts = int((datetime.now(timezone.utc) - timedelta(days=days)).timestamp())
 
     games, seen = [], set()
@@ -219,9 +215,6 @@ def get_games_from_cache(
     return games
 
 
-# ============================================================
-# TEMP: переедет в 10_psych_rating.py на фазе 9.
-# ============================================================
 def get_peak_for_interval(games, player, days_ago_min, days_ago_max):
     now_utc = datetime.now(timezone.utc)
     cutoff_newest = int((now_utc - timedelta(days=days_ago_min)).timestamp())
@@ -247,10 +240,6 @@ def get_peak_for_interval(games, player, days_ago_min, days_ago_max):
 
 
 def calculate_stats(games, player, peak_for_anchor, avg_opp_for_anchor=None):
-    """
-    Считает статистику для окна: win_rate, avg_opp, perf_rating,
-    ЯКОРЬ (anchor_min, anchor_peak, anchor_formula, anchor_final).
-    """
     total = len(games)
     if total == 0:
         return None
@@ -294,7 +283,6 @@ def calculate_stats(games, player, peak_for_anchor, avg_opp_for_anchor=None):
     last_my = my_sorted[-1][1] if my_sorted else 0
     gap = avg_my - actual_avg_opp if (avg_my and actual_avg_opp) else 0
 
-    # --- ЯКОРЬ ---
     min_window = min(my_vals) if my_vals else 0
     anchor_peak = peak_for_anchor - 150
     anchor_formula = actual_avg_opp * 0.98 if actual_avg_opp > 0 else 0
@@ -322,9 +310,7 @@ def calculate_stats(games, player, peak_for_anchor, avg_opp_for_anchor=None):
     }
 
 
-# ---------- РОТАЦИЯ ----------
 def rotate_cache(cache: dict, cutoff_days: int = CACHE_ROTATION_DAYS) -> dict:
-    """Удаляет месячные URL, где нет ни одной игры за последние cutoff_days."""
     cutoff = int((datetime.now(timezone.utc) - timedelta(days=cutoff_days)).timestamp())
     rotated = {}
     for url, data in cache.items():
@@ -336,7 +322,6 @@ def rotate_cache(cache: dict, cutoff_days: int = CACHE_ROTATION_DAYS) -> dict:
     return rotated
 
 
-# ---------- MAIN ----------
 def main():
     print("=" * 60)
     print(" FETCH CHESS.COM API → data/chess_api_cache.json")

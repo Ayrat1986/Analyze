@@ -1,24 +1,20 @@
 # ============================================================
-# analysis/dashboards/psych_state.py — 05_psych_state.txt (v19.5)
+# analysis/dashboards/psych_state.py — 05_psych_state.txt (v25.0)
+# §28: убраны time_report_windows, hours_overview, endurance,
+#      tilt_timer, daily_checkin. Оставлено 9 отчётов.
 # ============================================================
 from analysis.common import read_report_file
 
 REPORTS = [
-    ("time_report_windows.txt", "⏱️ ВРЕМЯ ПО ОКНАМ"),
-    ("time_target.txt", "🎯 ЦЕЛЕВОЕ ВРЕМЯ НА ХОД"),
-    ("speed_rating.txt", "⚡ SPEED RATING (скорость → рейтинг)"),
-    ("combined_rating.txt", "🔗 COMBINED RATING (GameR + SpeedR)"),
-    ("hours_overview.txt", "🕐 ЧАСЫ И ДНИ"),
-    ("time_profile.txt", "⏱️ TIME PROFILE"),
-    ("lag_report.txt", "🕵️ LAG REPORT"),
-    ("endurance.txt", "🏃 ВЫНОСЛИВОСТЬ"),
-    ("behavior_tracker.txt", "🧠 ПОВЕДЕНИЕ ПО СЕССИЯМ"),
-    ("tilt_timer.txt", "⏱️ TILT TIMER"),
-    ("panic_curve.txt", "📉 КРИВАЯ ПАНИКИ"),
-    ("cascade_tilt.txt", "🧠 КАСКАДНЫЙ ТИЛЬТ"),
+    ("time_profile.txt",       "⏱️ TIME PROFILE"),
+    ("lag_report.txt",         "🕵️ LAG REPORT"),
+    ("time_target.txt",        "🎯 ЦЕЛЕВОЕ ВРЕМЯ НА ХОД"),
+    ("speed_rating.txt",       "⚡ SPEED RATING (скорость → рейтинг)"),
+    ("combined_rating.txt",    "🔗 COMBINED RATING (GameR + SpeedR)"),
+    ("behavior_tracker.txt",   "🧠 ПОВЕДЕНИЕ ПО СЕССИЯМ"),
+    ("panic_curve.txt",        "📉 КРИВАЯ ПАНИКИ"),
+    ("cascade_tilt.txt",       "🧠 КАСКАДНЫЙ ТИЛЬТ"),
     ("aggression_profile.txt", "🥊 АГРЕССИЯ И ИНВЕРСИЯ"),
-    ("timeout_vs_rating.txt", "📉 ЦЕНА ЦЕЙТНОТА"),
-    ("daily_checkin.txt", "📋 DAILY CHECK-IN"),
 ]
 
 

@@ -83,11 +83,9 @@ D06 Queens Gambit Declined Baltic Defense...4.Nf3 Nf6 5.Bg5 c6,D06,3,2,66.7%,42.
 D10 Slav Defense Exchange Variation 3...cxd5 4.Nc3 Nc6 5.e4,D10,3,0,0.0%,86.3,84.2,94.3,-24.67
 D13 Slav Defense Modern Exchange Variation 4...cxd5 5.Nc3 Nc6 6.g3,D13,3,1,33.3%,38.0,92.8,47.7,-31.0
 D37 Queens Gambit Declined Three Knights Variation 4...Be7 5.e3,D37,3,2,66.7%,58.0,89.1,53.9,-223.0
-D45 Semi Slav Defense Main Line,D45,3,1,33.3%,73.3,86.4,70.9,35.33
 E22 Nimzo Indian Defense Spielmann Variation,E22,3,2,66.7%,44.9,91.6,51.3,30.67
 E46 Nimzo Indian Defense Normal Line 4...O O,E46,3,0,0.0%,84.7,84.5,52.5,54.33
 E61 Kings Indian Defense Normal Variation...6.Be2 cxd4 7.exd4 d5,E61,3,2,66.7%,49.1,90.7,47.3,-9.0
-A00 Kings Fianchetto Opening Slav Formation,A00,2,0,0.0%,73.4,86.4,50.1,73.5
 A00 Mieses Opening,A00,2,0,0.0%,76.7,85.8,66.9,65.0
 A00 Undefined,A00,2,0,0.0%,98.9,82.1,115.2,24.5
 A01 Nimzowitsch Larsen Attack Classical Variation 2.Bb2 c5 3.e3 Nc6 4.Bb5,A01,2,0,0.0%,53.4,90.0,65.4,3.5
@@ -98,7 +96,6 @@ A04 Reti Opening Sicilian Invitation...4.Bb2 Nc6 5.Bb5 Bd7,A04,2,2,100.0%,43.3,9
 A06 Reti Opening Nimzowitsch Larsen Attack 2...Nf6 3.Bb2 c6 4.e3,A06,2,1,50.0%,88.5,83.9,79.6,33.0
 A09 Reti Opening Reti Gambit Declined Advance Variation...4.Bg2 Nc6 5.O O e5 6.d3,A09,2,1,50.0%,50.1,90.5,59.7,-3.5
 A10 English Opening 1...b6 2.d4,A10,2,0,0.0%,51.6,90.2,47.5,277.5
-A10 English Opening 1...d6 2.d4,A10,2,1,50.0%,60.2,88.7,81.6,72.5
 A10 English Opening Anglo Scandinavian Defense,A10,2,1,50.0%,45.7,91.4,102.3,659.5
 A20 English Opening Kings English Nimzowitsch Variation 2...Nc6 3.d4 exd4 4.Nxd4,A20,2,1,50.0%,66.7,87.8,55.8,20.5
 A30 English Opening Symmetrical Variation...3.d4 cxd4 4.Nxd4 e5,A30,2,1,50.0%,57.5,89.2,88.8,75.5
@@ -171,6 +168,7 @@ D37 Queens Gambit Declined Three Knights Variation 4...a6,D37,2,0,0.0%,45.2,91.4
 D43 Semi Slav Defense Anti Meran Anti Moscow Gambit 6...Be7 7.e3,D43,2,2,100.0%,15.8,96.9,47.9,45.0
 D44 Queens Gambit Declined Three Knights Vienna Quiet Variation,D44,2,1,50.0%,53.5,90.0,45.9,149.0
 D44 Semi Slav Defense Accepted 6.a4,D44,2,1,50.0%,59.8,89.0,62.1,107.5
+D45 Semi Slav Defense Main Line,D45,2,1,50.0%,67.5,87.4,62.3,24.0
 D45 Semi Slav Defense Main Line 5...Bd6,D45,2,2,100.0%,81.2,85.1,111.3,-9.5
 D45 Semi Slav Defense Main Line Normal Variation 6.Be2 Bd6 7.O O,D45,2,1,50.0%,74.8,86.1,59.3,15.0
 D52 Queens Gambit Declined Modern Knight Defense...7.Bh4 Be7 8.Bd3 O O 9.O O,D52,2,1,50.0%,50.4,90.5,77.5,53.5

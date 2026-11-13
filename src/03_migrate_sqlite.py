@@ -1,5 +1,7 @@
 # ============================================================
-# 03_migrate_sqlite.py — v20.4 (Добавлена таблица monitoring_log)
+# 03_migrate_sqlite.py — v25.1
+# P2: INSERT OR REPLACE → ON CONFLICT(url) DO UPDATE SET.
+# FIX: Исправлено количество плейсхолдеров (было 54, нужно 53).
 # ============================================================
 import json
 import os
@@ -7,6 +9,7 @@ import sqlite3
 import shutil
 import glob
 from datetime import datetime
+
 import _common
 from core.метрики import game_rating
 
@@ -56,7 +59,6 @@ CREATE TABLE IF NOT EXISTS trainer_progress (
     status TEXT NOT NULL, attempts INTEGER DEFAULT 1, last_seen INTEGER, next_review INTEGER, created_at INTEGER NOT NULL
 );
 
--- НОВАЯ ТАБЛИЦА ДЛЯ МОНИТОРИНГА
 CREATE TABLE IF NOT EXISTS monitoring_log (
     date TEXT PRIMARY KEY,
     games INTEGER,
@@ -136,14 +138,16 @@ def migrate_version(conn):
     conn.commit()
 
 def make_backup():
-    if not os.path.exists(DB_FILE): return
+    if not os.path.exists(DB_FILE):
+        return
     os.makedirs(BACKUP_DIR, exist_ok=True)
     backup_name = os.path.join(BACKUP_DIR, f"chess_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db")
     try:
         shutil.copy2(DB_FILE, backup_name)
         print(f"💾 Бэкап: {backup_name}")
         backups = sorted(glob.glob(os.path.join(BACKUP_DIR, "chess_*.db")))
-        for old in backups[:-5]: os.remove(old)
+        for old in backups[:-5]:
+            os.remove(old)
     except Exception as e:
         print(f"⚠️ Бэкап не удался: {e}")
 
@@ -152,8 +156,10 @@ def clean_orphans(conn):
     cur.execute("DELETE FROM blunders WHERE game_url NOT IN (SELECT url FROM games)")
     orphans = cur.rowcount
     conn.commit()
-    if orphans: print(f"🧹 Очищено сирот в blunders: {orphans}")
-    else: print(f"🧹 Сирот нет.")
+    if orphans:
+        print(f"🧹 Очищено сирот в blunders: {orphans}")
+    else:
+        print(f"🧹 Сирот нет.")
 
 def check_fk(conn):
     cur = conn.cursor()
@@ -161,12 +167,14 @@ def check_fk(conn):
     violations = cur.fetchall()
     if violations:
         print(f"⚠️ FK нарушения: {len(violations)} записей")
-        for v in violations[:5]: print(f"   {v}")
-    else: print(f"✅ FK-проверка пройдена (0 нарушений).")
+        for v in violations[:5]:
+            print(f"   {v}")
+    else:
+        print(f"✅ FK-проверка пройдена (0 нарушений).")
 
 def main():
     print("=" * 60)
-    print(" 03_migrate_sqlite.py — v20.4 (Мониторинг)")
+    print(" 03_migrate_sqlite.py — v25.1 (ON CONFLICT, fix placeholders)")
     print("=" * 60)
 
     if not os.path.exists(CACHE_FILE):
@@ -196,27 +204,87 @@ def main():
     blunders_inserted = 0
     blunders_with_fen = 0
 
+    # 53 колонки = 53 знака вопроса
+    UPSERT_GAMES = """
+        INSERT INTO games
+        (url, end_time, white, black, opening, eco, my_rating, opp_rating, opp_username,
+         won, draw, reason, is_cheater, is_lag, end_berserk, game_length,
+         acpl, acpl_normal, acpl_berserk, accuracy, moves_normal, moves_berserk, depth,
+         analyzed_at, acpl_opponent_normal, acpl_opponent_total, accuracy_opponent,
+         opp_blunders_total, eval_final, max_eval_advantage, min_eval_advantage,
+         berserk_move_enter, berserk_moves_count, is_true_berserk,
+         acpl_opening, acpl_middlegame, acpl_endgame,
+         timeout_at_move, timeout_with_clock, eval_after_opening,
+         momentum_after_blunder, moves_in_winning_position, opening_line,
+         pgn, clocks, eval_history, critical_moments, time_control, game_rating,
+         flag_result, my_clock_at_timeout, opp_clock_at_timeout, opp_style)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        ON CONFLICT(url) DO UPDATE SET
+            end_time = excluded.end_time,
+            white = excluded.white,
+            black = excluded.black,
+            opening = excluded.opening,
+            eco = excluded.eco,
+            my_rating = excluded.my_rating,
+            opp_rating = excluded.opp_rating,
+            opp_username = excluded.opp_username,
+            won = excluded.won,
+            draw = excluded.draw,
+            reason = excluded.reason,
+            is_cheater = excluded.is_cheater,
+            is_lag = excluded.is_lag,
+            end_berserk = excluded.end_berserk,
+            game_length = excluded.game_length,
+            acpl = excluded.acpl,
+            acpl_normal = excluded.acpl_normal,
+            acpl_berserk = excluded.acpl_berserk,
+            accuracy = excluded.accuracy,
+            moves_normal = excluded.moves_normal,
+            moves_berserk = excluded.moves_berserk,
+            depth = excluded.depth,
+            analyzed_at = excluded.analyzed_at,
+            acpl_opponent_normal = excluded.acpl_opponent_normal,
+            acpl_opponent_total = excluded.acpl_opponent_total,
+            accuracy_opponent = excluded.accuracy_opponent,
+            opp_blunders_total = excluded.opp_blunders_total,
+            eval_final = excluded.eval_final,
+            max_eval_advantage = excluded.max_eval_advantage,
+            min_eval_advantage = excluded.min_eval_advantage,
+            berserk_move_enter = excluded.berserk_move_enter,
+            berserk_moves_count = excluded.berserk_moves_count,
+            is_true_berserk = excluded.is_true_berserk,
+            acpl_opening = excluded.acpl_opening,
+            acpl_middlegame = excluded.acpl_middlegame,
+            acpl_endgame = excluded.acpl_endgame,
+            timeout_at_move = excluded.timeout_at_move,
+            timeout_with_clock = excluded.timeout_with_clock,
+            eval_after_opening = excluded.eval_after_opening,
+            momentum_after_blunder = excluded.momentum_after_blunder,
+            moves_in_winning_position = excluded.moves_in_winning_position,
+            opening_line = excluded.opening_line,
+            pgn = excluded.pgn,
+            clocks = excluded.clocks,
+            eval_history = excluded.eval_history,
+            critical_moments = excluded.critical_moments,
+            time_control = excluded.time_control,
+            game_rating = excluded.game_rating,
+            flag_result = excluded.flag_result,
+            my_clock_at_timeout = excluded.my_clock_at_timeout,
+            opp_clock_at_timeout = excluded.opp_clock_at_timeout,
+            opp_style = excluded.opp_style
+    """
+
     for url, r in cache.items():
+        # Пропускаем служебные ключи
+        if not isinstance(r, dict):
+            continue
+
         conn.execute("DELETE FROM blunders WHERE game_url = ?", (url,))
         clocks_json = json.dumps(r.get("clocks", []), ensure_ascii=False)
         eval_history_json = json.dumps(r.get("eval_history", []), ensure_ascii=False)
         gr = game_rating(r.get("acpl", 0))
 
-        conn.execute("""
-            INSERT OR REPLACE INTO games
-            (url, end_time, white, black, opening, eco, my_rating, opp_rating, opp_username,
-             won, draw, reason, is_cheater, is_lag, end_berserk, game_length,
-             acpl, acpl_normal, acpl_berserk, accuracy, moves_normal, moves_berserk, depth,
-             analyzed_at, acpl_opponent_normal, acpl_opponent_total, accuracy_opponent,
-             opp_blunders_total, eval_final, max_eval_advantage, min_eval_advantage,
-             berserk_move_enter, berserk_moves_count, is_true_berserk,
-             acpl_opening, acpl_middlegame, acpl_endgame,
-             timeout_at_move, timeout_with_clock, eval_after_opening,
-             momentum_after_blunder, moves_in_winning_position, opening_line,
-             pgn, clocks, eval_history, critical_moments, time_control, game_rating,
-             flag_result, my_clock_at_timeout, opp_clock_at_timeout, opp_style)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-        """, (
+        conn.execute(UPSERT_GAMES, (
             url, r.get("end_time", 0), r.get("white"), r.get("black"),
             r.get("opening"), r.get("eco"),
             r.get("my_rating", 0), r.get("opponent_rating", 0), r.get("opponent_username"),
@@ -244,7 +312,8 @@ def main():
 
         for b in r.get("blunders", []):
             fen_before = b.get("fen_before")
-            if fen_before: blunders_with_fen += 1
+            if fen_before:
+                blunders_with_fen += 1
             conn.execute("""
                 INSERT INTO blunders
                 (game_url, move_num, move_uci, loss_cp, eval_before, eval_after,
@@ -258,8 +327,8 @@ def main():
                 b.get("what"), b.get("pattern_tag", "blunder"),
                 int(bool(b.get("is_berserk"))), int(bool(b.get("is_instant"))), int(bool(b.get("is_normal"))),
                 int(bool(b.get("is_my_blunder", False))), b.get("time_spent", 0), int(bool(b.get("player_is_white"))),
-                b.get("next_move_time"), int(bool(b.get("is_next_move_blunder", False))), b.get("ply"), fen_before,
-                b.get("best_move_uci"), int(bool(b.get("missed_threat", False))),
+                b.get("next_move_time"), int(bool(b.get("is_next_move_blunder", False))), b.get("ply"),
+                fen_before, b.get("best_move_uci"), int(bool(b.get("missed_threat", False))),
             ))
             blunders_inserted += 1
 
@@ -271,6 +340,7 @@ def main():
     print(f"   Партий:              {games_inserted}")
     print(f"   Зевков:              {blunders_inserted}")
     print(f"   Из них с fen_before: {blunders_with_fen}")
+
 
 if __name__ == "__main__":
     main()

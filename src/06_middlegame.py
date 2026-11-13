@@ -1,6 +1,7 @@
 # ============================================================
-# 06_middlegame.py — МИТТЕЛЬШПИЛЬ (Оркестратор)
-# v18.6 (Модуляризация завершена, весь код в analysis/middlegame/)
+# 06_middlegame.py — МИТТЕЛЬШПИЛЬ (Оркестратор v25.0)
+# §28: удалены phase_deep, plan_retention, piece_activity,
+#      long_vs_short, positional_weaknesses.
 # ============================================================
 import os
 import sys
@@ -12,37 +13,27 @@ sys.path.insert(0, SRC_DIR)
 
 import _common
 from analysis.middlegame import (
-    report_phase_deep_dive,
     report_advantage_speed,
     report_transition_errors,
     report_tactical_motifs,
     report_win_loss_conversion,
-    report_positional_weaknesses,
-    report_plan_retention,
-    report_piece_activity,
     report_position_types,
-    report_long_vs_short,
     report_summary,
 )
 
 REPORTS = [
-    ("phase_deep_dive",          report_phase_deep_dive),
-    ("advantage_speed",          report_advantage_speed),
-    ("transition_errors",        report_transition_errors),
-    ("tactical_motifs",          report_tactical_motifs),
-    ("win_loss_conversion",      report_win_loss_conversion),
-    ("positional_weaknesses",    report_positional_weaknesses),
-    ("plan_retention",           report_plan_retention),
-    ("piece_activity",           report_piece_activity),
-    ("position_type_classifier", report_position_types),
-    ("long_vs_short",            report_long_vs_short),
-    ("middlegame_summary",       report_summary),
+    ("middlegame_summary",   report_summary),
+    ("advantage_speed",      report_advantage_speed),
+    ("transition_errors",    report_transition_errors),
+    ("tactical_motifs",      report_tactical_motifs),
+    ("win_loss_conversion",  report_win_loss_conversion),
+    ("position_types",       report_position_types),
 ]
 
 
 def main():
     print("=" * 60)
-    print(" 06_middlegame.py — МИТТЕЛЬШПИЛЬ (v18.6, оркестратор)")
+    print(" 06_middlegame.py — МИТТЕЛЬШПИЛЬ (v25.0, оркестратор)")
     print("=" * 60)
 
     if not _common.CONFIG.get("player"):

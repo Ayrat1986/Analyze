@@ -1,33 +1,20 @@
 # ============================================================
-# analysis/psych_state/combined_rating.py (v19.7)
-# Исправлено: принудительное создание coefs.json (дефолт).
+# analysis/psych_state/combined_rating.py (v25.0)
+# §17: combined_rating_value → обёртка над core.метрики.
+# Удалён DEFAULT_COEFS (ядро даёт дефолт 3178-545t, w1=0.7).
 # ============================================================
 import json
 import statistics
 import os
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 
 import _common
 from analysis.common import report_context, WINDOWS, window_label, window_cutoff_ts
-from core.метрики import game_rating
+from core.метрики import game_rating, speed_rating, combined_rating
 from .common import _conn, _is_player_white
 from .speed_rating import _compute_avg_time, _calibrate, _linear_fit
 
 COEFS_PATH = str(_common.BASE_DIR / "data" / "combined_rating_coefs.json")
-
-# Дефолтные веса, если калибровка невозможна
-DEFAULT_COEFS = {
-    "w1": 0.6,
-    "w2": 0.4,
-    "speed_k": -380,
-    "speed_b": 3100,
-    "mae": None,
-    "game_r_mae": None,
-    "speed_r_mae": None,
-    "n": 0,
-    "calibrated_at": None,
-    "is_default": True,
-}
 
 
 def save_coefs(coefs):
@@ -37,36 +24,29 @@ def save_coefs(coefs):
 
 
 def load_coefs():
-    """Читает coefs.json. Если файла нет — возвращает дефолтные."""
+    """Читает coefs.json. Пустой dict, если нет — ядро применит дефолт."""
     if not os.path.exists(COEFS_PATH):
-        # Создаём дефолтный файл, чтобы 00_INDEX работал
-        save_coefs(DEFAULT_COEFS)
-        return DEFAULT_COEFS
+        return {}
     try:
         with open(COEFS_PATH, "r", encoding="utf-8") as f:
             coefs = json.load(f)
-            # Валидация: если нет ключей — дефолт
-            if "w1" not in coefs or "speed_k" not in coefs:
-                return DEFAULT_COEFS
-            return coefs
+        if not isinstance(coefs, dict) or "w1" not in coefs or "speed_k" not in coefs:
+            return {}
+        return coefs
     except Exception:
-        return DEFAULT_COEFS
+        return {}
 
 
 def combined_rating_value(acpl, avg_time, coefs=None):
-    """CombinedR = w1×GameR + w2×SpeedR."""
+    """Обёртка: CombinedR = w1*GameR + w2*SpeedR через core.метрики."""
     if coefs is None:
         coefs = load_coefs()
     game_r = game_rating(acpl)
-    speed_r = coefs["speed_b"] + coefs["speed_k"] * avg_time
-    return coefs["w1"] * game_r + coefs["w2"] * speed_r
+    speed_r = speed_rating(avg_time, coefs)
+    return combined_rating(game_r, speed_r, coefs)
 
 
 def _calibrate_combined(conn, days=90):
-    """
-    Калибрует веса w1, w2 минимизируя MAE(CombinedR − perf_actual).
-    Возвращает dict или None.
-    """
     speed_calib = _calibrate(conn, days)
     if not speed_calib:
         return None
@@ -100,12 +80,12 @@ def _calibrate_combined(conn, days=90):
     if len(samples) < 50:
         return None
 
-    # Перебор w1 с шагом 0.05
     best_w1 = 0.5
     best_mae = float("inf")
     for w1_int in range(0, 21):
         w1 = w1_int / 20
-        mae = sum(abs(w1 * s["game_r"] + (1 - w1) * s["speed_r"] - s["perf"]) for s in samples) / len(samples)
+        mae = sum(abs(w1 * s["game_r"] + (1 - w1) * s["speed_r"] - s["perf"])
+                  for s in samples) / len(samples)
         if mae < best_mae:
             best_mae = mae
             best_w1 = w1
@@ -133,15 +113,15 @@ def report_combined_rating():
         w.w_separator(title="COMBINED RATING (GameR + SpeedR)")
         w.w("CombinedR = w1 × GameR + w2 × SpeedR")
         w.w("GameR = 3200 − ACPL×10 (точность)")
-        w.w("SpeedR = b + k × avg_time (скорость)")
+        w.w("SpeedR = speed_b + speed_k × avg_time (скорость)")
         w.w("Веса калибруются: min MAE(CombinedR − Perf_факт)")
+        w.w("§17: формулы — только из core/метрики.py")
         w.w("⚠️ Только 1+0 (bullet). База времени = 60 сек.")
         w.w()
 
-        # Калибровка
         w.w_separator(title="КАЛИБРОВКА (90 дней)")
         coefs = _calibrate_combined(conn, days=90)
-        
+
         if coefs:
             save_coefs(coefs)
             w.w(f"  N = {coefs['n']} партий")
@@ -159,20 +139,13 @@ def report_combined_rating():
             else:
                 w.w(f"  ⚠️ CombinedR НЕ точнее GameR. Используй только GameR.")
         else:
-            # ПРИНУДИТЕЛЬНОЕ СОЗДАНИЕ
             w.w("  ⚠️ Мало данных для калибровки (нужно 50+ партий).")
-            w.w("  🔧 Создаю дефолтный coefs.json (w1=0.6, w2=0.4).")
-            coefs = DEFAULT_COEFS.copy()
-            coefs["calibrated_at"] = datetime.now(timezone.utc).isoformat()
-            save_coefs(coefs)
-            
-            w.w(f"  w1 (GameR)  = {coefs['w1']} (дефолт)")
-            w.w(f"  w2 (SpeedR) = {coefs['w2']} (дефолт)")
-            w.w(f"  SpeedR = {coefs['speed_b']:.0f} + ({coefs['speed_k']:.0f}) × avg_time")
-            w.w("  💡 Это оценочные веса. Запусти снова через неделю.")
+            w.w("  💡 Ядро (core.метрики) использует дефолт:")
+            w.w("     SpeedR = 3178 - 545 × avg_time")
+            w.w("     CombR  = 0.7 × GameR + 0.3 × SpeedR")
+            w.w("  💡 coefs.json создастся автоматически после первой калибровки.")
         w.w()
 
-        # По окнам
         for days in WINDOWS:
             w.w_separator(title=f"ОКНО: {window_label(days)}")
             cutoff = window_cutoff_ts(days)
@@ -193,9 +166,11 @@ def report_combined_rating():
                 if not t:
                     continue
                 avg_time = t["avg"]
-                comb.append(combined_rating_value(acpl, avg_time, coefs))
-                game.append(game_rating(acpl))
-                speed.append(coefs["speed_b"] + coefs["speed_k"] * avg_time)
+                g_r = game_rating(acpl)
+                s_r = speed_rating(avg_time, coefs)
+                comb.append(combined_rating(g_r, s_r, coefs))
+                game.append(g_r)
+                speed.append(s_r)
                 perf.append(opp_rating + (((won or 0) + 0.5 * (draw or 0)) - 0.5) * 800)
                 myr.append(my_rating)
 
@@ -220,7 +195,6 @@ def report_combined_rating():
                 w.w(f"  ✅ CombinedR точнее GameR на {(mae_g-mae_c)/mae_g*100:.0f}%")
             w.w()
 
-        # Сладкий темп
         w.w_separator(title="СЛАДКИЙ ТЕМП (max CombinedR)")
         cutoff = window_cutoff_ts(90)
         cur.execute("""
@@ -250,19 +224,18 @@ def report_combined_rating():
 
         mid = {"< 0.7": 0.6, "0.7-0.9": 0.8, "0.9-1.1": 1.0, "1.1-1.3": 1.2,
                "1.3-1.6": 1.45, "1.6-2.0": 1.8, "> 2.0": 2.2}
-        w.w(f"  {'Время/ход':<12} {'Игр':<6} {'ACPL':<8} {'CombinedR':<12} {'Вывод'}")
-        w.w("  " + "-" * 55)
+        w.w(f"  {'Время/ход':<12} {'Игр':<6} {'ACPL':<8} {'CombinedR':<12}")
+        w.w("  " + "-" * 45)
         best_b, best_c = None, 0
         for label, acpls in buckets.items():
             if not acpls:
                 continue
             avg_acpl = statistics.mean(acpls)
             comb = combined_rating_value(avg_acpl, mid[label], coefs)
-            verdict = ""
             if comb > best_c:
                 best_c = comb
                 best_b = label
-            w.w(f"  {label:<12} {len(acpls):<6} {avg_acpl:<8.1f} {comb:<12.0f} {verdict}")
+            w.w(f"  {label:<12} {len(acpls):<6} {avg_acpl:<8.1f} {comb:<12.0f}")
         if best_b:
             w.w(f"\n  🎯 Сладкий темп: {best_b} сек/ход (CombinedR ≈ {best_c:.0f})")
             w.w(f"     Играй в этом темпе — максимальный рейтинг.")

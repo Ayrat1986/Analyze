@@ -10,31 +10,31 @@
       "time_cnt": 2042
     },
     "2400-2499": {
-      "n": 571,
-      "w": 346,
-      "d": 31,
-      "agg": 6968,
-      "moves": 23569,
-      "time_sum": 26859.99999999982,
-      "time_cnt": 23558
+      "n": 584,
+      "w": 351,
+      "d": 32,
+      "agg": 7127,
+      "moves": 24134,
+      "time_sum": 27540.199999999757,
+      "time_cnt": 24122
     },
     "2500-2599": {
-      "n": 1262,
-      "w": 590,
+      "n": 1270,
+      "w": 591,
       "d": 55,
-      "agg": 14887,
-      "moves": 52972,
-      "time_sum": 60528.89999999243,
-      "time_cnt": 52940
+      "agg": 14962,
+      "moves": 53287,
+      "time_sum": 60975.99999999245,
+      "time_cnt": 53255
     },
     "2600-2699": {
-      "n": 488,
+      "n": 491,
       "w": 156,
       "d": 21,
-      "agg": 5461,
-      "moves": 20810,
-      "time_sum": 23934.299999999927,
-      "time_cnt": 20796
+      "agg": 5492,
+      "moves": 20939,
+      "time_sum": 24106.6999999999,
+      "time_cnt": 20925
     },
     "2700-2799": {
       "n": 79,
@@ -57,24 +57,24 @@
   },
   "by_opening": {
     "B01": {
-      "n": 315,
-      "w": 162,
+      "n": 319,
+      "w": 164,
       "d": 13,
-      "agg": 3805,
-      "moves": 12444,
-      "time_sum": 14687.20000000044,
-      "time_cnt": 12439,
-      "opening": "B01 Scandinavian Defense 2.e5"
+      "agg": 3856,
+      "moves": 12582,
+      "time_sum": 14897.700000000454,
+      "time_cnt": 12577,
+      "opening": "B01 Scandinavian Defense Mieses Kotrc Main Line 4.d4 Nf6"
     },
     "D94": {
-      "n": 35,
+      "n": 36,
       "w": 14,
       "d": 2,
-      "agg": 409,
-      "moves": 1513,
-      "time_sum": 1648.3999999999965,
-      "time_cnt": 1512,
-      "opening": "D94 Grunfeld Defense Burille Variation...6.Be2 c5 7.dxc5 Qa5"
+      "agg": 422,
+      "moves": 1565,
+      "time_sum": 1708.299999999996,
+      "time_cnt": 1564,
+      "opening": "D94 Grunfeld Defense Burille Variation...6.Be2 O O 7.O O Nbd7"
     },
     "D25": {
       "n": 4,
@@ -287,13 +287,13 @@
       "opening": "D45 Semi Slav Defense Main Line 5...Be7"
     },
     "D02": {
-      "n": 96,
-      "w": 40,
+      "n": 97,
+      "w": 41,
       "d": 5,
-      "agg": 1104,
-      "moves": 4143,
-      "time_sum": 4819.499999999974,
-      "time_cnt": 4142,
+      "agg": 1113,
+      "moves": 4180,
+      "time_sum": 4858.6999999999725,
+      "time_cnt": 4179,
       "opening": "D02 Queens Pawn Opening Krause Variation...4.b3 Nc6 5.Bb2 Bg4"
     },
     "D06": {
@@ -327,34 +327,34 @@
       "opening": "A01 Nimzowitsch Larsen Attack Classical Variation 2.Bb2 c5"
     },
     "E21": {
-      "n": 23,
+      "n": 24,
       "w": 9,
       "d": 4,
-      "agg": 218,
-      "moves": 867,
-      "time_sum": 968.3000000000023,
-      "time_cnt": 866,
-      "opening": "E21 Nimzo Indian Defense Three Knights Variation 4...O O"
+      "agg": 234,
+      "moves": 920,
+      "time_sum": 1028.2000000000023,
+      "time_cnt": 919,
+      "opening": "E21 Nimzo Indian Defense Three Knights Duchamp Variation...6.Bh4 g5 7.Bg3 Ne4"
     },
     "B12": {
-      "n": 33,
+      "n": 34,
       "w": 16,
       "d": 1,
-      "agg": 409,
-      "moves": 1376,
-      "time_sum": 1711.8999999999992,
-      "time_cnt": 1375,
-      "opening": "B12 Caro Kann Defense 2.d4 d5"
+      "agg": 416,
+      "moves": 1411,
+      "time_sum": 1764.2999999999988,
+      "time_cnt": 1410,
+      "opening": "B12 Caro Kann Defense Advance Tal Variation"
     },
     "D10": {
-      "n": 54,
-      "w": 20,
+      "n": 55,
+      "w": 21,
       "d": 2,
-      "agg": 687,
-      "moves": 2247,
-      "time_sum": 2733.199999999984,
-      "time_cnt": 2247,
-      "opening": "D10 Slav Defense Exchange Variation 3...cxd5 4.Nc3 Nc6"
+      "agg": 702,
+      "moves": 2287,
+      "time_sum": 2792.1999999999834,
+      "time_cnt": 2287,
+      "opening": "D10 Slav Defense Exchange Variation...6.e3 a6 7.Rc1 Bf5"
     },
     "B13": {
       "n": 35,
@@ -417,14 +417,14 @@
       "opening": "D38 Queens Gambit Declined Ragozin Defense 5.Qb3"
     },
     "D11": {
-      "n": 65,
+      "n": 66,
       "w": 29,
       "d": 1,
-      "agg": 760,
-      "moves": 2846,
-      "time_sum": 3183.3999999999746,
-      "time_cnt": 2843,
-      "opening": "D11 Slav Defense Modern Quiet Pin Defense 5.Nc3"
+      "agg": 768,
+      "moves": 2891,
+      "time_sum": 3242.4999999999764,
+      "time_cnt": 2888,
+      "opening": "D11 Slav Defense Modern Line"
     },
     "D16": {
       "n": 14,
@@ -557,23 +557,23 @@
       "opening": "E09 Catalan Opening Closed Main Line"
     },
     "A11": {
-      "n": 25,
+      "n": 26,
       "w": 15,
       "d": 0,
-      "agg": 297,
-      "moves": 1117,
-      "time_sum": 1285.9,
-      "time_cnt": 1116,
-      "opening": "A11 English Opening Caro Kann Defensive System 2.Nc3 d5 3.e3 Nf6"
+      "agg": 300,
+      "moves": 1137,
+      "time_sum": 1308.9000000000003,
+      "time_cnt": 1136,
+      "opening": "A11 English Opening Caro Kann Defensive System...3.e3 Nf6 4.b3 e6 5.Bb2"
     },
     "A04": {
-      "n": 33,
+      "n": 35,
       "w": 18,
       "d": 1,
-      "agg": 392,
-      "moves": 1298,
-      "time_sum": 1513.400000000003,
-      "time_cnt": 1297,
+      "agg": 411,
+      "moves": 1380,
+      "time_sum": 1623.0000000000025,
+      "time_cnt": 1379,
       "opening": "A04 Reti Opening Sicilian Invitation...3.Bg2 e5 4.d3 d5 5.O O"
     },
     "D07": {
@@ -617,14 +617,14 @@
       "opening": "D43 Semi Slav Defense Anti Meran Anti Moscow Gambit 6...Be7 7.e3"
     },
     "A00": {
-      "n": 55,
+      "n": 57,
       "w": 21,
       "d": 4,
-      "agg": 614,
-      "moves": 2353,
-      "time_sum": 2778.099999999983,
-      "time_cnt": 2352,
-      "opening": "A00 Mieses Opening 1...d5"
+      "agg": 627,
+      "moves": 2424,
+      "time_sum": 2880.599999999983,
+      "time_cnt": 2423,
+      "opening": "A00 Polish Opening 1...d5 2.Bb2"
     },
     "D24": {
       "n": 5,
@@ -717,14 +717,14 @@
       "opening": "A54 Old Indian Defense Ukrainian Two Knights Variation 4...exd4 5.Nxd4"
     },
     "D35": {
-      "n": 8,
+      "n": 9,
       "w": 2,
       "d": 0,
-      "agg": 74,
-      "moves": 318,
-      "time_sum": 374.49999999999983,
-      "time_cnt": 318,
-      "opening": "D35 Queens Gambit Declined Queens Knight Variation 3...Nf6 4.e3 Be7"
+      "agg": 88,
+      "moves": 366,
+      "time_sum": 434.4,
+      "time_cnt": 366,
+      "opening": "D35 Queens Gambit Declined Modern Variation...6.Bh4 O O 7.Rc1 c6 8.Nf3"
     },
     "A15": {
       "n": 3,
@@ -967,14 +967,14 @@
       "opening": "C28 Vienna Game Falkbeer Vienna Gambit 3...d6"
     },
     "C00": {
-      "n": 11,
+      "n": 12,
       "w": 3,
       "d": 0,
-      "agg": 125,
-      "moves": 470,
-      "time_sum": 568.2000000000004,
-      "time_cnt": 470,
-      "opening": "C00 French Defense La Bourdonnais Variation 2...d5"
+      "agg": 134,
+      "moves": 512,
+      "time_sum": 628.0000000000002,
+      "time_cnt": 512,
+      "opening": "C00 French Defense La Bourdonnais Variation...3.e5 c5 4.Nf3 Nc6"
     },
     "D14": {
       "n": 7,
@@ -1027,24 +1027,24 @@
       "opening": "A86 Dutch Defense Leningrad Variation...6.Nh3 d6 7.d5 c6 8.Nf4"
     },
     "B54": {
-      "n": 3,
+      "n": 4,
       "w": 1,
       "d": 0,
-      "agg": 40,
-      "moves": 136,
-      "time_sum": 161.10000000000002,
-      "time_cnt": 136,
-      "opening": "B54 Sicilian Defense Open Prins Variation 5...e5 6.Nb3 d5"
+      "agg": 53,
+      "moves": 189,
+      "time_sum": 220.99999999999994,
+      "time_cnt": 188,
+      "opening": "B54 Sicilian Defense Open Prins Variation 5...a6 6.c4 g6 7.Nc3 Bg7 8.Be3"
     },
     "A09": {
-      "n": 5,
+      "n": 6,
       "w": 3,
       "d": 0,
-      "agg": 78,
-      "moves": 273,
-      "time_sum": 284.3999999999998,
-      "time_cnt": 273,
-      "opening": "A09 Reti Opening Reti Gambit"
+      "agg": 87,
+      "moves": 308,
+      "time_sum": 344.2999999999998,
+      "time_cnt": 308,
+      "opening": "A09 Reti Opening Reti Gambit Accepted"
     },
     "A58": {
       "n": 2,
@@ -1067,14 +1067,14 @@
       "opening": "A27 English Opening Reversed Sicilian Three Knights System...4.e3 Bg7 5.d4 d6 6.Be2"
     },
     "D17": {
-      "n": 6,
-      "w": 5,
+      "n": 7,
+      "w": 6,
       "d": 0,
-      "agg": 70,
-      "moves": 257,
-      "time_sum": 280.8999999999998,
-      "time_cnt": 257,
-      "opening": "D17 Slav Defense Modern Alapin Variation Czech Krause Attack...7.Nxc4 Nb6 8.Ne5 a5"
+      "agg": 81,
+      "moves": 298,
+      "time_sum": 334.0999999999999,
+      "time_cnt": 298,
+      "opening": "D17 Slav Defense Modern Alapin Variation Czech Krause Wiesbaden Variation 7.f3 Bb4 8.Nxc4 O O"
     },
     "E20": {
       "n": 1,
@@ -1087,14 +1087,14 @@
       "opening": "E20 Nimzo Indian Defense 4.Bd2 O O 5.Nf3 d5"
     },
     "D19": {
-      "n": 5,
+      "n": 6,
       "w": 3,
       "d": 0,
-      "agg": 53,
-      "moves": 195,
-      "time_sum": 227.5,
-      "time_cnt": 194,
-      "opening": "D19 Slav Defense Modern Alapin Variation Czech Classical Dutch Variation 8...Nbd7 9.Qe2"
+      "agg": 66,
+      "moves": 246,
+      "time_sum": 287.3,
+      "time_cnt": 245,
+      "opening": "D19 Slav Defense Modern Alapin Variation Czech Classical Dutch Variation 8...Nbd7 9.Qb3 a5"
     },
     "A50": {
       "n": 7,
@@ -1557,13 +1557,13 @@
       "opening": "D50 Queens Gambit Declined Semi Tarrasch Pillsbury Primitive Pillsbury Variation"
     },
     "C47": {
-      "n": 3,
+      "n": 4,
       "w": 0,
-      "d": 0,
-      "agg": 30,
-      "moves": 109,
-      "time_sum": 152.10000000000002,
-      "time_cnt": 108,
+      "d": 1,
+      "agg": 48,
+      "moves": 186,
+      "time_sum": 209.3999999999997,
+      "time_cnt": 185,
       "opening": "C47 Four Knights Game Italian Variation 4...Nxe4 5.Nxe4 d5"
     },
     "A31": {
@@ -1835,73 +1835,94 @@
       "time_sum": 59.8,
       "time_cnt": 46,
       "opening": "B45 Sicilian Defense Four Knights Variation...7.e5 Nd5 8.Nxd5 cxd5"
+    },
+    "E83": {
+      "n": 1,
+      "w": 1,
+      "d": 0,
+      "agg": 12,
+      "moves": 43,
+      "time_sum": 57.5,
+      "time_cnt": 43,
+      "opening": "E83 Kings Indian Defense Samisch Yates Panno Formation"
+    },
+    "C60": {
+      "n": 1,
+      "w": 0,
+      "d": 0,
+      "agg": 12,
+      "moves": 46,
+      "time_sum": 57.3,
+      "time_cnt": 46,
+      "opening": "C60 Ruy Lopez Opening"
     }
   },
   "by_phase": {
     "opening": {
-      "n": 2473,
-      "w": 1152,
-      "d": 113,
-      "agg": 3516,
-      "moves": 24691,
-      "time_sum": 14901.700000001389,
-      "time_cnt": 24691
+      "n": 2497,
+      "w": 1158,
+      "d": 114,
+      "agg": 3546,
+      "moves": 24931,
+      "time_sum": 15073.700000001403,
+      "time_cnt": 24931
     },
     "middlegame": {
-      "n": 2456,
-      "w": 1143,
-      "d": 112,
-      "agg": 14248,
-      "moves": 46010,
-      "time_sum": 73172.29999999917,
-      "time_cnt": 46010
+      "n": 2480,
+      "w": 1149,
+      "d": 113,
+      "agg": 14388,
+      "moves": 46474,
+      "time_sum": 73983.09999999926,
+      "time_cnt": 46474
     },
     "endgame": {
-      "n": 1934,
-      "w": 886,
-      "d": 106,
-      "agg": 11223,
-      "moves": 32915,
-      "time_sum": 30546.699999997985,
-      "time_cnt": 32857
+      "n": 1956,
+      "w": 891,
+      "d": 107,
+      "agg": 11318,
+      "moves": 33220,
+      "time_sum": 30863.59999999791,
+      "time_cnt": 33161
     }
   },
   "by_moves": {
     "11-15": {
-      "n": 2456,
-      "w": 1143,
-      "d": 112,
-      "agg": 3198,
-      "moves": 12224,
-      "time_sum": 15405.000000000111,
-      "time_cnt": 12224
+      "n": 2480,
+      "w": 1149,
+      "d": 113,
+      "agg": 3229,
+      "moves": 12344,
+      "time_sum": 15580.400000000109,
+      "time_cnt": 12344
     },
     "16-20": {
-      "n": 2428,
-      "w": 1133,
-      "d": 111,
-      "agg": 3711,
-      "moves": 11988,
-      "time_sum": 19970.299999999996,
-      "time_cnt": 11988
+      "n": 2452,
+      "w": 1139,
+      "d": 112,
+      "agg": 3744,
+      "moves": 12108,
+      "time_sum": 20193.599999999984,
+      "time_cnt": 12108
     },
     "21-25": {
-      "n": 2332,
-      "w": 1078,
-      "d": 111,
-      "agg": 3759,
-      "moves": 11391,
-      "time_sum": 20507.199999999953,
-      "time_cnt": 11391
+      "n": 2355,
+      "w": 1084,
+      "d": 112,
+      "agg": 3796,
+      "moves": 11505,
+      "time_sum": 20713.999999999938,
+      "time_cnt": 11505
     },
     "26-30": {
-      "n": 2166,
-      "w": 999,
-      "d": 109,
-      "agg": 3580,
-      "moves": 10407,
-      "time_sum": 17289.800000000112,
-      "time_cnt": 10407
+      "n": 2188,
+      "w": 1004,
+      "d": 110,
+      "agg": 3619,
+      "moves": 10517,
+      "time_sum": 17495.100000000115,
+      "time_cnt": 10517
     }
-  }
+  },
+  "_cached_at": 1794546170.7718105
 }

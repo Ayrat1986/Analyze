@@ -1,10 +1,10 @@
 # ============================================================
 # analysis/dashboards/psych_focus.py — 04_psych_focus.txt
+# v25.0: убран blunder_report_windows.txt (никогда не создавался).
 # ============================================================
 from analysis.common import read_report_file
 
 REPORTS = [
-    ("blunder_report_windows.txt", "📊 ЗЕВКИ ПО ОКНАМ (1/2/7/30/90)"),
     ("blunder_anatomy.txt", "🔬 BLUNDER ANATOMY (время на ход)"),
     ("first_blunder_report.txt", "📊 ПЕРВЫЙ ЗЕВОК"),
     ("missed_mates.txt", "🎯 ПРОПУЩЕННЫЕ МАТЫ"),

@@ -1,16 +1,13 @@
 # ============================================================
-# analysis/dashboards/opponents.py — 07_opponents.txt
+# analysis/dashboards/opponents.py — 07_opponents.txt (v25.0)
+# §28 + §4(уточнение): 3 отчёта (weakness, crushed_by, deep).
 # ============================================================
 from analysis.common import read_report_file
 
 REPORTS = [
     ("opponent_weakness.txt", "🎯 СЛАБОСТИ СОПЕРНИКОВ"),
-    ("opponent_deep.txt", "👤 ПРОФИЛИ ТОП-10"),
-    ("crushed_by.txt", "🩸 ТЕ, КТО РАСКАЛЫВАЕТ"),
-    ("style_vs_rating.txt", "🎭 СТИЛЬ vs РЕЙТИНГ"),
-    ("style_position_type.txt", "🎭 СТИЛЬ × ПОЗИЦИЯ × РЕЙТИНГ"),
-    ("style_time_deficit.txt", "⏱️ СТИЛЬ × ВРЕМЯ × ДЕФИЦИТ"),
-    ("anti_aggressor.txt", "🛡️ АНТИ-АГРЕССОР"),
+    ("crushed_by.txt",        "🩸 ТЕ, КТО РАСКАЛЫВАЕТ"),
+    ("opponent_deep.txt",     "🩸 РАЗБОР ТЕХ, КТО РАСКАЛЫВАЕТ (ГЛУБОКО)"),
 ]
 
 

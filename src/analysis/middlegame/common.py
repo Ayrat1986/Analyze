@@ -1,15 +1,14 @@
 # ============================================================
-# analysis/middlegame/common.py — общие утилиты для миттельшпиля
+# analysis/middlegame/common.py (v25.0)
+# Убран REPORTS_DIR (использовался только positional_weaknesses).
 # ============================================================
 import sqlite3
 import os
 import json
-from datetime import datetime
 
 import _common
 
 DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
-REPORTS_DIR = str(_common.REPORTS_DIR)
 PLAYER = _common.CONFIG.get("player", "")
 
 
@@ -17,19 +16,8 @@ def _conn():
     return sqlite3.connect(DB_FILE)
 
 
-def write_report(name: str, lines: list[str]):
-    """Записывает отчет в файл и дублирует вывод в консоль."""
-    path = os.path.join(REPORTS_DIR, f"{name}.txt")
-    with open(path, "w", encoding="utf-8") as f:
-        for line in lines:
-            print(line)
-            f.write(line + "\n")
-    print(f"\n✅ {path}")
-    return path
-
-
 def get_base_filter() -> str:
-    """Базовый фильтр для всех запросов миттельшпиля (без лагов, читеров и т.д.)"""
+    """Базовый фильтр для всех запросов миттельшпиля."""
     return "is_lag=0 AND is_cheater=0"
 
 

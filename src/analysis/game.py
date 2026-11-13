@@ -1,5 +1,7 @@
 # ============================================================
-# analysis/game.py — анализ одной шахматной партии (v21.0)
+# analysis/game.py — анализ одной шахматной партии (v25.0)
+# P2: eval_after_opening теперь берётся из eval_after (после 10-го),
+#     а не eval_before (до 10-го). Убран no-op move_num += 1.
 # ============================================================
 import io
 import chess
@@ -14,6 +16,7 @@ from .constants import (
 )
 from .helpers import get_opening_name, get_result_info, describe_blunder, calculate_accuracy
 
+
 def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str) -> dict:
     pgn = game_data["pgn"]
     game = chess.pgn.read_game(io.StringIO(pgn))
@@ -21,7 +24,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         raise ValueError(f"Битый PGN: {game_data.get('url', '?')}")
 
     board = game.board()
-    
+
     from _chess_utils import (
         parse_clock, get_opponent_rating, get_my_rating,
         get_opponent_username, load_known_cheaters,
@@ -31,12 +34,12 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
 
     player_is_white = game.headers.get("White", "") == player
     my_color = chess.WHITE if player_is_white else chess.BLACK
-    
+
     opponent_rating = get_opponent_rating(game_data, player)
     my_rating = get_my_rating(game_data, player)
     opp_username = get_opponent_username(game_data, player)
     is_cheater = opp_username in load_known_cheaters()
-    
+
     eco = game.headers.get("ECO", "")
     opening = get_opening_name(game)
     res_info = get_result_info(game, player_is_white)
@@ -48,7 +51,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
     our_moves = 0
     move_num = 1
     last_move_num = 0
-    
+
     loss_berserk = 0; moves_berserk = 0
     loss_op = 0; moves_op = 0
     loss_mid = 0; moves_mid = 0
@@ -60,7 +63,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
     eval_history = []
     eval_history_peak = []
     opening_line = []
-    
+
     eval_after_opening = 0
     moves_in_winning_position = 0
     momentum_after_blunder = []
@@ -68,12 +71,10 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
     prev_eval = None
     our_move_indices = []
     eval_by_move = {}
-    
-    # Инициализация (защита от UnboundLocalError)
+
     timeout_at_move = None
     timeout_with_clock = None
 
-    # --- ГЛАВНЫЙ ЦИКЛ ---
     for i, node in enumerate(moves):
         move = node.move
         is_white = board.turn
@@ -83,39 +84,43 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         my_time_before = None; opp_time_before = None
         if i < len(clocks):
             if player_is_white:
-                if i % 2 == 0: my_time_before = clocks[i - 1] if i > 0 else 60.0
-                else: opp_time_before = clocks[i - 1] if i > 0 else 60.0
+                if i % 2 == 0:
+                    my_time_before = clocks[i - 1] if i > 0 else 60.0
+                else:
+                    opp_time_before = clocks[i - 1] if i > 0 else 60.0
             else:
-                if i % 2 == 1: my_time_before = clocks[i - 1] if i > 0 else 60.0
-                else: opp_time_before = clocks[i - 1] if i > 0 else 60.0
+                if i % 2 == 1:
+                    my_time_before = clocks[i - 1] if i > 0 else 60.0
+                else:
+                    opp_time_before = clocks[i - 1] if i > 0 else 60.0
 
         if move_num <= 10:
             opening_line.append(move.uci())
 
         info_before = engine.analyse(board, chess.engine.Limit(depth=DEPTH))
         score_before = info_before["score"].white()
-        
-        board_before_fen = board.fen() # Сохраняем FEN в строку
-        
+
+        board_before_fen = board.fen()
+
         board.push(move)
         info_after = engine.analyse(board, chess.engine.Limit(depth=DEPTH))
         score_after = info_after["score"].white()
 
         if score_before.is_mate() or score_after.is_mate():
-            if is_white: move_num += 1
             continue
-            
+
         eval_before = score_before.score()
         eval_after = score_after.score()
         if abs(eval_before) > 2000 or abs(eval_after) > 2000:
-            if is_white: move_num += 1
             continue
-            
+
         if is_white == player_is_white:
             eval_by_move[move_num] = eval_before
 
+        # P2 FIX: eval_after_opening — это оценка ПОСЛЕ 10-го хода (eval_after).
+        # Раньше было eval_before — это оценка после 9-го (смещение на полуход).
         if move_num == 10 and is_white == player_is_white:
-            eval_after_opening = eval_before if player_is_white else -eval_before
+            eval_after_opening = eval_after if player_is_white else -eval_after
 
         if is_white == player_is_white:
             eval_player = eval_before if player_is_white else -eval_before
@@ -179,7 +184,6 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                 total_loss += loss
 
             if loss > BLUNDER_THRESHOLD and abs(eval_before) < 1000:
-                # Восстанавливаем доску только здесь
                 board_before = chess.Board(board_before_fen)
                 board_after_response = board.copy()
                 score_after_response = None
@@ -188,34 +192,40 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                     try:
                         info_resp = engine.analyse(board_after_response, chess.engine.Limit(depth=DEPTH))
                         score_after_response = info_resp["score"].white()
-                    except Exception: pass
+                    except Exception:
+                        pass
 
                 what_happened, pattern_tag = describe_blunder(
                     board_before, board_after_response, my_color, loss,
                     eval_before, eval_after, score_after, score_after_response,
                 )
-                
+
                 tag = " [берсерк]" if is_berserk else (" [мгновенный ход]" if is_instant else (" [пограничное]" if not is_normal else ""))
                 eval_swing = (eval_after - eval_before) / 100.0
                 ply_val = (move_num - 1) * 2 + (0 if player_is_white else 1)
-                
+
                 best_uci = None
                 try:
                     pv = info_before.get("pv")
-                    if pv: best_uci = pv[0].uci()
-                except Exception: pass
+                    if pv:
+                        best_uci = pv[0].uci()
+                except Exception:
+                    pass
 
                 missed_threat = 0
                 if i + 1 < len(moves) and loss >= 300:
                     next_move = moves[i + 1].move
                     if next_move in board.legal_moves:
-                        if board.is_capture(next_move): missed_threat = 1
+                        if board.is_capture(next_move):
+                            missed_threat = 1
                         else:
                             try:
                                 b_after = board.copy()
                                 b_after.push(next_move)
-                                if b_after.is_checkmate(): missed_threat = 1
-                            except Exception: pass
+                                if b_after.is_checkmate():
+                                    missed_threat = 1
+                            except Exception:
+                                pass
 
                 blunders.append({
                     "move_num": move_num, "move": move.uci(), "loss": loss,
@@ -238,15 +248,19 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                     if next_mn in eval_by_move:
                         current_eval = eval_by_move.get(move_num, 0)
                         next_eval = eval_by_move[next_mn]
-                        if player_is_white: l_temp = current_eval - next_eval
-                        else: l_temp = next_eval - current_eval
-                        if l_temp > 0: future_losses.append(l_temp)
+                        if player_is_white:
+                            l_temp = current_eval - next_eval
+                        else:
+                            l_temp = next_eval - current_eval
+                        if l_temp > 0:
+                            future_losses.append(l_temp)
                 if future_losses:
                     momentum_after_blunder.append(sum(future_losses) / len(future_losses))
 
         else:
             opp_total_moves += 1
-            if loss > 0: opp_total_loss += loss
+            if loss > 0:
+                opp_total_loss += loss
             if loss > BLUNDER_THRESHOLD and abs(eval_before) < 1000:
                 opp_blunders_count += 1
 
@@ -287,9 +301,12 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
     opp_clock_at_timeout = None
 
     if reason == "просрочка":
-        if draw: flag_result = "draw"
-        elif won: flag_result = "win"
-        else: flag_result = "loss"
+        if draw:
+            flag_result = "draw"
+        elif won:
+            flag_result = "win"
+        else:
+            flag_result = "loss"
 
         for idx, c in enumerate(clocks):
             if c is not None:
@@ -326,7 +343,6 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
     acpl_end = loss_end / moves_end if moves_end > 0 else 0
     avg_momentum = sum(momentum_after_blunder) / len(momentum_after_blunder) if momentum_after_blunder else 0
 
-    # Определяем стиль соперника
     try:
         opp_style = classify_opponent_style(pgn, player_is_white)
     except Exception:

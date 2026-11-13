@@ -1,19 +1,16 @@
 # ============================================================
-# analysis/dashboards/openings.py — 01_openings.txt
+# analysis/dashboards/openings.py — 01_openings.txt (v25.0)
+# §28: REPORTS сокращён с 9 до 4 отчётов.
 # ============================================================
 from analysis.common import read_report_file
 
 REPORTS = [
-    ("opening_planner.txt", "🌳 OPENING PLANNER (Stockfish)"),
-    ("opening_recommendations.txt", "✅ РЕКОМЕНДАЦИИ ПО ДЕБЮТАМ"),
-    ("opening_cheat_sheets.txt", "🧠 ШПАРГАЛКИ (D00, D02, D10)"),  # <-- НОВОЕ
-    ("opening_repertoire.txt", "♟️ РЕПЕРТУАР"),
-    ("openings_winrate_trend.txt", "📉 ТРЕНД WINRATE"),
-    ("opening_performance.txt", "♟️ ПРОИЗВОДИТЕЛЬНОСТЬ"),
-    ("weak_spots_matrix.txt", "🎯 МАТРИЦА СЛАБОСТЕЙ"),
-    ("rating_by_opening.txt", "📈 Δ РЕЙТИНГА"),
-    ("line_anatomy.txt", "🔬 АНАТОМИЯ ЛИНИЙ"),
+    ("opening_planner.txt",       "🌳 OPENING PLANNER (Stockfish)"),
+    ("opening_repertoire.txt",    "♟️ РЕПЕРТУАР"),
+    ("opening_cheat_sheets.txt",  "🧠 ШПАРГАЛКИ (D00, D02, D10)"),
+    ("line_anatomy.txt",          "🔬 АНАТОМИЯ ЛИНИЙ"),
 ]
+
 
 def build_openings(w):
     w.w_separator(char="#", length=60, title="♟️ ДЕБЮТЫ")

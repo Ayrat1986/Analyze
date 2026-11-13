@@ -1,20 +1,16 @@
 # ============================================================
-# analysis/dashboards/middlegame.py — 02_middlegame.txt
+# analysis/dashboards/middlegame.py — 02_middlegame.txt (v25.0)
+# §28: REPORTS сокращён с 11 до 6 отчётов.
 # ============================================================
 from analysis.common import read_report_file
 
 REPORTS = [
-    ("middlegame_summary.txt", "📋 СВОДКА ПО МИТТЕЛЬШПИЛЮ"),
-    ("phase_deep_dive.txt", "🔍 ГЛУБОКИЙ АНАЛИЗ ФАЗ"),
-    ("tactical_motifs.txt", "⚔️ ТАКТИЧЕСКИЕ МОТИВЫ"),
-    ("win_loss_conversion.txt", "💰 РЕАЛИЗАЦИЯ ПЕРЕВЕСА"),
-    ("advantage_speed.txt", "⚡ ADVANTAGE SPEED"),
-    ("positional_weaknesses.txt", "♟️ ПОЗИЦИОННЫЕ СЛАБОСТИ"),
-    ("transition_errors.txt", "🌉 TRANSITION ERRORS"),
-    ("plan_retention.txt", "📋 PLAN RETENTION"),
-    ("piece_activity.txt", "🎭 PIECE ACTIVITY"),
+    ("middlegame_summary.txt",       "📋 СВОДКА ПО МИТТЕЛЬШПИЛЮ"),
+    ("advantage_speed.txt",          "⚡ ADVANTAGE SPEED"),
+    ("transition_errors.txt",        "🌉 TRANSITION ERRORS"),
+    ("tactical_motifs.txt",          "⚔️ ТАКТИЧЕСКИЕ МОТИВЫ"),
+    ("win_loss_conversion.txt",      "💰 РЕАЛИЗАЦИЯ ПЕРЕВЕСА"),
     ("position_type_classifier.txt", "🎭 ТИП ПОЗИЦИИ → WINRATE"),
-    ("long_vs_short.txt", "📏 КОРОТКИЕ vs ДЛИННЫЕ"),
 ]
 
 

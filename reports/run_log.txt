@@ -216,3 +216,17 @@
 [2026-11-10 12:03:47] [INFO] START D:\Analyze\src\13_dashboard_final.py
 [2026-11-10 12:03:48] [OK] END   D:\Analyze\src\13_dashboard_final.py — OK (0.9 сек)
 [2026-11-10 12:03:48] [INFO] === ЗАВЕРШЕНО ===
+[2026-11-13 08:03:23] START 13_dashboard_final.py
+[2026-11-13 08:03:25] END   13_dashboard_final.py — OK
+[2026-11-13 09:05:44] START 00_data_quality.py
+[2026-11-13 09:05:45] END   00_data_quality.py — OK
+[2026-11-13 09:05:45] START 01_fetch_chess_api.py
+[2026-11-13 09:05:51] END   01_fetch_chess_api.py — OK
+[2026-11-13 09:05:51] START 02_analyze_stockfish.py
+[2026-11-13 09:05:51] END   02_analyze_stockfish.py — OK
+[2026-11-13 09:05:51] START 03_migrate_sqlite.py
+[2026-11-13 09:05:52] END   03_migrate_sqlite.py — ERROR: 54 values for 53 columns
+[2026-11-13 09:09:41] START 13_dashboard_final.py
+[2026-11-13 09:09:43] END   13_dashboard_final.py — OK
+[2026-11-13 09:15:38] START 13_dashboard_final.py
+[2026-11-13 09:15:39] END   13_dashboard_final.py — OK

@@ -1,18 +1,18 @@
 ============================================================
  РЕКОМЕНДАЦИИ ПО ДЕБЮТАМ
 ============================================================
-✅ ИГРАЙ (1):
-  B01   B01 Scandinavian Defense Mieses Kotrc Main Li    12п, 58%, ACPL 52
+✅ ИГРАЙ (0):
 
 ❌ БРОСЬ ИЛИ УЧИ ЗАНОВО (0):
 
-➡️ НЕЙТРАЛЬНО (8):
+➡️ НЕЙТРАЛЬНО (9):
   A43   A43 Old Benoni Defense                           28п, 43%, ACPL 63
   B01   B01 Scandinavian Defense Mieses Kotrc Main Li    19п, 53%, ACPL 64
   B01   B01 Scandinavian Defense Mieses Kotrc Main Li    18п, 56%, ACPL 76
   B01   B01 Scandinavian Defense                         17п, 41%, ACPL 80
   A40   A40 Englund Gambit                               16п, 56%, ACPL 67
   B01   B01 Scandinavian Defense Closed 2...d4 3.Nce2    16п, 75%, ACPL 67
+  B01   B01 Scandinavian Defense Mieses Kotrc Main Li    13п, 54%, ACPL 55
   D37   D37 Queens Gambit Declined Three Knights Vari    11п, 54%, ACPL 57
   B01   B01 Scandinavian Defense Mieses Kotrc Main Li    10п, 30%, ACPL 69
 
