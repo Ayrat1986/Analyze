@@ -1,7 +1,6 @@
 # ============================================================
-# web_dashboard/pages/6_Analysis.py (v28.4)
-# - Добавлена интерактивность (перетаскивание фигур).
-# - Исправлена отрисовка стрелок для черных.
+# web_dashboard/pages/6_Analysis.py (v29.1)
+# - Идеальные SVG стрелки (наконец-то правильная формула Y-координаты).
 # ============================================================
 import sys
 import os
@@ -134,7 +133,7 @@ def render_custom_board(pgn_str=None, fen_str=None, size=600, draw_arrows=True):
 
             $(document).ready(function() {{
                 board = Chessboard('board', {{
-                    draggable: true, // ФИГУРЫ МОЖНО ДВИГАТЬ
+                    draggable: true,
                     position: startFen,
                     orientation: currentOrientation,
                     pieceTheme: 'https://lichess1.org/assets/piece/cburnett/{{piece}}.svg',
@@ -148,14 +147,13 @@ def render_custom_board(pgn_str=None, fen_str=None, size=600, draw_arrows=True):
                         var move = game.move({{ from: source, to: target, promotion: 'q' }});
                         if (move === null) return 'snapback';
                         
-                        // Создаем новую ветку
                         positions = positions.slice(0, currentIdx + 1);
                         historySan = historySan.slice(0, currentIdx);
                         positions.push(game.fen());
                         historySan.push(move.san);
                         currentIdx++;
                         
-                        renderMoves();
+                        renderMoves(); 
                         $('.move-san').removeClass('active');
                         if (currentIdx > 0) $('#move-' + (currentIdx - 1)).addClass('active');
                         analyzeCurrent();
@@ -270,7 +268,7 @@ def render_custom_board(pgn_str=None, fen_str=None, size=600, draw_arrows=True):
             function drawArrows(uciMoves) {{
                 var svg = document.getElementById('svg-overlay');
                 svg.innerHTML = ''; 
-                var colors = ['rgba(50, 205, 50, 0.7)', 'rgba(30, 144, 255, 0.7)'];
+                var colors = ['rgba(50, 205, 50, 0.8)', 'rgba(30, 144, 255, 0.8)'];
                 
                 var defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
                 colors.forEach((color, i) => {{
@@ -285,19 +283,22 @@ def render_custom_board(pgn_str=None, fen_str=None, size=600, draw_arrows=True):
                     var fromSq = item.uci.substring(0, 2);
                     var toSq = item.uci.substring(2, 4);
                     
-                    // Вычисляем координаты относительно текущей ориентации доски
+                    // ИСПРАВЛЕННАЯ ФОРМУЛА Y-КООРДИНАТЫ
                     function getCenter(sq) {{
-                        var file = sq.charCodeAt(0) - 97; 
-                        var rank = parseInt(sq[1]) - 1;   
-                        if (currentOrientation === 'black') {{
-                            file = 7 - file;
-                            rank = 7 - rank;
+                        var file = sq.charCodeAt(0) - 97; // a=0, b=1...
+                        var rank = parseInt(sq[1]) - 1;   // 1=0, 2=1...
+                        
+                        var sqSize = {size} / 8;
+                        
+                        var x, y;
+                        if (currentOrientation === 'white') {{
+                            x = file * sqSize + sqSize / 2;
+                            y = (7 - rank) * sqSize + sqSize / 2; // Ранг 8 (index 7) -> y=0
+                        }} else {{
+                            x = (7 - file) * sqSize + sqSize / 2; // a (index 0) -> x=max
+                            y = rank * sqSize + sqSize / 2;       // Ранг 1 (index 0) -> y=0
                         }}
-                        var sqSize = {size} / 8; 
-                        return {{
-                            x: (file * sqSize) + (sqSize / 2),
-                            y: ((7 - rank) * sqSize) + (sqSize / 2)
-                        }};
+                        return {{x: x, y: y}};
                     }}
                     
                     var p1 = getCenter(fromSq);

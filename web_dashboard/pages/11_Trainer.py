@@ -1,7 +1,6 @@
 # ============================================================
-# web_dashboard/pages/11_Trainer.py (v28.4)
-# - Исправлен автоход бота и логика умного принятия ходов.
-# - Исправлены подсказки и "Показать лучший".
+# web_dashboard/pages/11_Trainer.py (v29.1)
+# - Доска блокируется после того, как мы и бот сделали ходы (окончание задачи).
 # ============================================================
 import sys
 import os
@@ -71,6 +70,7 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
             .status {{ font-size: 16px; font-weight: bold; margin-top: 10px; height: 25px; }}
             .correct {{ color: #2ecc71; }}
             .wrong {{ color: #e74c3c; }}
+            .task-complete {{ color: #fff; background-color: #2ecc71; padding: 5px; border-radius: 5px; display: inline-block; }}
             .controls {{ margin-top: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }}
             button {{ padding: 6px 12px; font-size: 14px; cursor: pointer; border-radius: 4px; border: 1px solid #ccc; background: #f8f9fa; }}
             button:hover {{ background: #e2e6ea; }}
@@ -96,6 +96,7 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
             var engineBestMove = null; 
             var waitingForEval = false; 
             var originalTurn = game.turn();
+            var taskSolved = false; // Флаг решения задачи
             
             $(document).ready(function() {{
                 board = Chessboard('board-container', {{
@@ -104,12 +105,15 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
                     orientation: '{orientation}',
                     pieceTheme: 'https://lichess1.org/assets/piece/cburnett/{{piece}}.svg',
                     onDragStart: function(source, piece, position, orientation) {{
-                        if (game.game_over() || botThinking || waitingForEval) return false;
+                        if (game.game_over() || botThinking || waitingForEval || taskSolved) return false;
                         if ((game.turn() === 'w' && piece.search(/^b/) !== -1) || (game.turn() === 'b' && piece.search(/^w/) !== -1)) {{
                             return false;
                         }}
                     }},
-                    onDrop: onDrop
+                    onDrop: onDrop,
+                    onSnapEnd: function() {{
+                        board.position(game.fen());
+                    }}
                 }});
                 
                 fetch('https://cdnjs.cloudflare.com/ajax/libs/stockfish.js/10.0.2/stockfish.js')
@@ -123,10 +127,8 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
                                 var scoreCpMatch = msg.match(/score cp (-?\d+)/);
                                 var scoreMateMatch = msg.match(/score mate (-?\d+)/);
                                 var pvMatch = msg.match(/ pv (.*)/);
-                                
                                 if (scoreCpMatch) currentEval = parseInt(scoreCpMatch[1]);
                                 else if (scoreMateMatch) currentEval = parseInt(scoreMateMatch[1]) * 10000;
-                                
                                 if (pvMatch) engineBestMove = pvMatch[1].trim().split(' ')[0];
                             }}
                             if (typeof msg === 'string' && msg.indexOf('bestmove') === 0) {{
@@ -134,20 +136,19 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
                                 
                                 if (waitingForEval) {{
                                     waitingForEval = false;
-                                    // Упрощенная логика: если ход сделан, и мы здесь, считаем его приемлемым
-                                    $('#status').text('✅ Альтернативный ход принят. Бот отвечает...').removeClass('wrong').addClass('correct');
-                                    board.draggable = false;
+                                    $('#status').text('Альтернативный ход принят. Бот отвечает...').removeClass('wrong').addClass('correct');
                                     botThinking = true;
                                     stockfish.postMessage('position fen ' + game.fen());
                                     stockfish.postMessage('go depth 10');
                                 }} else if (botThinking) {{
                                     if (bm && bm !== '(none)') {{
-                                        var m = game.move({{ from: bm.substring(0,2), to: bm.substring(2,4), promotion: 'q' }});
-                                        if (m) board.position(game.fen());
+                                        game.move({{ from: bm.substring(0,2), to: bm.substring(2,4), promotion: 'q' }});
+                                        board.position(game.fen());
                                     }}
                                     botThinking = false;
-                                    $('#status').text('Твой ход').removeClass('correct wrong');
-                                    board.draggable = true;
+                                    // Задача завершена. Блокируем доску.
+                                    taskSolved = true;
+                                    $('#status').html('<span class="task-complete">🎉 Задача решена! Жми зеленую кнопку "Решено" внизу.</span>');
                                 }}
                             }}
                         }};
@@ -159,6 +160,7 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
             }});
 
             function onDrop(source, target) {{
+                if (botThinking || waitingForEval || taskSolved) return 'snapback';
                 var move = game.move({{ from: source, to: target, promotion: 'q' }});
                 if (move === null) return 'snapback';
                 
@@ -166,8 +168,7 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
                 var status = $('#status');
                 
                 if (dbBestMove && moveUci === dbBestMove) {{
-                    status.text('✅ Отлично! Это правильный ход. Бот отвечает...').removeClass('wrong').addClass('correct');
-                    board.draggable = false;
+                    status.text('✅ Правильно! Бот отвечает...').removeClass('wrong').addClass('correct');
                     botThinking = true;
                     if (stockfish) {{
                         stockfish.postMessage('stop');
@@ -175,8 +176,7 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
                         stockfish.postMessage('go depth 10');
                     }}
                 }} else if (engineBestMove && moveUci === engineBestMove) {{
-                     status.text('✅ Отличный ход (по движку). Бот отвечает...').removeClass('wrong').addClass('correct');
-                     board.draggable = false;
+                     status.text('✅ Правильно (по движку). Бот отвечает...').removeClass('wrong').addClass('correct');
                      botThinking = true;
                      if (stockfish) {{
                          stockfish.postMessage('stop');
@@ -186,21 +186,18 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
                 }} else if (stockfish) {{
                     status.text('Анализирую альтернативный ход...').removeClass('correct wrong');
                     waitingForEval = true;
-                    board.draggable = false; // Блокируем доску на время оценки
                     stockfish.postMessage('stop');
                     stockfish.postMessage('position fen ' + game.fen());
-                    
                     setTimeout(function() {{
                          if (waitingForEval) {{
                              waitingForEval = false;
                              status.text('❌ Ошибка. Это не лучший ход. Пробуй еще.').removeClass('correct').addClass('wrong');
                              game.undo(); 
                              board.position(game.fen());
-                             board.draggable = true;
                              stockfish.postMessage('position fen ' + game.fen());
                              stockfish.postMessage('go depth 12');
                          }}
-                    }}, 600); // Чуть больше времени на оценку
+                    }}, 600); 
                 }} else {{
                     status.text('❌ Ошибка.').removeClass('correct').addClass('wrong');
                     setTimeout(function() {{ game.undo(); board.position(game.fen()); }}, 1000);
@@ -208,11 +205,11 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
             }}
 
             function undoMove() {{
+                if (taskSolved) return; // После решения откатывать нельзя
                 game.undo(); 
-                if (game.turn() !== originalTurn) game.undo(); // Возвращаемся к нашему ходу
+                if (game.turn() !== originalTurn) game.undo(); 
                 board.position(game.fen());
-                $('#status').text('Сделай ход').removeClass('correct wrong');
-                board.draggable = true;
+                $('#status').text('Сделай ход').removeClass('correct wrong task-complete');
                 botThinking = false;
                 waitingForEval = false;
                 if (stockfish) {{
@@ -223,28 +220,28 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500) -> 
             }}
 
             function showHint() {{
+                if (taskSolved) return;
                 var best = dbBestMove || engineBestMove;
                 if (best) {{
                     var from = best.substring(0, 2);
-                    $('#status').text('💡 Посмотри на фигуру на поле ' + from).addClass('correct');
+                    $('#status').text('💡 Посмотри на фигуру на поле ' + from).addClass('correct').removeClass('wrong');
                     $('.square-' + from).css('box-shadow', 'inset 0 0 0 4px #ffeb3b');
                     setTimeout(function() {{ $('.square-' + from).css('box-shadow', ''); }}, 2000);
                 }} else {{
-                    $('#status').text('⚠️ Подсказка недоступна. Движок еще думает.').addClass('wrong');
+                    $('#status').text('⚠️ Подсказка недоступна. Движок еще думает.').addClass('wrong').removeClass('correct');
                 }}
             }}
 
             function showBest() {{
+                if (taskSolved) return;
                 var best = dbBestMove || engineBestMove;
                 if (best) {{
                     var from = best.substring(0, 2);
                     var to = best.substring(2, 4);
-                    // Валидация перед ходом
                     var move = game.move({{ from: from, to: to, promotion: 'q' }});
                     if (move) {{
                         board.position(game.fen());
-                        $('#status').text('✅ Лучший ход: ' + from + ' → ' + to).addClass('correct');
-                        board.draggable = false;
+                        $('#status').text('✅ Лучший ход: ' + from + ' → ' + to + '. Бот отвечает...').addClass('correct').removeClass('wrong');
                         botThinking = true;
                         if (stockfish) {{
                             stockfish.postMessage('position fen ' + game.fen());
@@ -274,9 +271,14 @@ def render_single_task(task_type: str, fen: str, title: str, subtitle: str, best
         if best_move:
             try:
                 b = chess.Board(fen)
-                best_uci = b.parse_san(best_move).uci()
+                try:
+                    best_uci = b.parse_san(best_move).uci()
+                except ValueError:
+                    if chess.Move.from_uci(best_move) in b.legal_moves:
+                        best_uci = best_move
             except Exception:
-                best_uci = best_move
+                best_uci = None 
+                
         components.html(render_smart_board(fen, best_uci, size=board_size), height=board_size + 120)
         
     with c2:
