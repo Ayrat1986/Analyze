@@ -5,143 +5,143 @@
 
 💡 Здесь ты мог поставить мат, но сыграл иначе. Тренируй эти позиции:
 
-#1. Ayrat_1986 vs gurjotkainth (Ход 29)
-    Что случилось: зевок мата в 2 [пограничное]
-    FEN: 2r4k/pb4q1/1p2Q3/3Pb3/8/4B2P/P4RP1/6K1 w - - 3 29
-    💡 Лучший ход: f2f5
-    Тренируй: https://lichess.org/analysis/standard/2r4k/pb4q1/1p2Q3/3Pb3/8/4B2P/P4RP1/6K1_w_-_-_3_29
-    Ссылка: https://www.chess.com/game/live/187174543288
-
-#2. Ayrat_1986 vs YoucefGanouche (Ход 22)
+#1. Ayrat_1986 vs YoucefGanouche (Ход 22)
     Что случилось: зевок мата в 3 [мгновенный ход]
     FEN: r4rk1/pbN2p1p/5p2/3P3q/P2Q4/2B3P1/1P4KP/2R5 w - - 0 22
     💡 Лучший ход: c1e1
     Тренируй: https://lichess.org/analysis/standard/r4rk1/pbN2p1p/5p2/3P3q/P2Q4/2B3P1/1P4KP/2R5_w_-_-_0_22
     Ссылка: https://www.chess.com/game/live/187172500024
 
-#3. Ayrat_1986 vs goozack (Ход 46)
-    Что случилось: зевок мата в 4 [пограничное]
-    FEN: 6k1/R7/3Nb2p/4P1p1/3p1P2/8/3K3P/8 w - - 0 46
-    💡 Лучший ход: f4f5
-    Тренируй: https://lichess.org/analysis/standard/6k1/R7/3Nb2p/4P1p1/3p1P2/8/3K3P/8_w_-_-_0_46
-    Ссылка: https://www.chess.com/game/live/187149190062
+#2. zumpili vs Ayrat_1986 (Ход 38)
+    Что случилось: зевок мата в 6 [мгновенный ход]
+    FEN: 7k/1b4p1/pp2B2p/3P4/7P/P2q4/5Q2/4R1K1 b - - 2 38
+    💡 Лучший ход: d3a3
+    Тренируй: https://lichess.org/analysis/standard/7k/1b4p1/pp2B2p/3P4/7P/P2q4/5Q2/4R1K1_b_-_-_2_38
+    Ссылка: https://www.chess.com/game/live/187147067466
 
-#4. Plattton1 vs Ayrat_1986 (Ход 34)
+#3. Plattton1 vs Ayrat_1986 (Ход 34)
     Что случилось: зевок мата в 6 [пограничное]
     FEN: 4r2r/p6k/3Q2p1/7p/8/8/Pp3P2/3R3K b - - 0 34
-    💡 Лучший ход: e8g8
+    💡 Лучший ход: h8g8
     Тренируй: https://lichess.org/analysis/standard/4r2r/p6k/3Q2p1/7p/8/8/Pp3P2/3R3K_b_-_-_0_34
     Ссылка: https://www.chess.com/game/live/186799717638
 
-#5. BREADFATHER vs Ayrat_1986 (Ход 27)
+#4. BREADFATHER vs Ayrat_1986 (Ход 33)
     Что случилось: зевок мата в 6 [пограничное]
-    FEN: r4k2/5ppp/1pQ1p3/1P2N2q/2PP2P1/rNK1n3/7P/3R1R2 b - - 4 27
-    💡 Лучший ход: e3d1
-    Тренируй: https://lichess.org/analysis/standard/r4k2/5ppp/1pQ1p3/1P2N2q/2PP2P1/rNK1n3/7P/3R1R2_b_-_-_4_27
+    FEN: r7/5N1p/1p5Q/1P6/2PP2Pk/rNK1n3/7q/3R4 b - - 4 33
+    💡 Лучший ход: h4g4
+    Тренируй: https://lichess.org/analysis/standard/r7/5N1p/1p5Q/1P6/2PP2Pk/rNK1n3/7q/3R4_b_-_-_4_33
     Ссылка: https://www.chess.com/game/live/186777036684
 
-#6. KarpovVascaino vs Ayrat_1986 (Ход 53)
-    Что случилось: зевок мата в 11 [мгновенный ход]
-    FEN: 8/4Q3/3R4/8/8/2pr4/2k2K2/8 b - - 1 53
-    💡 Лучший ход: d3d6
-    Тренируй: https://lichess.org/analysis/standard/8/4Q3/3R4/8/8/2pr4/2k2K2/8_b_-_-_1_53
-    Ссылка: https://www.chess.com/game/live/186611978862
+#5. BlazingGuns01 vs Ayrat_1986 (Ход 33)
+    Что случилось: зевок мата в 9 [пограничное]
+    FEN: Q4nk1/4Bppp/8/pp6/2pq2N1/P6P/1P3PP1/7K b - - 1 33
+    💡 Лучший ход: h7h5
+    Тренируй: https://lichess.org/analysis/standard/Q4nk1/4Bppp/8/pp6/2pq2N1/P6P/1P3PP1/7K_b_-_-_1_33
+    Ссылка: https://www.chess.com/game/live/186671116354
 
-#7. fan_numero_1_de_valen vs Ayrat_1986 (Ход 48)
-    Что случилось: зевок мата в 19 [мгновенный ход]
-    FEN: 8/8/2k5/8/1P6/1KN5/1PP5/8 b - - 2 48
-    💡 Лучший ход: c6d7
-    Тренируй: https://lichess.org/analysis/standard/8/8/2k5/8/1P6/1KN5/1PP5/8_b_-_-_2_48
-    Ссылка: https://www.chess.com/game/live/186414722978
+#6. indiandavid123 vs Ayrat_1986 (Ход 30)
+    Что случилось: зевок мата в 9 [пограничное]
+    FEN: 7r/p2r2k1/3q1bpp/1Q1R4/6P1/1B3P2/PP4KP/4R3 b - - 0 30
+    💡 Лучший ход: d6d5
+    Тренируй: https://lichess.org/analysis/standard/7r/p2r2k1/3q1bpp/1Q1R4/6P1/1B3P2/PP4KP/4R3_b_-_-_0_30
+    Ссылка: https://www.chess.com/game/live/186565331354
 
-#8. isla88 vs Ayrat_1986 (Ход 60)
-    Что случилось: зевок мата в 15 [пограничное]
+#7. YoucefGanouche vs Ayrat_1986 (Ход 31)
+    Что случилось: зевок мата в 7 [пограничное]
+    FEN: 2k5/pq3ppp/3Qp1b1/8/2P5/8/PP3B2/R5K1 b - - 0 31
+    💡 Лучший ход: b7f3
+    Тренируй: https://lichess.org/analysis/standard/2k5/pq3ppp/3Qp1b1/8/2P5/8/PP3B2/R5K1_b_-_-_0_31
+    Ссылка: https://www.chess.com/game/live/186551564114
+
+#8. Ayrat_1986 vs THDx2007 (Ход 25)
+    Что случилось: зевок мата в 2 [пограничное]
+    FEN: 5rk1/p4qp1/bp2p2Q/5p2/1b1NnN1B/4P3/PP1n1P1P/3K2R1 w - - 2 25
+    💡 Лучший ход: f4e6
+    Тренируй: https://lichess.org/analysis/standard/5rk1/p4qp1/bp2p2Q/5p2/1b1NnN1B/4P3/PP1n1P1P/3K2R1_w_-_-_2_25
+    Ссылка: https://www.chess.com/game/live/186414867506
+
+#9. Ayrat_1986 vs Prukwa12345 (Ход 60)
+    Что случилось: зевок мата в 1 [пограничное]
+    FEN: 8/6r1/1p5p/p2P1R2/PbPkn1BK/4r3/2R4P/8 w - - 6 60
+    💡 Лучший ход: d5d6
+    Тренируй: https://lichess.org/analysis/standard/8/6r1/1p5p/p2P1R2/PbPkn1BK/4r3/2R4P/8_w_-_-_6_60
+    Ссылка: https://www.chess.com/game/live/186304021724
+
+#10. isla88 vs Ayrat_1986 (Ход 60)
+    Что случилось: зевок мата в 12 [пограничное]
     FEN: 8/8/2p5/1pK1B3/1Pb5/1k3R2/8/8 b - - 10 60
     💡 Лучший ход: b3a4
     Тренируй: https://lichess.org/analysis/standard/8/8/2p5/1pK1B3/1Pb5/1k3R2/8/8_b_-_-_10_60
     Ссылка: https://www.chess.com/game/live/186179985986
 
-#9. DynamicXess vs Ayrat_1986 (Ход 44)
-    Что случилось: зевок мата в 13 [пограничное]
-    FEN: 1k1n4/1p5R/8/1PP5/2K5/8/8/8 b - - 0 44
-    💡 Лучший ход: b7b6
-    Тренируй: https://lichess.org/analysis/standard/1k1n4/1p5R/8/1PP5/2K5/8/8/8_b_-_-_0_44
-    Ссылка: https://www.chess.com/game/live/186176645976
+#11. hotchilidogg vs Ayrat_1986 (Ход 30)
+    Что случилось: зевок мата в 11 [пограничное]
+    FEN: 2N3k1/p5p1/1pn3b1/2p1p1Pp/3p4/P2P2PB/1PP5/1K3R2 b - - 0 30
+    💡 Лучший ход: e5e4
+    Тренируй: https://lichess.org/analysis/standard/2N3k1/p5p1/1pn3b1/2p1p1Pp/3p4/P2P2PB/1PP5/1K3R2_b_-_-_0_30
+    Ссылка: https://www.chess.com/game/live/186117902382
 
-#10. Ayrat_1986 vs NoHalfPoints (Ход 32)
+#12. Ayrat_1986 vs NoHalfPoints (Ход 32)
     Что случилось: зевок мата в 2 [пограничное]
     FEN: 4r1k1/pN3ppp/8/5Q2/1P6/PK6/1B4q1/8 w - - 0 32
     💡 Лучший ход: b7c5
     Тренируй: https://lichess.org/analysis/standard/4r1k1/pN3ppp/8/5Q2/1P6/PK6/1B4q1/8_w_-_-_0_32
     Ссылка: https://www.chess.com/game/live/186117302604
 
-#11. Ayrat_1986 vs NovaStarlight7 (Ход 27)
+#13. Ayrat_1986 vs DavitM25 (Ход 22)
+    Что случилось: зевок мата в 2 [пограничное]
+    FEN: 2r2rk1/5p1p/p3p3/2qp1p2/7Q/2N4P/PP3PP1/1R1R2K1 w - - 0 22
+    💡 Лучший ход: h4g5
+    Тренируй: https://lichess.org/analysis/standard/2r2rk1/5p1p/p3p3/2qp1p2/7Q/2N4P/PP3PP1/1R1R2K1_w_-_-_0_22
+    Ссылка: https://www.chess.com/game/live/186110747212
+
+#14. Ayrat_1986 vs NovaStarlight7 (Ход 27)
     Что случилось: зевок мата в 3 [пограничное]
     FEN: 2k1q2r/pppr2bp/3pN3/3Pnpp1/4P3/PRQ5/1P3PPP/1K1R1B2 w - - 0 27
     💡 Лучший ход: f1b5
     Тренируй: https://lichess.org/analysis/standard/2k1q2r/pppr2bp/3pN3/3Pnpp1/4P3/PRQ5/1P3PPP/1K1R1B2_w_-_-_0_27
     Ссылка: https://www.chess.com/game/live/185825562568
 
-#12. Ivano1704 vs Ayrat_1986 (Ход 52)
-    Что случилось: зевок мата в 7 [пограничное]
-    FEN: 8/5k2/R7/4Pp1p/5KP1/3N3P/8/8 b - - 0 52
-    💡 Лучший ход: f5g4
-    Тренируй: https://lichess.org/analysis/standard/8/5k2/R7/4Pp1p/5KP1/3N3P/8/8_b_-_-_0_52
-    Ссылка: https://www.chess.com/game/live/185711134552
-
-#13. Ayrat_1986 vs isidor9 (Ход 25)
+#15. Ayrat_1986 vs isidor9 (Ход 25)
     Что случилось: зевок мата в 2 [пограничное]
     FEN: 4r1k1/pp3ppp/2p1q3/4N3/5P2/1P4P1/PBP1Q2P/7K w - - 1 25
     💡 Лучший ход: e2d3
     Тренируй: https://lichess.org/analysis/standard/4r1k1/pp3ppp/2p1q3/4N3/5P2/1P4P1/PBP1Q2P/7K_w_-_-_1_25
     Ссылка: https://www.chess.com/game/live/185707856522
 
-#14. mikmik80 vs Ayrat_1986 (Ход 41)
+#16. Road-to-Something vs Ayrat_1986 (Ход 38)
+    Что случилось: зевок мата в 5 [пограничное]
+    FEN: 5rk1/5p1p/1q2pPpQ/4P3/p3b3/6P1/P2R3P/4K3 b - - 13 38
+    💡 Лучший ход: b6g1
+    Тренируй: https://lichess.org/analysis/standard/5rk1/5p1p/1q2pPpQ/4P3/p3b3/6P1/P2R3P/4K3_b_-_-_13_38
+    Ссылка: https://www.chess.com/game/live/185598999312
+
+#17. mikmik80 vs Ayrat_1986 (Ход 41)
     Что случилось: зевок мата в 7 [мгновенный ход]
     FEN: 8/kp5R/p1pB3P/3pP3/3P4/1P2n3/PK6/6r1 b - - 2 41
-    💡 Лучший ход: a6a5
+    💡 Лучший ход: g1g2
     Тренируй: https://lichess.org/analysis/standard/8/kp5R/p1pB3P/3pP3/3P4/1P2n3/PK6/6r1_b_-_-_2_41
     Ссылка: https://www.chess.com/game/live/185561995030
 
-#15. Ayrat_1986 vs SaifullahYusuf14 (Ход 41)
+#18. Ayrat_1986 vs SaifullahYusuf14 (Ход 41)
     Что случилось: зевок мата в 1 [пограничное]
     FEN: 3q1r1k/r2P1pbn/p7/1p6/4Q3/PBN3BP/1P3PP1/3R2K1 w - - 7 41
     💡 Лучший ход: g3h4
     Тренируй: https://lichess.org/analysis/standard/3q1r1k/r2P1pbn/p7/1p6/4Q3/PBN3BP/1P3PP1/3R2K1_w_-_-_7_41
     Ссылка: https://www.chess.com/game/live/185297303110
 
-#16. Ariel_Lavi vs Ayrat_1986 (Ход 46)
-    Что случилось: зевок мата в 6 [пограничное]
-    FEN: 8/8/7p/3Q1ppk/4pb2/5N2/5PP1/5K2 b - - 1 46
-    💡 Лучший ход: e4f3
-    Тренируй: https://lichess.org/analysis/standard/8/8/7p/3Q1ppk/4pb2/5N2/5PP1/5K2_b_-_-_1_46
-    Ссылка: https://www.chess.com/game/live/185021014816
+#19. EmbarrassmentSon vs Ayrat_1986 (Ход 55)
+    Что случилось: зевок мата в 10 [пограничное]
+    FEN: 8/8/8/8/1R1P2k1/4K3/PP4P1/8 b - - 0 55
+    💡 Лучший ход: g4g5
+    Тренируй: https://lichess.org/analysis/standard/8/8/8/8/1R1P2k1/4K3/PP4P1/8_b_-_-_0_55
+    Ссылка: https://www.chess.com/game/live/185221794366
 
-#17. Ayrat_1986 vs MrAungKhantThu (Ход 42)
+#20. Ayrat_1986 vs MrAungKhantThu (Ход 42)
     Что случилось: зевок мата в 1 [пограничное]
     FEN: 8/R4p1p/3kb3/7R/4P3/2rNK1P1/2r1P3/8 w - - 18 42
     💡 Лучший ход: e4e5
     Тренируй: https://lichess.org/analysis/standard/8/R4p1p/3kb3/7R/4P3/2rNK1P1/2r1P3/8_w_-_-_18_42
     Ссылка: https://www.chess.com/game/live/184741600352
-
-#18. plnkbowz1 vs Ayrat_1986 (Ход 36)
-    Что случилось: зевок мата в 6 [пограничное]
-    FEN: 8/pp2rR2/1n4rk/5Q2/8/8/PP4P1/6K1 b - - 0 36
-    💡 Лучший ход: e7f7
-    Тренируй: https://lichess.org/analysis/standard/8/pp2rR2/1n4rk/5Q2/8/8/PP4P1/6K1_b_-_-_0_36
-    Ссылка: https://www.chess.com/game/live/184737025904
-
-#19. Ayrat_1986 vs trickster0064 (Ход 47)
-    Что случилось: зевок мата в 6 [пограничное]
-    FEN: 5r2/1pp2k2/p2p4/2qPp3/P1PbP1N1/1P3BPP/3Q2K1/8 w - - 15 47
-    💡 Лучший ход: d2g5
-    Тренируй: https://lichess.org/analysis/standard/5r2/1pp2k2/p2p4/2qPp3/P1PbP1N1/1P3BPP/3Q2K1/8_w_-_-_15_47
-    Ссылка: https://www.chess.com/game/live/184719153848
-
-#20. Ayrat_1986 vs prepredeni (Ход 42)
-    Что случилось: зевок мата в 3 [пограничное]
-    FEN: 4Nr2/p4pQ1/6p1/6kp/8/7P/2p2PPK/2q5 w - - 4 42
-    💡 Лучший ход: g7f6
-    Тренируй: https://lichess.org/analysis/standard/4Nr2/p4pQ1/6p1/6kp/8/7P/2p2PPK/2q5_w_-_-_4_42
-    Ссылка: https://www.chess.com/game/live/184622070490
 

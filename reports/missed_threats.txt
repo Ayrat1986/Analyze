@@ -5,303 +5,303 @@
 
 Найдено позиций: 50
 
-#1. Ayrat_1986 vs pIateaued (Ход 42, потеря 2033 CP)
+#1. Ayrat_1986 vs pIateaued (Ход 42, потеря 1959 CP)
     Паттерн: lost_queen
     FEN: 2r3k1/1Q3pb1/p5p1/7p/7P/4PNN1/5PP1/1q4K1 w - - 2 42
     Тренируй: https://lichess.org/analysis/standard/2r3k1/1Q3pb1/p5p1/7p/7P/4PNN1/5PP1/1q4K1_w_-_-_2_42
     Ссылка: https://www.chess.com/game/live/173990580674
 
-#2. Josjimal vs Ayrat_1986 (Ход 36, потеря 1947 CP)
-    Паттерн: lost_piece
-    FEN: 6r1/3kb3/p1p1p3/3PBq2/5N2/P3KQ2/1P5r/2R5 b - - 6 36
-    Тренируй: https://lichess.org/analysis/standard/6r1/3kb3/p1p1p3/3PBq2/5N2/P3KQ2/1P5r/2R5_b_-_-_6_36
-    Ссылка: https://www.chess.com/game/live/187072959906
-
-#3. bulletknight552 vs Ayrat_1986 (Ход 41, потеря 1888 CP)
+#2. bulletknight552 vs Ayrat_1986 (Ход 41, потеря 1774 CP)
     Паттерн: lost_queen
     FEN: 8/1p6/k2Qp3/1p2P3/3qP2P/6R1/6PK/2b2r2 b - - 1 41
     Тренируй: https://lichess.org/analysis/standard/8/1p6/k2Qp3/1p2P3/3qP2P/6R1/6PK/2b2r2_b_-_-_1_41
     Ссылка: https://www.chess.com/game/live/185827831886
 
-#4. Ayrat_1986 vs pacosh (Ход 31, потеря 1724 CP)
-    Паттерн: lost_piece
-    FEN: b1r3k1/p1P2r1p/4p1p1/1B2Bn1q/4R3/P4P2/4QP1P/6RK w - - 2 31
-    Тренируй: https://lichess.org/analysis/standard/b1r3k1/p1P2r1p/4p1p1/1B2Bn1q/4R3/P4P2/4QP1P/6RK_w_-_-_2_31
-    Ссылка: https://www.chess.com/game/live/174142448054
-
-#5. Ayrat_1986 vs JKolly (Ход 41, потеря 1658 CP)
-    Паттерн: lost_queen
-    FEN: 8/pp1b1k2/3b2r1/3Pp3/1P2p2Q/P3Pp2/1BK5/8 w - - 11 41
-    Тренируй: https://lichess.org/analysis/standard/8/pp1b1k2/3b2r1/3Pp3/1P2p2Q/P3Pp2/1BK5/8_w_-_-_11_41
-    Ссылка: https://www.chess.com/game/live/174141901998
-
-#6. nochewypowercab vs Ayrat_1986 (Ход 49, потеря 1613 CP)
-    Паттерн: lost_queen
-    FEN: 8/2b5/p1p1bkpp/1p1p1p2/1P1P4/P1Q2BPP/3Nq3/6K1 b - - 13 49
-    Тренируй: https://lichess.org/analysis/standard/8/2b5/p1p1bkpp/1p1p1p2/1P1P4/P1Q2BPP/3Nq3/6K1_b_-_-_13_49
-    Ссылка: https://www.chess.com/game/live/173368088208
-
-#7. Doruk-09 vs Ayrat_1986 (Ход 45, потеря 1608 CP)
-    Паттерн: lost_queen
-    FEN: 6r1/kp1P4/7q/p1ppP3/1b6/7Q/5BPK/8 b - - 4 45
-    Тренируй: https://lichess.org/analysis/standard/6r1/kp1P4/7q/p1ppP3/1b6/7Q/5BPK/8_b_-_-_4_45
-    Ссылка: https://www.chess.com/game/live/184717053130
-
-#8. Ayrat_1986 vs Gidel33 (Ход 22, потеря 1596 CP)
+#3. Ayrat_1986 vs Gidel33 (Ход 22, потеря 1585 CP)
     Паттерн: lost_queen
     FEN: 5rk1/5ppp/1p6/3pq3/1PnQP3/3B4/P4PPP/2R3K1 w - - 1 22
     Тренируй: https://lichess.org/analysis/standard/5rk1/5ppp/1p6/3pq3/1PnQP3/3B4/P4PPP/2R3K1_w_-_-_1_22
     Ссылка: https://www.chess.com/game/live/186179510972
 
-#9. Ayrat_1986 vs pacosh (Ход 27, потеря 1589 CP)
-    Паттерн: missed_mate
-    FEN: b1r2rk1/p5pp/2P1p3/1B1nB2q/3R1p2/P3PP2/4QP1P/6RK w - - 2 27
-    Тренируй: https://lichess.org/analysis/standard/b1r2rk1/p5pp/2P1p3/1B1nB2q/3R1p2/P3PP2/4QP1P/6RK_w_-_-_2_27
-    Ссылка: https://www.chess.com/game/live/174142448054
-
-#10. md2007 vs Ayrat_1986 (Ход 21, потеря 1581 CP)
-    Паттерн: lost_piece
-    FEN: 2kr3r/2p2ppp/pp1b1q2/8/4R3/PQ3B1P/2R2PP1/6K1 b - - 1 21
-    Тренируй: https://lichess.org/analysis/standard/2kr3r/2p2ppp/pp1b1q2/8/4R3/PQ3B1P/2R2PP1/6K1_b_-_-_1_21
-    Ссылка: https://www.chess.com/game/live/185824372010
-
-#11. davidw_94 vs Ayrat_1986 (Ход 38, потеря 1580 CP)
-    Паттерн: lost_queen
-    FEN: 4kb2/1p3p2/p3p3/3p4/2NP1Q1P/6P1/3q1P2/2r2BK1 b - - 0 38
-    Тренируй: https://lichess.org/analysis/standard/4kb2/1p3p2/p3p3/3p4/2NP1Q1P/6P1/3q1P2/2r2BK1_b_-_-_0_38
-    Ссылка: https://www.chess.com/game/live/185269465614
-
-#12. Ayrat_1986 vs palombie (Ход 26, потеря 1564 CP)
-    Паттерн: lost_queen
-    FEN: 1r2r1k1/1b3pbp/p3p1p1/4P3/N1PPn3/5B1P/Q4qP1/B1RR2K1 w - - 3 26
-    Тренируй: https://lichess.org/analysis/standard/1r2r1k1/1b3pbp/p3p1p1/4P3/N1PPn3/5B1P/Q4qP1/B1RR2K1_w_-_-_3_26
-    Ссылка: https://www.chess.com/game/live/173899387696
-
-#13. elseres vs Ayrat_1986 (Ход 36, потеря 1564 CP)
-    Паттерн: lost_queen
-    FEN: 6k1/ppn3p1/8/1q2N3/8/PP1Q3P/6P1/5K2 b - - 2 36
-    Тренируй: https://lichess.org/analysis/standard/6k1/ppn3p1/8/1q2N3/8/PP1Q3P/6P1/5K2_b_-_-_2_36
-    Ссылка: https://www.chess.com/game/live/186797924734
-
-#14. Ayrat_1986 vs JiangoFett (Ход 37, потеря 1555 CP)
-    Паттерн: lost_piece
-    FEN: 6k1/4pp2/3p1bq1/3P4/1p3B2/1P3Q1p/2r3P1/5RK1 w - - 0 37
-    Тренируй: https://lichess.org/analysis/standard/6k1/4pp2/3p1bq1/3P4/1p3B2/1P3Q1p/2r3P1/5RK1_w_-_-_0_37
-    Ссылка: https://www.chess.com/game/live/185192394694
-
-#15. honzaslanec vs Ayrat_1986 (Ход 23, потеря 1552 CP)
-    Паттерн: lost_queen
-    FEN: r5k1/pp3p2/4pn1p/6p1/5P2/3Q2B1/PKP3PP/4q3 b - - 0 23
-    Тренируй: https://lichess.org/analysis/standard/r5k1/pp3p2/4pn1p/6p1/5P2/3Q2B1/PKP3PP/4q3_b_-_-_0_23
-    Ссылка: https://www.chess.com/game/live/184416096930
-
-#16. Ayrat_1986 vs DanilovVladimir (Ход 23, потеря 1515 CP)
-    Паттерн: lost_piece
-    FEN: 2r2rk1/5ppp/1nNbpn2/1B6/Pp6/4P3/1P2QPPP/2R3K1 w - - 0 23
-    Тренируй: https://lichess.org/analysis/standard/2r2rk1/5ppp/1nNbpn2/1B6/Pp6/4P3/1P2QPPP/2R3K1_w_-_-_0_23
-    Ссылка: https://www.chess.com/game/live/184519670062
-
-#17. IMTrsilva17 vs Ayrat_1986 (Ход 31, потеря 1510 CP)
-    Паттерн: lost_piece
-    FEN: 3r4/1R1n1p2/2pk2p1/q2p3p/5P2/3B4/4QP2/3K4 b - - 0 31
-    Тренируй: https://lichess.org/analysis/standard/3r4/1R1n1p2/2pk2p1/q2p3p/5P2/3B4/4QP2/3K4_b_-_-_0_31
-    Ссылка: https://www.chess.com/game/live/186110496914
-
-#18. Ayrat_1986 vs edris8809 (Ход 33, потеря 1509 CP)
-    Паттерн: lost_piece
-    FEN: r7/ppp3bk/3p2n1/3P4/2P2rPq/1P1QNn2/PB1N1RK1/3R4 w - - 0 33
-    Тренируй: https://lichess.org/analysis/standard/r7/ppp3bk/3p2n1/3P4/2P2rPq/1P1QNn2/PB1N1RK1/3R4_w_-_-_0_33
-    Ссылка: https://www.chess.com/game/live/173087374394
-
-#19. Ayrat_1986 vs ssppiderman (Ход 31, потеря 1487 CP)
-    Паттерн: lost_queen
-    FEN: 5r2/p5kp/2b2qp1/2PB1p2/8/4PP2/QrN3PP/3R1RK1 w - - 1 31
-    Тренируй: https://lichess.org/analysis/standard/5r2/p5kp/2b2qp1/2PB1p2/8/4PP2/QrN3PP/3R1RK1_w_-_-_1_31
-    Ссылка: https://www.chess.com/game/live/184425265742
-
-#20. BREADFATHER vs Ayrat_1986 (Ход 30, потеря 1462 CP)
-    Паттерн: lost_piece
-    FEN: r7/3Q2kp/1p2p3/1P2N3/2PP2P1/rNK1n3/7q/3R4 b - - 1 30
-    Тренируй: https://lichess.org/analysis/standard/r7/3Q2kp/1p2p3/1P2N3/2PP2P1/rNK1n3/7q/3R4_b_-_-_1_30
-    Ссылка: https://www.chess.com/game/live/186777036684
-
-#21. Caio_Buys vs Ayrat_1986 (Ход 43, потеря 1450 CP)
-    Паттерн: lost_queen
-    FEN: 8/kp4p1/p2pQ3/8/3p4/PPq5/8/1K6 b - - 3 43
-    Тренируй: https://lichess.org/analysis/standard/8/kp4p1/p2pQ3/8/3p4/PPq5/8/1K6_b_-_-_3_43
-    Ссылка: https://www.chess.com/game/live/185654565744
-
-#22. Ayrat_1986 vs VlasoffChess (Ход 24, потеря 1432 CP)
-    Паттерн: lost_piece
-    FEN: 3r3k/pp2p1b1/4Nr2/3B3p/6pP/3Q2P1/PP3q2/R2K3R w - - 2 24
-    Тренируй: https://lichess.org/analysis/standard/3r3k/pp2p1b1/4Nr2/3B3p/6pP/3Q2P1/PP3q2/R2K3R_w_-_-_2_24
-    Ссылка: https://www.chess.com/game/live/186612466488
-
-#23. Ayrat_1986 vs Player_No1204 (Ход 35, потеря 1422 CP)
-    Паттерн: lost_queen
-    FEN: 6k1/1pr2p2/6r1/6qp/3Q4/1P3R1P/P5P1/5R1K w - - 6 35
-    Тренируй: https://lichess.org/analysis/standard/6k1/1pr2p2/6r1/6qp/3Q4/1P3R1P/P5P1/5R1K_w_-_-_6_35
-    Ссылка: https://www.chess.com/game/live/173908296906
-
-#24. Ayrat_1986 vs GBNTomM (Ход 39, потеря 1404 CP)
+#4. Ayrat_1986 vs GBNTomM (Ход 39, потеря 1579 CP)
     Паттерн: lost_piece
     FEN: 2r3k1/5pP1/6qp/pN2Q3/P7/4P2P/3r2P1/5RK1 w - - 1 39
     Тренируй: https://lichess.org/analysis/standard/2r3k1/5pP1/6qp/pN2Q3/P7/4P2P/3r2P1/5RK1_w_-_-_1_39
     Ссылка: https://www.chess.com/game/live/186254967122
 
-#25. Ayrat_1986 vs quickplaynothin (Ход 48, потеря 1404 CP)
-    Паттерн: lost_piece
-    FEN: 8/3bkpp1/8/3P4/3R1q2/5P1P/7P/3R2K1 w - - 17 48
-    Тренируй: https://lichess.org/analysis/standard/8/3bkpp1/8/3P4/3R1q2/5P1P/7P/3R2K1_w_-_-_17_48
-    Ссылка: https://www.chess.com/game/live/173087795064
-
-#26. MdChess1734 vs Ayrat_1986 (Ход 39, потеря 1398 CP)
+#5. elseres vs Ayrat_1986 (Ход 36, потеря 1574 CP)
     Паттерн: lost_queen
-    FEN: 5k1r/1p1r1pp1/p2N2p1/3RP1Q1/6P1/P6P/1P3PK1/1q6 b - - 0 39
-    Тренируй: https://lichess.org/analysis/standard/5k1r/1p1r1pp1/p2N2p1/3RP1Q1/6P1/P6P/1P3PK1/1q6_b_-_-_0_39
-    Ссылка: https://www.chess.com/game/live/184122993094
+    FEN: 6k1/ppn3p1/8/1q2N3/8/PP1Q3P/6P1/5K2 b - - 2 36
+    Тренируй: https://lichess.org/analysis/standard/6k1/ppn3p1/8/1q2N3/8/PP1Q3P/6P1/5K2_b_-_-_2_36
+    Ссылка: https://www.chess.com/game/live/186797924734
 
-#27. Ayrat_1986 vs Bomborra (Ход 29, потеря 1396 CP)
-    Паттерн: lost_piece
-    FEN: 2r1r3/2p2k2/1p1p4/pP1P4/3b4/q1N1N3/P5PP/2R1Q1K1 w - - 1 29
-    Тренируй: https://lichess.org/analysis/standard/2r1r3/2p2k2/1p1p4/pP1P4/3b4/q1N1N3/P5PP/2R1Q1K1_w_-_-_1_29
-    Ссылка: https://www.chess.com/game/live/185828394616
-
-#28. Ayrat_1986 vs Evanescence (Ход 37, потеря 1383 CP)
-    Паттерн: lost_piece
-    FEN: 5kbQ/p5p1/7p/nP6/3p4/1q1B2P1/5P1P/3R2K1 w - - 6 37
-    Тренируй: https://lichess.org/analysis/standard/5kbQ/p5p1/7p/nP6/3p4/1q1B2P1/5P1P/3R2K1_w_-_-_6_37
-    Ссылка: https://www.chess.com/game/live/184422431772
-
-#29. Elizabeththink vs Ayrat_1986 (Ход 34, потеря 1373 CP)
-    Паттерн: lost_piece
-    FEN: 5r1k/pp1q1rp1/2p1R2p/8/8/2P4Q/PP5P/4R2K b - - 1 34
-    Тренируй: https://lichess.org/analysis/standard/5r1k/pp1q1rp1/2p1R2p/8/8/2P4Q/PP5P/4R2K_b_-_-_1_34
-    Ссылка: https://www.chess.com/game/live/186178428932
-
-#30. GM_Killerr vs Ayrat_1986 (Ход 29, потеря 1372 CP)
-    Паттерн: lost_piece
-    FEN: 1Qq2k2/pBP1pp2/2Pnb3/3p4/P5p1/4P3/3N1PP1/b3K3 b - - 2 29
-    Тренируй: https://lichess.org/analysis/standard/1Qq2k2/pBP1pp2/2Pnb3/3p4/P5p1/4P3/3N1PP1/b3K3_b_-_-_2_29
-    Ссылка: https://www.chess.com/game/live/173685220894
-
-#31. SG03 vs Ayrat_1986 (Ход 31, потеря 1365 CP)
-    Паттерн: lost_piece
-    FEN: 2r3k1/4q1pp/p4p2/8/8/b2pPNnP/P2P2P1/B3QRK1 b - - 1 31
-    Тренируй: https://lichess.org/analysis/standard/2r3k1/4q1pp/p4p2/8/8/b2pPNnP/P2P2P1/B3QRK1_b_-_-_1_31
-    Ссылка: https://www.chess.com/game/live/174141990540
-
-#32. Ayrat_1986 vs Leonar2t (Ход 21, потеря 1362 CP)
+#6. Ayrat_1986 vs JKolly (Ход 41, потеря 1573 CP)
     Паттерн: lost_queen
-    FEN: r3r1k1/1p2qpp1/2p5/p5Np/P1Q2P1P/4nK2/1P1R1P2/7R w - - 0 21
-    Тренируй: https://lichess.org/analysis/standard/r3r1k1/1p2qpp1/2p5/p5Np/P1Q2P1P/4nK2/1P1R1P2/7R_w_-_-_0_21
-    Ссылка: https://www.chess.com/game/live/174141767526
+    FEN: 8/pp1b1k2/3b2r1/3Pp3/1P2p2Q/P3Pp2/1BK5/8 w - - 11 41
+    Тренируй: https://lichess.org/analysis/standard/8/pp1b1k2/3b2r1/3Pp3/1P2p2Q/P3Pp2/1BK5/8_w_-_-_11_41
+    Ссылка: https://www.chess.com/game/live/174141901998
 
-#33. Ayrat_1986 vs matmard12 (Ход 18, потеря 1357 CP)
+#7. Ayrat_1986 vs palombie (Ход 26, потеря 1560 CP)
     Паттерн: lost_queen
-    FEN: r1b2rk1/p2qpp2/1p1p2pQ/3Nn3/2P1P3/1P6/P3BPPP/R4RK1 w - - 2 18
-    Тренируй: https://lichess.org/analysis/standard/r1b2rk1/p2qpp2/1p1p2pQ/3Nn3/2P1P3/1P6/P3BPPP/R4RK1_w_-_-_2_18
-    Ссылка: https://www.chess.com/game/live/185603600202
+    FEN: 1r2r1k1/1b3pbp/p3p1p1/4P3/N1PPn3/5B1P/Q4qP1/B1RR2K1 w - - 3 26
+    Тренируй: https://lichess.org/analysis/standard/1r2r1k1/1b3pbp/p3p1p1/4P3/N1PPn3/5B1P/Q4qP1/B1RR2K1_w_-_-_3_26
+    Ссылка: https://www.chess.com/game/live/173899387696
 
-#34. 1869UKD vs Ayrat_1986 (Ход 35, потеря 1335 CP)
+#8. md2007 vs Ayrat_1986 (Ход 21, потеря 1553 CP)
     Паттерн: lost_piece
-    FEN: 6r1/2R1kp2/p3p2p/P2nN3/3PpP2/4P2b/1N5P/7K b - - 2 35
-    Тренируй: https://lichess.org/analysis/standard/6r1/2R1kp2/p3p2p/P2nN3/3PpP2/4P2b/1N5P/7K_b_-_-_2_35
-    Ссылка: https://www.chess.com/game/live/186549923718
+    FEN: 2kr3r/2p2ppp/pp1b1q2/8/4R3/PQ3B1P/2R2PP1/6K1 b - - 1 21
+    Тренируй: https://lichess.org/analysis/standard/2kr3r/2p2ppp/pp1b1q2/8/4R3/PQ3B1P/2R2PP1/6K1_b_-_-_1_21
+    Ссылка: https://www.chess.com/game/live/185824372010
 
-#35. Wilmor34 vs Ayrat_1986 (Ход 39, потеря 1334 CP)
+#9. Ayrat_1986 vs DanilovVladimir (Ход 23, потеря 1546 CP)
     Паттерн: lost_piece
-    FEN: 2q5/6p1/1kp3p1/p2r1pP1/2Q1p3/7P/8/1R4K1 b - - 1 39
-    Тренируй: https://lichess.org/analysis/standard/2q5/6p1/1kp3p1/p2r1pP1/2Q1p3/7P/8/1R4K1_b_-_-_1_39
-    Ссылка: https://www.chess.com/game/live/186180234580
+    FEN: 2r2rk1/5ppp/1nNbpn2/1B6/Pp6/4P3/1P2QPPP/2R3K1 w - - 0 23
+    Тренируй: https://lichess.org/analysis/standard/2r2rk1/5ppp/1nNbpn2/1B6/Pp6/4P3/1P2QPPP/2R3K1_w_-_-_0_23
+    Ссылка: https://www.chess.com/game/live/184519670062
 
-#36. Ayrat_1986 vs Daddy_H0me (Ход 42, потеря 1328 CP)
-    Паттерн: lost_piece
-    FEN: Q3nk2/5p1p/4pPp1/2q3P1/ppr3B1/7P/PP4K1/4R3 w - - 3 42
-    Тренируй: https://lichess.org/analysis/standard/Q3nk2/5p1p/4pPp1/2q3P1/ppr3B1/7P/PP4K1/4R3_w_-_-_3_42
-    Ссылка: https://www.chess.com/game/live/186798334662
-
-#37. Ayrat_1986 vs muskratman (Ход 24, потеря 1323 CP)
-    Паттерн: lost_piece
-    FEN: 4r3/pppq3k/2np1Q1p/8/2P1r1p1/1P4B1/P5PP/4RRK1 w - - 2 24
-    Тренируй: https://lichess.org/analysis/standard/4r3/pppq3k/2np1Q1p/8/2P1r1p1/1P4B1/P5PP/4RRK1_w_-_-_2_24
-    Ссылка: https://www.chess.com/game/live/186411864202
-
-#38. matmard12 vs Ayrat_1986 (Ход 60, потеря 1311 CP)
+#10. nochewypowercab vs Ayrat_1986 (Ход 49, потеря 1512 CP)
     Паттерн: lost_queen
-    FEN: 2Q5/6pk/5pqp/4p3/8/8/5K2/8 b - - 5 60
-    Тренируй: https://lichess.org/analysis/standard/2Q5/6pk/5pqp/4p3/8/8/5K2/8_b_-_-_5_60
-    Ссылка: https://www.chess.com/game/live/185603339728
+    FEN: 8/2b5/p1p1bkpp/1p1p1p2/1P1P4/P1Q2BPP/3Nq3/6K1 b - - 13 49
+    Тренируй: https://lichess.org/analysis/standard/8/2b5/p1p1bkpp/1p1p1p2/1P1P4/P1Q2BPP/3Nq3/6K1_b_-_-_13_49
+    Ссылка: https://www.chess.com/game/live/173368088208
 
-#39. abalojacqpatch vs Ayrat_1986 (Ход 33, потеря 1305 CP)
+#11. BREADFATHER vs Ayrat_1986 (Ход 30, потеря 1502 CP)
     Паттерн: lost_piece
-    FEN: 2r1knr1/1p6/p5qp/3pPRn1/PPpP4/2P1B3/5QP1/5RK1 b - - 4 33
-    Тренируй: https://lichess.org/analysis/standard/2r1knr1/1p6/p5qp/3pPRn1/PPpP4/2P1B3/5QP1/5RK1_b_-_-_4_33
-    Ссылка: https://www.chess.com/game/live/185597757772
+    FEN: r7/3Q2kp/1p2p3/1P2N3/2PP2P1/rNK1n3/7q/3R4 b - - 1 30
+    Тренируй: https://lichess.org/analysis/standard/r7/3Q2kp/1p2p3/1P2N3/2PP2P1/rNK1n3/7q/3R4_b_-_-_1_30
+    Ссылка: https://www.chess.com/game/live/186777036684
 
-#40. Ayrat_1986 vs mamba1219 (Ход 31, потеря 1302 CP)
+#12. Ayrat_1986 vs edris8809 (Ход 33, потеря 1493 CP)
     Паттерн: lost_piece
-    FEN: 2br2k1/5ppp/p1p4r/4P3/1PQq4/7P/5PP1/R1R1B1K1 w - - 0 31
-    Тренируй: https://lichess.org/analysis/standard/2br2k1/5ppp/p1p4r/4P3/1PQq4/7P/5PP1/R1R1B1K1_w_-_-_0_31
-    Ссылка: https://www.chess.com/game/live/185655326182
+    FEN: r7/ppp3bk/3p2n1/3P4/2P2rPq/1P1QNn2/PB1N1RK1/3R4 w - - 0 33
+    Тренируй: https://lichess.org/analysis/standard/r7/ppp3bk/3p2n1/3P4/2P2rPq/1P1QNn2/PB1N1RK1/3R4_w_-_-_0_33
+    Ссылка: https://www.chess.com/game/live/173087374394
 
-#41. OnlyLeBullet vs Ayrat_1986 (Ход 23, потеря 1302 CP)
-    Паттерн: lost_piece
-    FEN: r5k1/p2qpr1p/n1p1R1p1/1p6/3P2QP/2P3P1/P4P2/4R1K1 b - - 3 23
-    Тренируй: https://lichess.org/analysis/standard/r5k1/p2qpr1p/n1p1R1p1/1p6/3P2QP/2P3P1/P4P2/4R1K1_b_-_-_3_23
-    Ссылка: https://www.chess.com/game/live/184390760676
-
-#42. Ayrat_1986 vs estevaadrian (Ход 40, потеря 1292 CP)
+#13. honzaslanec vs Ayrat_1986 (Ход 23, потеря 1485 CP)
     Паттерн: lost_queen
-    FEN: 5nk1/2R3p1/1q2ppp1/pN1p4/Pb1P4/7P/2Q2P2/5K2 w - - 3 40
-    Тренируй: https://lichess.org/analysis/standard/5nk1/2R3p1/1q2ppp1/pN1p4/Pb1P4/7P/2Q2P2/5K2_w_-_-_3_40
-    Ссылка: https://www.chess.com/game/live/185220395312
+    FEN: r5k1/pp3p2/4pn1p/6p1/5P2/3Q2B1/PKP3PP/4q3 b - - 0 23
+    Тренируй: https://lichess.org/analysis/standard/r5k1/pp3p2/4pn1p/6p1/5P2/3Q2B1/PKP3PP/4q3_b_-_-_0_23
+    Ссылка: https://www.chess.com/game/live/184416096930
 
-#43. Ayrat_1986 vs Leviackerman594 (Ход 27, потеря 1292 CP)
+#14. Caio_Buys vs Ayrat_1986 (Ход 43, потеря 1480 CP)
+    Паттерн: lost_queen
+    FEN: 8/kp4p1/p2pQ3/8/3p4/PPq5/8/1K6 b - - 3 43
+    Тренируй: https://lichess.org/analysis/standard/8/kp4p1/p2pQ3/8/3p4/PPq5/8/1K6_b_-_-_3_43
+    Ссылка: https://www.chess.com/game/live/185654565744
+
+#15. Ayrat_1986 vs pacosh (Ход 31, потеря 1471 CP)
     Паттерн: lost_piece
-    FEN: r5k1/1p2b1pp/2p1pr2/pPPp1p2/P2PqP2/4P2P/5P1K/1RBQ1R2 w - - 2 27
-    Тренируй: https://lichess.org/analysis/standard/r5k1/1p2b1pp/2p1pr2/pPPp1p2/P2PqP2/4P2P/5P1K/1RBQ1R2_w_-_-_2_27
-    Ссылка: https://www.chess.com/game/live/173037919118
+    FEN: b1r3k1/p1P2r1p/4p1p1/1B2Bn1q/4R3/P4P2/4QP1P/6RK w - - 2 31
+    Тренируй: https://lichess.org/analysis/standard/b1r3k1/p1P2r1p/4p1p1/1B2Bn1q/4R3/P4P2/4QP1P/6RK_w_-_-_2_31
+    Ссылка: https://www.chess.com/game/live/174142448054
 
-#44. lukaisntgood vs Ayrat_1986 (Ход 30, потеря 1290 CP)
+#16. davidw_94 vs Ayrat_1986 (Ход 38, потеря 1455 CP)
+    Паттерн: lost_queen
+    FEN: 4kb2/1p3p2/p3p3/3p4/2NP1Q1P/6P1/3q1P2/2r2BK1 b - - 0 38
+    Тренируй: https://lichess.org/analysis/standard/4kb2/1p3p2/p3p3/3p4/2NP1Q1P/6P1/3q1P2/2r2BK1_b_-_-_0_38
+    Ссылка: https://www.chess.com/game/live/185269465614
+
+#17. Doruk-09 vs Ayrat_1986 (Ход 45, потеря 1447 CP)
+    Паттерн: lost_queen
+    FEN: 6r1/kp1P4/7q/p1ppP3/1b6/7Q/5BPK/8 b - - 4 45
+    Тренируй: https://lichess.org/analysis/standard/6r1/kp1P4/7q/p1ppP3/1b6/7Q/5BPK/8_b_-_-_4_45
+    Ссылка: https://www.chess.com/game/live/184717053130
+
+#18. Benkaito2010 vs Ayrat_1986 (Ход 53, потеря 1421 CP)
     Паттерн: lost_piece
-    FEN: 2N4r/1rP2kp1/p3pp1p/8/B7/4B3/P4PPP/2R3K1 b - - 0 30
-    Тренируй: https://lichess.org/analysis/standard/2N4r/1rP2kp1/p3pp1p/8/B7/4B3/P4PPP/2R3K1_b_-_-_0_30
-    Ссылка: https://www.chess.com/game/live/173058544934
+    FEN: 8/8/8/1R1bk3/3Bp1p1/5pPp/5K1P/8 b - - 1 53
+    Тренируй: https://lichess.org/analysis/standard/8/8/8/1R1bk3/3Bp1p1/5pPp/5K1P/8_b_-_-_1_53
+    Ссылка: https://www.chess.com/game/live/186635028902
 
-#45. abalojacqpatch vs Ayrat_1986 (Ход 49, потеря 1289 CP)
-    Паттерн: lost_piece
-    FEN: 1r6/1P6/2R1P3/3p3p/n2P1B2/2pk4/6P1/4K3 b - - 0 49
-    Тренируй: https://lichess.org/analysis/standard/1r6/1P6/2R1P3/3p3p/n2P1B2/2pk4/6P1/4K3_b_-_-_0_49
-    Ссылка: https://www.chess.com/game/live/185597757772
+#19. Road-to-Somethi vs Ayrat_1986 (Ход 38, потеря 1414 CP)
+    Паттерн: missed_mate
+    FEN: 5rk1/5p1p/1q2pPpQ/4P3/p3b3/6P1/P2R3P/4K3 b - - 13 38
+    Тренируй: https://lichess.org/analysis/standard/5rk1/5p1p/1q2pPpQ/4P3/p3b3/6P1/P2R3P/4K3_b_-_-_13_38
+    Ссылка: https://www.chess.com/game/live/185598999312
 
-#46. Ayrat_1986 vs SepehrSakhawaty (Ход 33, потеря 1287 CP)
-    Паттерн: lost_piece
-    FEN: 4rrk1/pb6/1p1p4/2p5/3bPnP1/4qPQ1/PP2B3/1R2RK2 w - - 4 33
-    Тренируй: https://lichess.org/analysis/standard/4rrk1/pb6/1p1p4/2p5/3bPnP1/4qPQ1/PP2B3/1R2RK2_w_-_-_4_33
-    Ссылка: https://www.chess.com/game/live/184407450054
-
-#47. Ayrat_1986 vs historicodeatle (Ход 30, потеря 1286 CP)
+#20. Ayrat_1986 vs historicodeatle (Ход 30, потеря 1411 CP)
     Паттерн: lost_piece
     FEN: 2rq1rk1/1p1b1p1n/p2pp2Q/3Nn1PP/2P1P3/1P4K1/P3B3/2R4R w - - 0 30
     Тренируй: https://lichess.org/analysis/standard/2rq1rk1/1p1b1p1n/p2pp2Q/3Nn1PP/2P1P3/1P4K1/P3B3/2R4R_w_-_-_0_30
     Ссылка: https://www.chess.com/game/live/184408226122
 
-#48. nicholson97 vs Ayrat_1986 (Ход 45, потеря 1285 CP)
+#21. Ayrat_1986 vs Evanescence (Ход 37, потеря 1407 CP)
     Паттерн: lost_piece
-    FEN: 8/6p1/2p1k2p/8/2N4P/p5P1/5PK1/8 b - - 0 45
-    Тренируй: https://lichess.org/analysis/standard/8/6p1/2p1k2p/8/2N4P/p5P1/5PK1/8_b_-_-_0_45
-    Ссылка: https://www.chess.com/game/live/184635811160
+    FEN: 5kbQ/p5p1/7p/nP6/3p4/1q1B2P1/5P1P/3R2K1 w - - 6 37
+    Тренируй: https://lichess.org/analysis/standard/5kbQ/p5p1/7p/nP6/3p4/1q1B2P1/5P1P/3R2K1_w_-_-_6_37
+    Ссылка: https://www.chess.com/game/live/184422431772
 
-#49. Ayrat_1986 vs labgeeek (Ход 21, потеря 1279 CP)
+#22. Ayrat_1986 vs ssppiderman (Ход 31, потеря 1400 CP)
+    Паттерн: lost_queen
+    FEN: 5r2/p5kp/2b2qp1/2PB1p2/8/4PP2/QrN3PP/3R1RK1 w - - 1 31
+    Тренируй: https://lichess.org/analysis/standard/5r2/p5kp/2b2qp1/2PB1p2/8/4PP2/QrN3PP/3R1RK1_w_-_-_1_31
+    Ссылка: https://www.chess.com/game/live/184425265742
+
+#23. Ayrat_1986 vs Leonar2t (Ход 21, потеря 1399 CP)
+    Паттерн: lost_queen
+    FEN: r3r1k1/1p2qpp1/2p5/p5Np/P1Q2P1P/4nK2/1P1R1P2/7R w - - 0 21
+    Тренируй: https://lichess.org/analysis/standard/r3r1k1/1p2qpp1/2p5/p5Np/P1Q2P1P/4nK2/1P1R1P2/7R_w_-_-_0_21
+    Ссылка: https://www.chess.com/game/live/174141767526
+
+#24. IMTrsilva17 vs Ayrat_1986 (Ход 31, потеря 1395 CP)
+    Паттерн: lost_piece
+    FEN: 3r4/1R1n1p2/2pk2p1/q2p3p/5P2/3B4/4QP2/3K4 b - - 0 31
+    Тренируй: https://lichess.org/analysis/standard/3r4/1R1n1p2/2pk2p1/q2p3p/5P2/3B4/4QP2/3K4_b_-_-_0_31
+    Ссылка: https://www.chess.com/game/live/186110496914
+
+#25. Ayrat_1986 vs VlasoffChess (Ход 24, потеря 1386 CP)
+    Паттерн: lost_piece
+    FEN: 3r3k/pp2p1b1/4Nr2/3B3p/6pP/3Q2P1/PP3q2/R2K3R w - - 2 24
+    Тренируй: https://lichess.org/analysis/standard/3r3k/pp2p1b1/4Nr2/3B3p/6pP/3Q2P1/PP3q2/R2K3R_w_-_-_2_24
+    Ссылка: https://www.chess.com/game/live/186612466488
+
+#26. Ayrat_1986 vs Bomborra (Ход 29, потеря 1371 CP)
+    Паттерн: lost_piece
+    FEN: 2r1r3/2p2k2/1p1p4/pP1P4/3b4/q1N1N3/P5PP/2R1Q1K1 w - - 1 29
+    Тренируй: https://lichess.org/analysis/standard/2r1r3/2p2k2/1p1p4/pP1P4/3b4/q1N1N3/P5PP/2R1Q1K1_w_-_-_1_29
+    Ссылка: https://www.chess.com/game/live/185828394616
+
+#27. Ayrat_1986 vs quickplaynothin (Ход 48, потеря 1365 CP)
+    Паттерн: lost_piece
+    FEN: 8/3bkpp1/8/3P4/3R1q2/5P1P/7P/3R2K1 w - - 17 48
+    Тренируй: https://lichess.org/analysis/standard/8/3bkpp1/8/3P4/3R1q2/5P1P/7P/3R2K1_w_-_-_17_48
+    Ссылка: https://www.chess.com/game/live/173087795064
+
+#28. Ayrat_1986 vs labgeeek (Ход 21, потеря 1356 CP)
     Паттерн: lost_piece
     FEN: 2r2rk1/4ppbp/pq1p2p1/8/1PP4Q/P1Nb1N2/3B1PPP/2KR3R w - - 0 21
     Тренируй: https://lichess.org/analysis/standard/2r2rk1/4ppbp/pq1p2p1/8/1PP4Q/P1Nb1N2/3B1PPP/2KR3R_w_-_-_0_21
     Ссылка: https://www.chess.com/game/live/184716944012
 
-#50. Ayrat_1986 vs sabhya507 (Ход 39, потеря 1254 CP)
+#29. matmard12 vs Ayrat_1986 (Ход 60, потеря 1355 CP)
+    Паттерн: lost_queen
+    FEN: 2Q5/6pk/5pqp/4p3/8/8/5K2/8 b - - 5 60
+    Тренируй: https://lichess.org/analysis/standard/2Q5/6pk/5pqp/4p3/8/8/5K2/8_b_-_-_5_60
+    Ссылка: https://www.chess.com/game/live/185603339728
+
+#30. 1869UKD vs Ayrat_1986 (Ход 35, потеря 1353 CP)
     Паттерн: lost_piece
-    FEN: 1q1r2k1/3P1p2/pP4p1/P2R3p/1P1Q4/5P1P/6PK/8 w - - 1 39
-    Тренируй: https://lichess.org/analysis/standard/1q1r2k1/3P1p2/pP4p1/P2R3p/1P1Q4/5P1P/6PK/8_w_-_-_1_39
-    Ссылка: https://www.chess.com/game/live/186671732088
+    FEN: 6r1/2R1kp2/p3p2p/P2nN3/3PpP2/4P2b/1N5P/7K b - - 2 35
+    Тренируй: https://lichess.org/analysis/standard/6r1/2R1kp2/p3p2p/P2nN3/3PpP2/4P2b/1N5P/7K_b_-_-_2_35
+    Ссылка: https://www.chess.com/game/live/186549923718
+
+#31. Ayrat_1986 vs matmard12 (Ход 18, потеря 1353 CP)
+    Паттерн: lost_queen
+    FEN: r1b2rk1/p2qpp2/1p1p2pQ/3Nn3/2P1P3/1P6/P3BPPP/R4RK1 w - - 2 18
+    Тренируй: https://lichess.org/analysis/standard/r1b2rk1/p2qpp2/1p1p2pQ/3Nn3/2P1P3/1P6/P3BPPP/R4RK1_w_-_-_2_18
+    Ссылка: https://www.chess.com/game/live/185603600202
+
+#32. MdChess1734 vs Ayrat_1986 (Ход 39, потеря 1350 CP)
+    Паттерн: lost_queen
+    FEN: 5k1r/1p1r1pp1/p2N2p1/3RP1Q1/6P1/P6P/1P3PK1/1q6 b - - 0 39
+    Тренируй: https://lichess.org/analysis/standard/5k1r/1p1r1pp1/p2N2p1/3RP1Q1/6P1/P6P/1P3PK1/1q6_b_-_-_0_39
+    Ссылка: https://www.chess.com/game/live/184122993094
+
+#33. GM_Killerr vs Ayrat_1986 (Ход 29, потеря 1343 CP)
+    Паттерн: lost_piece
+    FEN: 1Qq2k2/pBP1pp2/2Pnb3/3p4/P5p1/4P3/3N1PP1/b3K3 b - - 2 29
+    Тренируй: https://lichess.org/analysis/standard/1Qq2k2/pBP1pp2/2Pnb3/3p4/P5p1/4P3/3N1PP1/b3K3_b_-_-_2_29
+    Ссылка: https://www.chess.com/game/live/173685220894
+
+#34. Ayrat_1986 vs dragonchesschec (Ход 50, потеря 1324 CP)
+    Паттерн: lost_queen
+    FEN: 3r4/8/4k3/3p4/7Q/p7/P4PK1/2q5 w - - 9 50
+    Тренируй: https://lichess.org/analysis/standard/3r4/8/4k3/3p4/7Q/p7/P4PK1/2q5_w_-_-_9_50
+    Ссылка: https://www.chess.com/game/live/186074948482
+
+#35. Ayrat_1986 vs Leviackerman594 (Ход 27, потеря 1319 CP)
+    Паттерн: lost_piece
+    FEN: r5k1/1p2b1pp/2p1pr2/pPPp1p2/P2PqP2/4P2P/5P1K/1RBQ1R2 w - - 2 27
+    Тренируй: https://lichess.org/analysis/standard/r5k1/1p2b1pp/2p1pr2/pPPp1p2/P2PqP2/4P2P/5P1K/1RBQ1R2_w_-_-_2_27
+    Ссылка: https://www.chess.com/game/live/173037919118
+
+#36. GK2007 vs Ayrat_1986 (Ход 36, потеря 1314 CP)
+    Паттерн: lost_queen
+    FEN: r5k1/1p3pp1/2p3p1/2B5/4Q2q/8/3r1P2/2K1R1R1 b - - 2 36
+    Тренируй: https://lichess.org/analysis/standard/r5k1/1p3pp1/2p3p1/2B5/4Q2q/8/3r1P2/2K1R1R1_b_-_-_2_36
+    Ссылка: https://www.chess.com/game/live/187150818908
+
+#37. SG03 vs Ayrat_1986 (Ход 31, потеря 1314 CP)
+    Паттерн: lost_piece
+    FEN: 2r3k1/4q1pp/p4p2/8/8/b2pPNnP/P2P2P1/B3QRK1 b - - 1 31
+    Тренируй: https://lichess.org/analysis/standard/2r3k1/4q1pp/p4p2/8/8/b2pPNnP/P2P2P1/B3QRK1_b_-_-_1_31
+    Ссылка: https://www.chess.com/game/live/174141990540
+
+#38. abalojacqpatch vs Ayrat_1986 (Ход 33, потеря 1312 CP)
+    Паттерн: lost_piece
+    FEN: 2r1knr1/1p6/p5qp/3pPRn1/PPpP4/2P1B3/5QP1/5RK1 b - - 4 33
+    Тренируй: https://lichess.org/analysis/standard/2r1knr1/1p6/p5qp/3pPRn1/PPpP4/2P1B3/5QP1/5RK1_b_-_-_4_33
+    Ссылка: https://www.chess.com/game/live/185597757772
+
+#39. Ayrat_1986 vs mamba1219 (Ход 31, потеря 1310 CP)
+    Паттерн: lost_piece
+    FEN: 2br2k1/5ppp/p1p4r/4P3/1PQq4/7P/5PP1/R1R1B1K1 w - - 0 31
+    Тренируй: https://lichess.org/analysis/standard/2br2k1/5ppp/p1p4r/4P3/1PQq4/7P/5PP1/R1R1B1K1_w_-_-_0_31
+    Ссылка: https://www.chess.com/game/live/185655326182
+
+#40. Elizabeththink vs Ayrat_1986 (Ход 34, потеря 1310 CP)
+    Паттерн: lost_piece
+    FEN: 5r1k/pp1q1rp1/2p1R2p/8/8/2P4Q/PP5P/4R2K b - - 1 34
+    Тренируй: https://lichess.org/analysis/standard/5r1k/pp1q1rp1/2p1R2p/8/8/2P4Q/PP5P/4R2K_b_-_-_1_34
+    Ссылка: https://www.chess.com/game/live/186178428932
+
+#41. Ayrat_1986 vs Player_No1204 (Ход 35, потеря 1305 CP)
+    Паттерн: lost_queen
+    FEN: 6k1/1pr2p2/6r1/6qp/3Q4/1P3R1P/P5P1/5R1K w - - 6 35
+    Тренируй: https://lichess.org/analysis/standard/6k1/1pr2p2/6r1/6qp/3Q4/1P3R1P/P5P1/5R1K_w_-_-_6_35
+    Ссылка: https://www.chess.com/game/live/173908296906
+
+#42. nicholson97 vs Ayrat_1986 (Ход 45, потеря 1298 CP)
+    Паттерн: lost_piece
+    FEN: 8/6p1/2p1k2p/8/2N4P/p5P1/5PK1/8 b - - 0 45
+    Тренируй: https://lichess.org/analysis/standard/8/6p1/2p1k2p/8/2N4P/p5P1/5PK1/8_b_-_-_0_45
+    Ссылка: https://www.chess.com/game/live/184635811160
+
+#43. Ayrat_1986 vs muskratman (Ход 24, потеря 1261 CP)
+    Паттерн: lost_piece
+    FEN: 4r3/pppq3k/2np1Q1p/8/2P1r1p1/1P4B1/P5PP/4RRK1 w - - 2 24
+    Тренируй: https://lichess.org/analysis/standard/4r3/pppq3k/2np1Q1p/8/2P1r1p1/1P4B1/P5PP/4RRK1_w_-_-_2_24
+    Ссылка: https://www.chess.com/game/live/186411864202
+
+#44. Wilmor34 vs Ayrat_1986 (Ход 39, потеря 1256 CP)
+    Паттерн: lost_piece
+    FEN: 2q5/6p1/1kp3p1/p2r1pP1/2Q1p3/7P/8/1R4K1 b - - 1 39
+    Тренируй: https://lichess.org/analysis/standard/2q5/6p1/1kp3p1/p2r1pP1/2Q1p3/7P/8/1R4K1_b_-_-_1_39
+    Ссылка: https://www.chess.com/game/live/186180234580
+
+#45. Pandathewhitegh vs Ayrat_1986 (Ход 40, потеря 1249 CP)
+    Паттерн: lost_piece
+    FEN: 2krr3/Q1n1p3/1Bp1R2p/1p1p4/p4qP1/P1b4P/2K5/3R4 b - - 1 40
+    Тренируй: https://lichess.org/analysis/standard/2krr3/Q1n1p3/1Bp1R2p/1p1p4/p4qP1/P1b4P/2K5/3R4_b_-_-_1_40
+    Ссылка: https://www.chess.com/game/live/173087471626
+
+#46. Strigoi100 vs Ayrat_1986 (Ход 45, потеря 1247 CP)
+    Паттерн: lost_piece
+    FEN: 8/1kp3R1/1pb3p1/p6p/4pK1P/2Pr4/1P4P1/8 b - - 6 45
+    Тренируй: https://lichess.org/analysis/standard/8/1kp3R1/1pb3p1/p6p/4pK1P/2Pr4/1P4P1/8_b_-_-_6_45
+    Ссылка: https://www.chess.com/game/live/186675545856
+
+#47. oldie_goldie vs Ayrat_1986 (Ход 40, потеря 1243 CP)
+    Паттерн: lost_piece
+    FEN: 8/7p/8/4k3/4ppK1/7P/5PP1/8 b - - 1 40
+    Тренируй: https://lichess.org/analysis/standard/8/7p/8/4k3/4ppK1/7P/5PP1/8_b_-_-_1_40
+    Ссылка: https://www.chess.com/game/live/185463231308
+
+#48. Ayrat_1986 vs AramisX3 (Ход 32, потеря 1234 CP)
+    Паттерн: lost_piece
+    FEN: 8/3rpk1p/p4pp1/1p2n3/8/1P2B1P1/P3BP1P/2R3K1 w - - 2 32
+    Тренируй: https://lichess.org/analysis/standard/8/3rpk1p/p4pp1/1p2n3/8/1P2B1P1/P3BP1P/2R3K1_w_-_-_2_32
+    Ссылка: https://www.chess.com/game/live/185709515942
+
+#49. Ayrat_1986 vs sleeping_in_the (Ход 27, потеря 1231 CP)
+    Паттерн: lost_queen
+    FEN: r6k/p1p3b1/1p5p/4p3/2PqQn2/2N5/PP3P1P/R4K2 w - - 2 27
+    Тренируй: https://lichess.org/analysis/standard/r6k/p1p3b1/1p5p/4p3/2PqQn2/2N5/PP3P1P/R4K2_w_-_-_2_27
+    Ссылка: https://www.chess.com/game/live/184523405410
+
+#50. Ayrat_1986 vs Rednass22 (Ход 20, потеря 1228 CP)
+    Паттерн: lost_queen
+    FEN: 2rq1rk1/pb4pp/3n1n2/2p2p2/3p1N2/1P2PP2/PBQ1B1PP/3R1RK1 w - - 0 20
+    Тренируй: https://lichess.org/analysis/standard/2rq1rk1/pb4pp/3n1n2/2p2p2/3p1N2/1P2PP2/PBQ1B1PP/3R1RK1_w_-_-_0_20
+    Ссылка: https://www.chess.com/game/live/186054737042
 

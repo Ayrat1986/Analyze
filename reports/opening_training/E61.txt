@@ -1,33 +1,33 @@
 # Домашняя работа: E61
 # Winrate: 47.0%
-# ACPL: деб 16 / мит 72 / энд 74
-# Eval после дебюта: +49.9
-# Линия-убийца: d2d4 d7d6 c2c4 g7g6 b1c3 f8g7 e2e3 g8f6 g1f3 e8g8 f1e2 f8e8 e1g1 b8c6 b2b3 c8f5 c1b2 e7e5 d4d5 c6b8 (14 зевков)
-# Окно уязвимости: 21-30 (145 зевков)
-# Точка невозврата: после 54-го хода (100% поражений)
+# ACPL: деб 15 / мит 72 / энд 58
+# Eval после дебюта: +24.0
+# Линия-убийца: d2d4 g7g6 c2c4 f8g7 b1c3 g8f6 e2e3 d7d6 g1f3 e8g8 f1e2 b8c6 e1g1 e7e5 b2b3 e5d4 e3d4 c8g4 c1b2 f8e8 (13 зевков)
+# Окно уязвимости: 21-30 (140 зевков)
+# Точка невозврата: после 56-го хода (100% поражений)
 
-# Позиция 1: Ход 33, потеря 1509 CP
+# Позиция 1: Ход 33, потеря 1493 CP
 FEN: r7/ppp3bk/3p2n1/3P4/2P2rPq/1P1QNn2/PB1N1RK1/3R4 w - - 0 33
 Лучший ход (Stockfish): Nxf3
 Ссылка: https://lichess.org/analysis/standard/r7/ppp3bk/3p2n1/3P4/2P2rPq/1P1QNn2/PB1N1RK1/3R4_w_-_-_0_33
 
-# Позиция 2: Ход 25, потеря 1403 CP
-FEN: 5rk1/1p1q2bp/p2p2p1/3P4/P1P5/1PN2Nnb/1B4PK/1QR5 w - - 2 25
-Лучший ход (Stockfish): Rg1
-Ссылка: https://lichess.org/analysis/standard/5rk1/1p1q2bp/p2p2p1/3P4/P1P5/1PN2Nnb/1B4PK/1QR5_w_-_-_2_25
-
-# Позиция 3: Ход 55, потеря 1388 CP
+# Позиция 2: Ход 55, потеря 1361 CP
 FEN: 8/5p1k/6p1/2QP4/3rP2p/3BKPqP/8/8 w - - 1 55
 Лучший ход (Stockfish): Kxd4
 Ссылка: https://lichess.org/analysis/standard/8/5p1k/6p1/2QP4/3rP2p/3BKPqP/8/8_w_-_-_1_55
 
-# Позиция 4: Ход 37, потеря 1248 CP
+# Позиция 3: Ход 37, потеря 1335 CP
 FEN: 3r2k1/pp4r1/2p3p1/2Pq2Q1/3P2p1/PP1B2Pp/4R2P/6K1 w - - 0 37
 Лучший ход (Stockfish): Bc4
 Ссылка: https://lichess.org/analysis/standard/3r2k1/pp4r1/2p3p1/2Pq2Q1/3P2p1/PP1B2Pp/4R2P/6K1_w_-_-_0_37
 
-# Позиция 5: Ход 36, потеря 1224 CP
+# Позиция 4: Ход 36, потеря 1212 CP
 FEN: 4rr2/ppp5/3pPkp1/5n2/2P5/1P1K1P1R/P2N4/4RB2 w - - 5 36
 Лучший ход (Stockfish): Rh7
 Ссылка: https://lichess.org/analysis/standard/4rr2/ppp5/3pPkp1/5n2/2P5/1P1K1P1R/P2N4/4RB2_w_-_-_5_36
+
+# Позиция 5: Ход 26, потеря 1184 CP
+FEN: r4r1k/1pq2B2/2p3p1/2P1bbNp/1P2p2P/1Q2P3/5PP1/2RR2K1 w - - 1 26
+Лучший ход (Stockfish): Be6
+Ссылка: https://lichess.org/analysis/standard/r4r1k/1pq2B2/2p3p1/2P1bbNp/1P2p2P/1Q2P3/5PP1/2RR2K1_w_-_-_1_26
 

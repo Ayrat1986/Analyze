@@ -1,32 +1,32 @@
 # Домашняя работа: B16
 # Winrate: 48.0%
-# ACPL: деб 27 / мит 85 / энд 63
-# Eval после дебюта: +86.0
-# Линия-убийца: e2e4 c7c6 d2d4 d7d5 b1c3 d5e4 c3e4 g8f6 e4f6 g7f6 g1f3 c8g4 f1c4 b8d7 e1g1 e7e6 c2c3 f8d6 c4b3 d8c7 (10 зевков)
-# Окно уязвимости: 21-30 (31 зевков)
+# ACPL: деб 28 / мит 85 / энд 48
+# Eval после дебюта: +126.3
+# Линия-убийца: e2e4 c7c6 d2d4 d7d5 b1c3 d5e4 c3e4 g8f6 e4f6 g7f6 c2c3 c8f5 g2g3 d8d7 f1g2 e7e6 g1e2 f8d6 e1g1 b8a6 (10 зевков)
+# Окно уязвимости: 21-30 (36 зевков)
 # Точка невозврата: после 47-го хода (100% поражений)
 
-# Позиция 1: Ход 29, потеря 1258 CP
+# Позиция 1: Ход 29, потеря 1306 CP
 FEN: 3r4/kpq3bp/p4p2/P1pP4/2N3P1/1QP1Rp1P/1P6/2K5 b - - 1 29
 Лучший ход (Stockfish): Bh6
 Ссылка: https://lichess.org/analysis/standard/3r4/kpq3bp/p4p2/P1pP4/2N3P1/1QP1Rp1P/1P6/2K5_b_-_-_1_29
 
-# Позиция 2: Ход 33, потеря 1089 CP
+# Позиция 2: Ход 33, потеря 1078 CP
 FEN: 2kr4/pp3p2/4pN2/8/2P1Q2P/b1qR2P1/P3KP2/8 b - - 0 33
 Лучший ход (Stockfish): Qc2+
 Ссылка: https://lichess.org/analysis/standard/2kr4/pp3p2/4pN2/8/2P1Q2P/b1qR2P1/P3KP2/8_b_-_-_0_33
 
-# Позиция 3: Ход 29, потеря 964 CP
+# Позиция 3: Ход 35, потеря 991 CP
+FEN: 2k5/2b4p/2q2p2/r7/3Q4/2P3P1/5P1P/3R2K1 b - - 1 35
+Лучший ход (Stockfish): h5
+Ссылка: https://lichess.org/analysis/standard/2k5/2b4p/2q2p2/r7/3Q4/2P3P1/5P1P/3R2K1_b_-_-_1_35
+
+# Позиция 4: Ход 29, потеря 901 CP
 FEN: 1k6/p1b5/n1N1Q3/6q1/1p6/2P3PK/PP3r2/R2R4 b - - 0 29
 Лучший ход (Stockfish): Ka8
 Ссылка: https://lichess.org/analysis/standard/1k6/p1b5/n1N1Q3/6q1/1p6/2P3PK/PP3r2/R2R4_b_-_-_0_29
 
-# Позиция 4: Ход 35, потеря 944 CP
-FEN: 2k5/2b4p/2q2p2/r7/3Q4/2P3P1/5P1P/3R2K1 b - - 1 35
-Лучший ход (Stockfish): Qe6
-Ссылка: https://lichess.org/analysis/standard/2k5/2b4p/2q2p2/r7/3Q4/2P3P1/5P1P/3R2K1_b_-_-_1_35
-
-# Позиция 5: Ход 6, потеря 841 CP
+# Позиция 5: Ход 6, потеря 830 CP
 FEN: rnbqkb1r/pp2pp1p/2p2p2/8/3P4/3B4/PPP2PPP/R1BQK1NR b KQkq - 1 6
 Лучший ход (Stockfish): Qxd4
 Ссылка: https://lichess.org/analysis/standard/rnbqkb1r/pp2pp1p/2p2p2/8/3P4/3B4/PPP2PPP/R1BQK1NR_b_KQkq_-_1_6

@@ -1,33 +1,33 @@
 # Домашняя работа: D37
 # Winrate: 48.0%
-# ACPL: деб 16 / мит 67 / энд 96
-# Eval после дебюта: -15.8
-# Линия-убийца: d2d4 e7e6 c2c4 d7d5 b1c3 g8f6 g1f3 f8e7 e2e3 e8g8 f1e2 c7c5 e1g1 c5d4 e3d4 b8c6 c4c5 h7h6 a1b1 b7b6 (11 зевков)
-# Окно уязвимости: 21-30 (71 зевков)
+# ACPL: деб 16 / мит 67 / энд 89
+# Eval после дебюта: -39.8
+# Линия-убийца: d2d4 e7e6 c2c4 d7d5 b1c3 g8f6 g1f3 f8e7 e2e3 e8g8 f1e2 c7c5 e1g1 c5d4 e3d4 b8c6 c4c5 h7h6 a1b1 b7b6 (9 зевков)
+# Окно уязвимости: 21-30 (65 зевков)
 # Точка невозврата: после 42-го хода (100% поражений)
 
-# Позиция 1: Ход 31, потеря 1724 CP
+# Позиция 1: Ход 31, потеря 1471 CP
 FEN: b1r3k1/p1P2r1p/4p1p1/1B2Bn1q/4R3/P4P2/4QP1P/6RK w - - 2 31
 Лучший ход (Stockfish): Rd1
 Ссылка: https://lichess.org/analysis/standard/b1r3k1/p1P2r1p/4p1p1/1B2Bn1q/4R3/P4P2/4QP1P/6RK_w_-_-_2_31
 
-# Позиция 2: Ход 27, потеря 1589 CP
-FEN: b1r2rk1/p5pp/2P1p3/1B1nB2q/3R1p2/P3PP2/4QP1P/6RK w - - 2 27
-Лучший ход (Stockfish): Rxg7+
-Ссылка: https://lichess.org/analysis/standard/b1r2rk1/p5pp/2P1p3/1B1nB2q/3R1p2/P3PP2/4QP1P/6RK_w_-_-_2_27
-
-# Позиция 3: Ход 37, потеря 1383 CP
+# Позиция 2: Ход 37, потеря 1407 CP
 FEN: 5kbQ/p5p1/7p/nP6/3p4/1q1B2P1/5P1P/3R2K1 w - - 6 37
 Лучший ход (Stockfish): Rc1
 Ссылка: https://lichess.org/analysis/standard/5kbQ/p5p1/7p/nP6/3p4/1q1B2P1/5P1P/3R2K1_w_-_-_6_37
 
-# Позиция 4: Ход 31, потеря 1302 CP
+# Позиция 3: Ход 31, потеря 1310 CP
 FEN: 2br2k1/5ppp/p1p4r/4P3/1PQq4/7P/5PP1/R1R1B1K1 w - - 0 31
 Лучший ход (Stockfish): Qxd4
 Ссылка: https://lichess.org/analysis/standard/2br2k1/5ppp/p1p4r/4P3/1PQq4/7P/5PP1/R1R1B1K1_w_-_-_0_31
 
-# Позиция 5: Ход 45, потеря 1245 CP
+# Позиция 4: Ход 45, потеря 1205 CP
 FEN: 8/3kn3/7Q/1q2pn2/8/2B5/1P3P1P/4N1K1 w - - 0 45
 Лучший ход (Stockfish): Qd2+
 Ссылка: https://lichess.org/analysis/standard/8/3kn3/7Q/1q2pn2/8/2B5/1P3P1P/4N1K1_w_-_-_0_45
+
+# Позиция 5: Ход 32, потеря 1142 CP
+FEN: 3r2k1/5ppp/p1Q4r/4P3/1P1q4/7b/5PP1/R1R1B1K1 w - - 0 32
+Лучший ход (Stockfish): Qc4
+Ссылка: https://lichess.org/analysis/standard/3r2k1/5ppp/p1Q4r/4P3/1P1q4/7b/5PP1/R1R1B1K1_w_-_-_0_32
 

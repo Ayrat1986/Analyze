@@ -166,3 +166,27 @@
 [2026-11-14 13:19:41] START 02_analyze_stockfish.py
 [2026-11-14 13:19:42] END   02_analyze_stockfish.py — ERROR: 'int' object has no attribute 'get'
 [2026-11-14 13:22:01] START 02_analyze_stockfish.py
+[2026-11-14 13:37:46] START 02_analyze_stockfish.py
+[2026-11-14 13:58:22] END   02_analyze_stockfish.py — OK
+[2026-11-14 13:58:22] START 03_migrate_sqlite.py
+[2026-11-14 13:58:23] END   03_migrate_sqlite.py — OK
+[2026-11-14 13:58:23] START 04_export_csv.py
+[2026-11-14 13:58:26] END   04_export_csv.py — OK
+[2026-11-14 13:58:26] START 05_openings.py
+[2026-11-14 13:58:45] END   05_openings.py — OK
+[2026-11-14 13:58:45] START 06_middlegame.py
+[2026-11-14 13:59:00] END   06_middlegame.py — OK
+[2026-11-14 13:59:00] START 07_endgame.py
+[2026-11-14 13:59:00] END   07_endgame.py — OK
+[2026-11-14 13:59:00] START 08_psych_focus.py
+[2026-11-14 13:59:00] END   08_psych_focus.py — OK
+[2026-11-14 13:59:00] START 09_psych_state.py
+[2026-11-14 13:59:04] END   09_psych_state.py — OK
+[2026-11-14 13:59:04] START 10_psych_rating.py
+[2026-11-14 13:59:05] END   10_psych_rating.py — OK
+[2026-11-14 13:59:05] START 11_psych_opponents.py
+[2026-11-14 13:59:05] END   11_psych_opponents.py — OK
+[2026-11-14 13:59:05] START 12_coach.py
+[2026-11-14 13:59:06] END   12_coach.py — OK
+[2026-11-14 13:59:06] START 13_dashboard_final.py
+[2026-11-14 13:59:13] END   13_dashboard_final.py — OK

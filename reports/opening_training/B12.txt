@@ -1,33 +1,33 @@
 # Домашняя работа: B12
 # Winrate: 48.6%
-# ACPL: деб 36 / мит 81 / энд 89
-# Eval после дебюта: +113.3
-# Линия-убийца: e2e4 c7c6 d2d4 d7d5 e4e5 c8f5 h2h4 h7h6 g2g4 f5h7 e5e6 f7e6 f1d3 h7d3 d1d3 d8a5 c2c3 e8d7 b1d2 g8f6 (17 зевков)
-# Окно уязвимости: 21-30 (54 зевков)
+# ACPL: деб 36 / мит 80 / энд 53
+# Eval после дебюта: +147.3
+# Линия-убийца: e2e4 c7c6 d2d4 d7d5 e4e5 c8f5 h2h4 h7h6 g2g4 f5h7 e5e6 f7e6 f1d3 h7d3 d1d3 d8a5 c2c3 e8d7 b1d2 g8f6 (16 зевков)
+# Окно уязвимости: 21-30 (55 зевков)
 # Точка невозврата: после 47-го хода (100% поражений)
 
-# Позиция 1: Ход 39, потеря 1398 CP
+# Позиция 1: Ход 39, потеря 1350 CP
 FEN: 5k1r/1p1r1pp1/p2N2p1/3RP1Q1/6P1/P6P/1P3PK1/1q6 b - - 0 39
 Лучший ход (Stockfish): Rxh3
 Ссылка: https://lichess.org/analysis/standard/5k1r/1p1r1pp1/p2N2p1/3RP1Q1/6P1/P6P/1P3PK1/1q6_b_-_-_0_39
 
-# Позиция 2: Ход 33, потеря 1305 CP
+# Позиция 2: Ход 33, потеря 1312 CP
 FEN: 2r1knr1/1p6/p5qp/3pPRn1/PPpP4/2P1B3/5QP1/5RK1 b - - 4 33
 Лучший ход (Stockfish): Nh3+
 Ссылка: https://lichess.org/analysis/standard/2r1knr1/1p6/p5qp/3pPRn1/PPpP4/2P1B3/5QP1/5RK1_b_-_-_4_33
 
-# Позиция 3: Ход 49, потеря 1289 CP
+# Позиция 3: Ход 49, потеря 1210 CP
 FEN: 1r6/1P6/2R1P3/3p3p/n2P1B2/2pk4/6P1/4K3 b - - 0 49
 Лучший ход (Stockfish): Rxb7
 Ссылка: https://lichess.org/analysis/standard/1r6/1P6/2R1P3/3p3p/n2P1B2/2pk4/6P1/4K3_b_-_-_0_49
 
-# Позиция 4: Ход 45, потеря 1248 CP
+# Позиция 4: Ход 45, потеря 1128 CP
 FEN: 5r2/4k1pQ/4P3/3P4/p4n2/bP3R2/P4rPK/8 b - - 2 45
 Лучший ход (Stockfish): Rxg2+
 Ссылка: https://lichess.org/analysis/standard/5r2/4k1pQ/4P3/3P4/p4n2/bP3R2/P4rPK/8_b_-_-_2_45
 
-# Позиция 5: Ход 19, потеря 1183 CP
-FEN: r1b2rk1/pp3ppp/4p3/3q4/3pNR2/3P2P1/PP1Q2P1/R5K1 b - - 2 19
-Лучший ход (Stockfish): f5
-Ссылка: https://lichess.org/analysis/standard/r1b2rk1/pp3ppp/4p3/3q4/3pNR2/3P2P1/PP1Q2P1/R5K1_b_-_-_2_19
+# Позиция 5: Ход 35, потеря 1097 CP
+FEN: 7Q/pp2k3/1bq4p/8/4Nr2/P7/1P4KP/4R3 b - - 7 35
+Лучший ход (Stockfish): Rf2+
+Ссылка: https://lichess.org/analysis/standard/7Q/pp2k3/1bq4p/8/4Nr2/P7/1P4KP/4R3_b_-_-_7_35
 

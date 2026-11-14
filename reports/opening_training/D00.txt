@@ -1,32 +1,32 @@
 # Домашняя работа: D00
 # Winrate: 40.4%
-# ACPL: деб 27 / мит 82 / энд 88
-# Eval после дебюта: +44.1
-# Линия-убийца: d2d4 d7d5 c1f4 c7c6 e2e3 g8f6 c2c4 e7e6 b1c3 f8d6 f4g3 e8g8 g1f3 b7b6 f3e5 c8b7 f1d3 d5c4 d3c4 b6b5 (12 зевков)
-# Окно уязвимости: 21-30 (81 зевков)
-# Точка невозврата: после 52-го хода (100% поражений)
+# ACPL: деб 27 / мит 79 / энд 73
+# Eval после дебюта: +76.6
+# Линия-убийца: d2d4 d7d5 c1f4 c7c6 e2e3 g8f6 c2c4 e7e6 b1c3 f8d6 f4g3 e8g8 g1f3 b7b6 f3e5 c8b7 f1d3 d5c4 d3c4 b6b5 (11 зевков)
+# Окно уязвимости: 21-30 (84 зевков)
+# Точка невозврата: после 44-го хода (100% поражений)
 
-# Позиция 1: Ход 29, потеря 1372 CP
+# Позиция 1: Ход 60, потеря 1355 CP
+FEN: 2Q5/6pk/5pqp/4p3/8/8/5K2/8 b - - 5 60
+Лучший ход (Stockfish): e4
+Ссылка: https://lichess.org/analysis/standard/2Q5/6pk/5pqp/4p3/8/8/5K2/8_b_-_-_5_60
+
+# Позиция 2: Ход 29, потеря 1343 CP
 FEN: 1Qq2k2/pBP1pp2/2Pnb3/3p4/P5p1/4P3/3N1PP1/b3K3 b - - 2 29
 Лучший ход (Stockfish): Qe8
 Ссылка: https://lichess.org/analysis/standard/1Qq2k2/pBP1pp2/2Pnb3/3p4/P5p1/4P3/3N1PP1/b3K3_b_-_-_2_29
 
-# Позиция 2: Ход 60, потеря 1311 CP
-FEN: 2Q5/6pk/5pqp/4p3/8/8/5K2/8 b - - 5 60
-Лучший ход (Stockfish): Qg5
-Ссылка: https://lichess.org/analysis/standard/2Q5/6pk/5pqp/4p3/8/8/5K2/8_b_-_-_5_60
-
-# Позиция 3: Ход 36, потеря 1288 CP
+# Позиция 3: Ход 36, потеря 1324 CP
 FEN: 8/p5kp/2p2rp1/2N5/2Q5/PP6/K1P2q2/8 b - - 6 36
 Лучший ход (Stockfish): Qe3
 Ссылка: https://lichess.org/analysis/standard/8/p5kp/2p2rp1/2N5/2Q5/PP6/K1P2q2/8_b_-_-_6_36
 
-# Позиция 4: Ход 18, потеря 1202 CP
+# Позиция 4: Ход 18, потеря 1145 CP
 FEN: 2b4r/1p2kpQp/4p3/q2p4/1p1Pn3/2P5/PP3PPP/R3KB1R b KQ - 0 18
 Лучший ход (Stockfish): bxc3
 Ссылка: https://lichess.org/analysis/standard/2b4r/1p2kpQp/4p3/q2p4/1p1Pn3/2P5/PP3PPP/R3KB1R_b_KQ_-_0_18
 
-# Позиция 5: Ход 31, потеря 1006 CP
+# Позиция 5: Ход 31, потеря 1065 CP
 FEN: 7k/4qpp1/1Qp1r1bp/4P3/1pP5/1P4P1/6PK/4RB2 b - - 5 31
 Лучший ход (Stockfish): c5
 Ссылка: https://lichess.org/analysis/standard/7k/4qpp1/1Qp1r1bp/4P3/1pP5/1P4P1/6PK/4RB2_b_-_-_5_31

@@ -1,33 +1,33 @@
 # Домашняя работа: B18
 # Winrate: 41.2%
-# ACPL: деб 45 / мит 101 / энд 23
-# Eval после дебюта: +32.5
-# Линия-убийца: e2e4 c7c6 d2d4 d7d5 b1c3 d5e4 c3e4 c8f5 e4g3 f5g6 g1h3 h7h5 h3f4 g6h7 g3h5 b8d7 f1c4 g8f6 h5f6 g7f6 (9 зевков)
-# Окно уязвимости: 21-30 (23 зевков)
+# ACPL: деб 44 / мит 95 / энд 10
+# Eval после дебюта: +201.9
+# Линия-убийца: e2e4 c7c6 d2d4 d7d5 b1c3 d5e4 c3e4 c8f5 e4g5 h7h6 g5f7 e8f7 g1f3 b8d7 f1c4 e7e6 d1e2 d8f6 c1d2 d7b6 (8 зевков)
+# Окно уязвимости: 21-30 (25 зевков)
 # Точка невозврата: после 29-го хода (100% поражений)
 
-# Позиция 1: Ход 28, потеря 1597 CP
+# Позиция 1: Ход 28, потеря 1399 CP
 FEN: r4rk1/pp3p2/2p1pQp1/4P3/1P4p1/P7/3R1PPK/2q4R b - - 3 28
 Лучший ход (Stockfish): g3+
 Ссылка: https://lichess.org/analysis/standard/r4rk1/pp3p2/2p1pQp1/4P3/1P4p1/P7/3R1PPK/2q4R_b_-_-_3_28
 
-# Позиция 2: Ход 29, потеря 1220 CP
+# Позиция 2: Ход 29, потеря 1168 CP
 FEN: 8/pp6/2p2n2/5Q2/3PrPr1/2Pk4/PP1B1K2/5R2 b - - 2 29
 Лучший ход (Stockfish): Kxd2
 Ссылка: https://lichess.org/analysis/standard/8/pp6/2p2n2/5Q2/3PrPr1/2Pk4/PP1B1K2/5R2_b_-_-_2_29
 
-# Позиция 3: Ход 7, потеря 1089 CP
+# Позиция 3: Ход 7, потеря 1024 CP
 FEN: rn1qkbnr/pp2ppp1/2p1N1bp/8/3P4/5N2/PPP2PPP/R1BQKB1R b KQkq - 1 7
 Лучший ход (Stockfish): fxe6
 Ссылка: https://lichess.org/analysis/standard/rn1qkbnr/pp2ppp1/2p1N1bp/8/3P4/5N2/PPP2PPP/R1BQKB1R_b_KQkq_-_1_7
 
-# Позиция 4: Ход 10, потеря 955 CP
-FEN: rn1qkb1r/pp2pbp1/2p1pn1p/4N3/2BP4/8/PPP1QPPP/R1B1K2R b KQkq - 5 10
-Лучший ход (Stockfish): Qd6
-Ссылка: https://lichess.org/analysis/standard/rn1qkb1r/pp2pbp1/2p1pn1p/4N3/2BP4/8/PPP1QPPP/R1B1K2R_b_KQkq_-_5_10
-
-# Позиция 5: Ход 25, потеря 949 CP
+# Позиция 4: Ход 25, потеря 974 CP
 FEN: 2kr4/pp2bR2/1np1p2p/q3B3/P2P2r1/1QP5/1P4PP/R5K1 b - - 0 25
 Лучший ход (Stockfish): Rd7
 Ссылка: https://lichess.org/analysis/standard/2kr4/pp2bR2/1np1p2p/q3B3/P2P2r1/1QP5/1P4PP/R5K1_b_-_-_0_25
+
+# Позиция 5: Ход 10, потеря 930 CP
+FEN: rn1qkb1r/pp2pbp1/2p1pn1p/4N3/2BP4/8/PPP1QPPP/R1B1K2R b KQkq - 5 10
+Лучший ход (Stockfish): Qd6
+Ссылка: https://lichess.org/analysis/standard/rn1qkb1r/pp2pbp1/2p1pn1p/4N3/2BP4/8/PPP1QPPP/R1B1K2R_b_KQkq_-_5_10
 

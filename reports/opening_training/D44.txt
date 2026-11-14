@@ -1,33 +1,33 @@
 # Домашняя работа: D44
 # Winrate: 52.6%
-# ACPL: деб 19 / мит 72 / энд 72
-# Eval после дебюта: +76.1
-# Линия-убийца: d2d4 d7d5 c2c4 e7e6 b1c3 g8f6 g1f3 f8e7 c1g5 e8g8 e2e3 d5c4 f1c4 c7c5 e1g1 c5d4 e3d4 a7a6 a2a4 b8c6 (10 зевков)
-# Окно уязвимости: 21-30 (23 зевков)
-# Точка невозврата: после 28-го хода (75% поражений)
+# ACPL: деб 17 / мит 73 / энд 58
+# Eval после дебюта: +52.9
+# Линия-убийца: d2d4 d7d5 c2c4 e7e6 b1c3 g8f6 g1f3 f8e7 c1g5 e8g8 e2e3 d5c4 f1c4 c7c5 e1g1 c5d4 e3d4 a7a6 a2a4 b8c6 (13 зевков)
+# Окно уязвимости: 21-30 (22 зевков)
+# Точка невозврата: после 19-го хода (100% поражений)
 
-# Позиция 1: Ход 39, потеря 1481 CP
+# Позиция 1: Ход 39, потеря 1638 CP
 FEN: 5k2/3R4/6p1/5p2/1P1BpP2/4Pn2/5PKP/3r4 w - - 3 39
 Лучший ход (Stockfish): Bc5+
 Ссылка: https://lichess.org/analysis/standard/5k2/3R4/6p1/5p2/1P1BpP2/4Pn2/5PKP/3r4_w_-_-_3_39
 
-# Позиция 2: Ход 41, потеря 1141 CP
+# Позиция 2: Ход 41, потеря 1122 CP
 FEN: 6k1/6p1/4p1Np/3n4/P1RP4/6PP/1r3P2/6K1 w - - 0 41
 Лучший ход (Stockfish): Rc8+
 Ссылка: https://lichess.org/analysis/standard/6k1/6p1/4p1Np/3n4/P1RP4/6PP/1r3P2/6K1_w_-_-_0_41
 
-# Позиция 3: Ход 18, потеря 937 CP
+# Позиция 3: Ход 18, потеря 929 CP
 FEN: r2qr1k1/5pp1/p1b1p2p/8/3Pn3/4PN2/P1RB1PPP/3Q1RK1 w - - 5 18
 Лучший ход (Stockfish): Rxc6
 Ссылка: https://lichess.org/analysis/standard/r2qr1k1/5pp1/p1b1p2p/8/3Pn3/4PN2/P1RB1PPP/3Q1RK1_w_-_-_5_18
 
-# Позиция 4: Ход 15, потеря 825 CP
-FEN: r4rk1/pb3ppp/1ppb1n2/4q3/1P6/P1N1P3/B4PPP/1RBQR1K1 w - - 0 15
-Лучший ход (Stockfish): f4
-Ссылка: https://lichess.org/analysis/standard/r4rk1/pb3ppp/1ppb1n2/4q3/1P6/P1N1P3/B4PPP/1RBQR1K1_w_-_-_0_15
-
-# Позиция 5: Ход 23, потеря 785 CP
+# Позиция 4: Ход 23, потеря 795 CP
 FEN: 5rk1/bbr1qppp/4p3/p2nP3/Pp1N1P2/1B5P/1P2QBP1/3R1RK1 w - - 9 23
 Лучший ход (Stockfish): f5
 Ссылка: https://lichess.org/analysis/standard/5rk1/bbr1qppp/4p3/p2nP3/Pp1N1P2/1B5P/1P2QBP1/3R1RK1_w_-_-_9_23
+
+# Позиция 5: Ход 15, потеря 795 CP
+FEN: r4rk1/pb3ppp/1ppb1n2/4q3/1P6/P1N1P3/B4PPP/1RBQR1K1 w - - 0 15
+Лучший ход (Stockfish): f4
+Ссылка: https://lichess.org/analysis/standard/r4rk1/pb3ppp/1ppb1n2/4q3/1P6/P1N1P3/B4PPP/1RBQR1K1_w_-_-_0_15
 
