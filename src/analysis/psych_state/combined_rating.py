@@ -1,7 +1,7 @@
 # ============================================================
-# analysis/psych_state/combined_rating.py (v25.0)
-# §17: combined_rating_value → обёртка над core.метрики.
-# Удалён DEFAULT_COEFS (ядро даёт дефолт 3178-545t, w1=0.7).
+# analysis/psych_state/combined_rating.py (v25.1)
+# FIX: Защита от k=0. Если калибровка не находит корреляции 
+#      между временем и рейтингом, используется дефолт из ядра.
 # ============================================================
 import json
 import statistics
@@ -24,7 +24,6 @@ def save_coefs(coefs):
 
 
 def load_coefs():
-    """Читает coefs.json. Пустой dict, если нет — ядро применит дефолт."""
     if not os.path.exists(COEFS_PATH):
         return {}
     try:
@@ -38,7 +37,6 @@ def load_coefs():
 
 
 def combined_rating_value(acpl, avg_time, coefs=None):
-    """Обёртка: CombinedR = w1*GameR + w2*SpeedR через core.метрики."""
     if coefs is None:
         coefs = load_coefs()
     game_r = game_rating(acpl)
@@ -53,6 +51,13 @@ def _calibrate_combined(conn, days=90):
     k, b = _linear_fit(speed_calib)
     if k is None:
         return None
+
+    # ФИКС: Если k около нуля, это значит, что рейтинг не зависит от времени.
+    # В этом случае мы используем дефолтную теоретическую формулу, чтобы SpeedR работал.
+    if abs(k) < 50:
+        print("⚠️ Калибровка SpeedR дала k≈0. Используем дефолт (3178 - 545*t).")
+        k = -545.0
+        b = 3178.0
 
     cutoff = window_cutoff_ts(days)
     cur = conn.cursor()
@@ -105,7 +110,6 @@ def _calibrate_combined(conn, days=90):
         "calibrated_at": datetime.now(timezone.utc).isoformat(),
         "is_default": False,
     }
-
 
 def report_combined_rating():
     conn = _conn()

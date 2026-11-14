@@ -1,5 +1,7 @@
 # ============================================================
-# analysis/openings/planner.py — Opening Planner (v25.0)
+# analysis/openings/planner.py — Opening Planner (v25.1)
+# FIX: Убран несуществующий аргумент timeout=30.0 из analyze_fen().
+#      Вместо него добавлен time=30.0 внутрь chess.engine.Limit() (§19).
 # §P3: analyze_fen — time.sleep(0.5) между попытками.
 #      Без sleep — busy-loop при пустом пуле (спин на CPU).
 # ============================================================
@@ -135,10 +137,10 @@ def analyze_fen(fen):
             continue
         try:
             board = chess.Board(fen)
+            # FIX: time=30.0 внутри Limit вместо несуществующего timeout
             info = engine.analyse(
                 board,
-                chess.engine.Limit(depth=12),
-                timeout=30.0,  # §19: обязательно
+                chess.engine.Limit(depth=12, time=30.0),
             )
             if info.get("pv"):
                 best = board.san(info["pv"][0])

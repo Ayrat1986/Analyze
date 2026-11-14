@@ -1,8 +1,11 @@
 # ============================================================
-# analysis/game.py — анализ одной шахматной партии (v25.0)
+# analysis/game.py — анализ одной шахматной партии (v25.1)
 # §32: ACPL в зоне берсерка (<10 сек) НЕ СЧИТАЕТСЯ.
 #      moves_normal = только ходы с >10 сек на часах.
 #      blunders всё равно сохраняются (для тренажера).
+# FIX v25.1: Убран несуществующий аргумент timeout=30.0 из
+#            engine.analyse(). Вместо него добавлен time=30.0
+#            внутрь chess.engine.Limit() (соблюдает §19).
 # ============================================================
 import io
 import chess
@@ -98,13 +101,15 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         if move_num <= 10:
             opening_line.append(move.uci())
 
-        info_before = engine.analyse(board, chess.engine.Limit(depth=DEPTH), timeout=30.0)
+        # FIX: time=30.0 внутри Limit вместо несуществующего timeout
+        info_before = engine.analyse(board, chess.engine.Limit(depth=DEPTH, time=30.0))
         score_before = info_before["score"].white()
 
         board_before_fen = board.fen()
 
         board.push(move)
-        info_after = engine.analyse(board, chess.engine.Limit(depth=DEPTH), timeout=30.0)
+        # FIX: time=30.0 внутри Limit
+        info_after = engine.analyse(board, chess.engine.Limit(depth=DEPTH, time=30.0))
         score_after = info_after["score"].white()
 
         if score_before.is_mate() or score_after.is_mate():
@@ -195,7 +200,8 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                 if i + 1 < len(moves):
                     board_after_response.push(moves[i + 1].move)
                     try:
-                        info_resp = engine.analyse(board_after_response, chess.engine.Limit(depth=DEPTH), timeout=30.0)
+                        # FIX: time=30.0 внутри Limit
+                        info_resp = engine.analyse(board_after_response, chess.engine.Limit(depth=DEPTH, time=30.0))
                         score_after_response = info_resp["score"].white()
                     except Exception:
                         pass

@@ -1,11 +1,10 @@
 name: Fast Update Database
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Кнопка для ручного запуска
   schedule:
-    - cron: '0 20 * * *'
+    - cron: '0 */2 * * *' # Каждые 2 часа
 
-# ЭТА СТРОКА ДАЕТ ПРАВА НА ЗАПИСЬ (исправляет exit code 128)
 permissions:
   contents: write
 
@@ -34,6 +33,6 @@ jobs:
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
           git add data/chess.db data/chess_api_cache.json
-          # Эта команда проверяет, были ли изменения, и коммитит только если они есть
-          git diff-index --quiet HEAD || git commit -m "Auto-update database with new games"
+          # Коммитим, только если есть изменения
+          git diff-index --quiet HEAD || git commit -m "Auto-update DB [skip ci]"
           git push

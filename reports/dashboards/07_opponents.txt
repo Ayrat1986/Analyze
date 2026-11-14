@@ -11,20 +11,20 @@
  OPPONENT WEAKNESS
 ============================================================
 📊 ПО ACPL СОПЕРНИКА (чем выше ACPL соперника — тем он слабее):
-  ACPL < 60 (сильный)       1112п, 34.2%
-  ACPL 60-75 (средний)       550п, 48.2%
-  ACPL 75-90 (слабый)        375п, 57.9%
-  ACPL > 90 (очень слабый)   460п, 64.3%
+  ACPL < 60 (сильный)       1144п, 34.6%
+  ACPL 60-75 (средний)       564п, 48.6%
+  ACPL 75-90 (слабый)        388п, 57.2%
+  ACPL > 90 (очень слабый)   473п, 64.5%
 
 📊 ПО СТИЛЮ (из opponent_style.csv):
-  universal       665п, 44.1%, ACPL 64
-  positional      225п, 64.9%, ACPL 55
-  aggressive      118п, 17.8%, ACPL 79
-  tactical         46п, 28.3%, ACPL 63
+  universal       704п, 44.3%, ACPL 64
+  positional      243п, 65.0%, ACPL 55
+  aggressive      126п, 20.6%, ACPL 79
+  tactical         49п, 28.6%, ACPL 63
 
 🎯 ВЕРДИКТ:
   Лучше всего: positional (65%)
-  Хуже всего: aggressive (18%)
+  Хуже всего: aggressive (21%)
 
 ============================================================
  🩸 ТЕ, КТО РАСКАЛЫВАЕТ (из crushed_by.txt)
@@ -36,8 +36,8 @@
 
   Соперник               Рейт   Игр   W/D/L        Score%   Мой ACPL   Его ACPL
   ----------------------------------------------------------------------------------------
+  zumpili                2555   13    3/0/10       23.1     58         55
   bopielmarionglero2     2583   11    2/0/9        18.2     83         86
-  zumpili                2561   11    3/0/8        27.3     56         57
   advay2005              2534   9     2/1/6        27.8     78         73
   canadiandragon         2578   9     1/1/7        16.7     56         36
   blakmore               2478   7     2/0/5        28.6     76         75
@@ -66,15 +66,17 @@
 
 Найдено 'раскалывающих': 13
 
+♟️ zumpili (13 партий, Score 23%)
+  Дебюты, где он тебя ломает:
+    D31 Magnus Queens Gambit                        2п, Score 0%
+    B01 Scandinavian Defense Modern Portuguese Va   2п, Score 0%
+    A43 Old Benoni Defense                          2п, Score 0%
+  📉 Средний финальный перевес: -2.7 (ты часто доминируешь в начале)
+
 ♟️ bopielmarionglero2 (11 партий, Score 18%)
   Дебюты, где он тебя ломает:
     D18 Slav Defense Modern Alapin Variation Czec   3п, Score 0%
     B01 Scandinavian Defense Mieses Kotrc Main Li   2п, Score 0%
-
-♟️ zumpili (11 партий, Score 27%)
-  Дебюты, где он тебя ломает:
-    B01 Scandinavian Defense Modern Portuguese Va   2п, Score 0%
-    A43 Old Benoni Defense                          2п, Score 0%
 
 ♟️ advay2005 (9 партий, Score 28%)
   Дебюты, где он тебя ломает:

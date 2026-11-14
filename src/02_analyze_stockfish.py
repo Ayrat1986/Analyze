@@ -1,7 +1,5 @@
 # ============================================================
-# 02_analyze_stockfish.py — v25.1
-# §32: Принудительный пересчет кэша, если версия схемы устарела
-#      (для применения правила "исключение берсерка из ACPL").
+# 02_analyze_stockfish.py — v25.5 (Clean: No hacks, no autosync)
 # ============================================================
 import os
 import sys
@@ -9,7 +7,6 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from importlib import import_module
 
-# Добавляем корень проекта и папку src в пути
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, BASE_DIR)
@@ -28,11 +25,10 @@ fetch_api = import_module("01_fetch_chess_api")
 STOCKFISH_CACHE_FILE = str(_common.BASE_DIR / "data" / "stockfish_cache.json")
 STOCKFISH_PATH = _common.CONFIG.get("stockfish_path", "")
 
-# Настройки параллелизации
-NUM_ENGINES = 4          # 4 движка × 1 поток = 4 CPU
-THREADS_PER_ENGINE = 1   # 1 поток на движок
-HASH_MB = 32             # P2: 32MB (4×32 = 128MB)
-SAVE_EVERY = 5           # P2: каждые 5 партий
+NUM_ENGINES = 4
+THREADS_PER_ENGINE = 1
+HASH_MB = 32
+SAVE_EVERY = 5
 
 
 def _analyze_one(pool: EnginePool, game_data: dict, player: str):
@@ -43,7 +39,7 @@ def _analyze_one(pool: EnginePool, game_data: dict, player: str):
     
     try:
         result = analyze_game(game_data, engine, player)
-        pool.mark_processed()  # A1: для диагностики
+        pool.mark_processed()
         return (url, result, None)
     except Exception as e:
         return (url, None, str(e))
@@ -53,12 +49,11 @@ def _analyze_one(pool: EnginePool, game_data: dict, player: str):
 
 def main():
     print("=" * 60)
-    print(" 02_analyze_stockfish.py — Stockfish-анализ (v25.1)")
+    print(" 02_analyze_stockfish.py — Stockfish-анализ (v25.5)")
     print("=" * 60)
 
     if not os.path.exists(STOCKFISH_PATH):
         print(f"❌ Stockfish не найден: {STOCKFISH_PATH}")
-        print("   Проверь 'stockfish_path' в data/config.json")
         return
 
     if not fetch_api.PLAYER:
@@ -66,48 +61,53 @@ def main():
         return
 
     cache = load_cache(STOCKFISH_CACHE_FILE)
-    print(f"📂 В кэше уже: {len(cache)} партий")
+    print(f"📂 В кэше Stockfish уже: {len(cache)} партий")
 
-    # ФИКС §32: Проверка версии схемы
     force_recalc = cache_needs_recalc(cache)
     if cache.get("_schema_version") != CACHE_SCHEMA_VERSION:
         force_recalc = True
         print(f"🔄 Версия схемы кэша изменилась ({cache.get('_schema_version')} -> {CACHE_SCHEMA_VERSION}).")
-        print("   Все партии будут пересчитаны для применения нового правила.")
         
     if force_recalc:
         print("🔄 Кэш требует пересчёта — будут пересчитаны ВСЕ партии.")
 
-    games = fetch_api.get_games_from_cache(
+    # Получаем ВСЕ партии (с PGN и без), чтобы честно посчитать отсев
+    games_all = fetch_api.get_games_from_cache(
         player=fetch_api.PLAYER,
         days=fetch_api.DAYS_TO_FETCH,
         time_class=fetch_api.TIME_CLASS,
         max_base=fetch_api.MAX_BULLET_BASE_TIME,
-        require_pgn=True,
+        require_pgn=False,
     )
-    print(f"📥 Загружено партий из API-кэша: {len(games)}")
+    
+    games_no_pgn = [g for g in games_all if not g.get("pgn")]
+    games_with_pgn = [g for g in games_all if g.get("pgn")]
 
-    if not games:
-        print("❌ Нечего анализировать.")
-        return
+    print(f"📥 Загружено из API-кэша: {len(games_all)} партий")
+    if games_no_pgn:
+        print(f"⚠️  Из них БЕЗ PGN: {len(games_no_pgn)} партий (они не будут проанализированы).")
+        print(f"   Пример URL без PGN: {games_no_pgn[0].get('url')}")
+    print(f"✅ С PGN: {len(games_with_pgn)} партий")
 
-    # Отбираем только те, что нужно анализировать
     to_analyze = []
-    for g in games:
+    skipped_ok = 0
+    
+    for g in games_with_pgn:
         url = g.get("url", "")
         if not url:
             continue
         if not force_recalc and url in cache and game_cache_ok(cache[url]):
+            skipped_ok += 1
             continue
         to_analyze.append(g)
 
-    print(f"🎯 К анализу: {len(to_analyze)} партий (пропущено {len(games) - len(to_analyze)} из кэша)")
+    print(f"🎯 К анализу: {len(to_analyze)} партий")
+    print(f"⏩ Уже в кэше (пропущено): {skipped_ok} партий")
 
     if not to_analyze:
-        print("✅ Все партии уже в кэше. Нечего делать.")
+        print("✅ Все партии с PGN уже в кэше Stockfish. Нечего делать.")
         return
 
-    # Запускаем пул
     print(f"\n🚀 Запуск {NUM_ENGINES} движков Stockfish (Hash {HASH_MB}MB)...")
     try:
         pool = EnginePool(
@@ -151,9 +151,7 @@ def main():
                 print(f"  {i}/{total}: ✅ ACPL {acpl_val:.0f} | "
                       f"ETA {eta/60:.1f} мин (ср. {avg_per_game:.1f} сек/партия)")
 
-                # Батчинг save_cache (P2: было 20)
                 if i - last_save >= SAVE_EVERY:
-                    # Сохраняем маркер версии вместе с кэшем
                     cache["_schema_version"] = CACHE_SCHEMA_VERSION
                     save_cache(STOCKFISH_CACHE_FILE, cache)
                     last_save = i
@@ -161,14 +159,13 @@ def main():
     except KeyboardInterrupt:
         print("\n⚠️ Прервано пользователем. Сохраняю что есть...")
     finally:
-        # Финальное сохранение (независимо от результата)
         cache["_schema_version"] = CACHE_SCHEMA_VERSION
         save_cache(STOCKFISH_CACHE_FILE, cache)
         pool.close()
 
     elapsed_total = time.time() - start_time
     print(f"\n✅ Готово за {elapsed_total/60:.1f} мин. Кэш: {STOCKFISH_CACHE_FILE}")
-    print(f"   Новых: {new_count}, ошибок: {errors}")
+    print(f"   Новых проанализировано: {new_count}, ошибок: {errors}")
     if to_analyze:
         print(f"   Средняя скорость: {elapsed_total/len(to_analyze):.2f} сек/партия")
 

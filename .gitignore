@@ -1,5 +1,16 @@
-AppData/
+# Базы данных и их резервные копии
+data/backup/*
+*.sqlite
+*.sqlite3
+
+# Кэши и сгенерированные данные
+data/agg_cache.json
+data/stockfish_cache.json
+data/chess_api_cache.json
+data/build_cache/
+data/combined_rating_coefs.json
 __pycache__/
 *.pyc
-.vscode/
-.idea/
+
+# Отчеты и графики
+reports/

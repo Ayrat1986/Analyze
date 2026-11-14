@@ -1,32 +1,47 @@
 # ============================================================
-# 01_fetch_chess_api.py — v25.2
-# Изменено: DAYS_TO_FETCH = 365 (скачивание за год).
-# Фикс: verify=False для обхода curl (77) на Windows.
+# 01_fetch_chess_api.py — v25.5 (Fix: Sync Cache vs SQLite DB)
+#
+# ЧТО ИСПРАВЛЕНО:
+#   - Сверка партий теперь идет не только по JSON-кэшу, но и напрямую
+#     с базой данных SQLite (chess.db). Если партии скачались в JSON,
+#     но еще не проанализированы в БД — скрипт это увидит и запустит анализ!
+#   - Вывод времени самой свежей партии теперь дублируется в локальном
+#     времени (МСК/Казань, UTC+3), чтобы не путаться с UTC.
+#   - Надежный автозапуск 02_analyze_stockfish.py через subprocess.
 # ============================================================
 from curl_cffi import requests
 import time
 import os
+import sys
 import json
+import sqlite3
+import subprocess
+import traceback
 from datetime import datetime, timezone, timedelta
 import _common
 
 CACHE_FILE = str(_common.BASE_DIR / "data" / "chess_api_cache.json")
-PLAYER = _common.CONFIG.get("player", "Ayrat_1986")
-EMAIL = _common.CONFIG.get("email", "")
+DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
+PLAYER_RAW = _common.CONFIG.get("player", "").strip()
+PLAYER = PLAYER_RAW
 
-# Настройки фильтрации
 TIME_CLASS = "bullet"
 MAX_BULLET_BASE_TIME = 120
-DAYS_TO_FETCH = 365       # <-- ИЗМЕНЕНО: скачиваем за год (было 95)
-CACHE_ROTATION_DAYS = 400 # <-- ИЗМЕНЕНО: храним кэш дольше
+DAYS_TO_FETCH = 365
+CACHE_ROTATION_DAYS = 400
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0.0.0 Safari/537.36"
+    ),
     "Accept": "application/json",
 }
 
+_STATS = {"http_ok": 0, "http_err": 0, "http_429": 0, "http_404": 0}
 
-# ---------- КЭШ ----------
+
 def load_cache() -> dict:
     if os.path.exists(CACHE_FILE):
         try:
@@ -46,42 +61,87 @@ def save_cache(cache: dict) -> None:
     os.replace(tmp, CACHE_FILE)
 
 
-# ---------- HTTP ----------
+def get_db_game_urls() -> set:
+    """Возвращает множество URL партий, которые УЖЕ записаны в SQLite (chess.db)."""
+    if not os.path.exists(DB_FILE):
+        return set()
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        cur = conn.cursor()
+        cur.execute("SELECT url FROM games WHERE url IS NOT NULL")
+        urls = {row[0] for row in cur.fetchall()}
+        conn.close()
+        return urls
+    except Exception as e:
+        print(f"⚠️ Не удалось прочитать список партий из БД ({e}) — считаем БД пустой.")
+        return set()
+
+
 def get_api_data(url: str, cache: dict, retries: int = 3, force: bool = False):
-    """Возвращает JSON или None. Уважает кэш (если не force)."""
+    """
+    Возвращает JSON или None.
+    Cache-buster (?t=...) и Cache-Control: no-cache для force-запросов.
+    """
     if not force and url in cache:
         return cache[url]
 
+    req_url = url
+    if force:
+        req_url = f"{url}{'&' if '?' in url else '?'}t={int(time.time())}"
+
+    headers = HEADERS.copy()
+    headers["Cache-Control"] = "no-cache"
+    headers["Pragma"] = "no-cache"
+
+    last_error = None
     for attempt in range(retries):
         try:
-            # Фикс curl (77): отключаем проверку для локального Windows
             response = requests.get(
-                url, headers=HEADERS, impersonate="safari184",
+                req_url, headers=headers, impersonate="safari184",
                 verify=False, timeout=30,
             )
             if response.status_code == 200:
-                data = response.json()
-                cache[url] = data
-                return data
+                _STATS["http_ok"] += 1
+                try:
+                    data = response.json()
+                    cache[url] = data
+                    return data
+                except Exception as e:
+                    print(f"  ⚠️ Ошибка парсинга JSON на {url[-40:]}: {e}")
+                    last_error = f"JSON error: {e}"
+                    time.sleep(2)
+                    continue
             elif response.status_code == 429:
-                print("  ⚠️ Лимит запросов (429). Пауза 10 сек...")
+                _STATS["http_429"] += 1
+                print(f"  ⚠️ 429 на {url[-40:]}. Пауза 10 сек...")
                 time.sleep(10)
+                last_error = "429 rate limit"
                 continue
             elif response.status_code == 404:
+                _STATS["http_404"] += 1
+                print(f"  ⚠️ 404 на {url[-40:]}")
                 return None
             else:
+                _STATS["http_err"] += 1
+                print(f"  ⚠️ HTTP {response.status_code} на {url[-40:]}")
                 time.sleep(2)
+                last_error = f"HTTP {response.status_code}"
         except Exception as e:
-            print(f"  ⚠️ Ошибка сети: {e}")
+            _STATS["http_err"] += 1
+            print(f"  ⚠️ Ошибка сети на {url[-40:]}: {e}")
             time.sleep(2)
+            last_error = str(e)
+
+    if last_error:
+        print(f"  ❌ Не удалось получить {url[-40:]}: {last_error}")
     return None
 
 
-# ---------- FETCH ----------
 def fetch_all_games(player: str, cache: dict) -> list:
-    """Качает свежие месяцы + фильтрует bullet <= 120 сек. Возвращает games."""
-    print(f"Загрузка архивов для {player}...")
-    archives_url = f"https://api.chess.com/pub/player/{player}/games/archives"
+    player_lower = player.lower()
+    print(f"Загрузка архивов для {player} (URL: {player_lower})...")
+
+    archives_url = f"https://api.chess.com/pub/player/{player_lower}/games/archives"
     data = get_api_data(archives_url, cache, force=True)
     if not data or "archives" not in data:
         print("❌ Не удалось получить список архивов.")
@@ -91,38 +151,44 @@ def fetch_all_games(player: str, cache: dict) -> list:
     print(f"✅ Найдено месяцев в архиве: {len(archives)}")
 
     now_utc = datetime.now(timezone.utc)
-    current_month_url = f"https://api.chess.com/pub/player/{player}/games/{now_utc.year}/{now_utc.month:02d}"
+    current_month_url = (
+        f"https://api.chess.com/pub/player/{player_lower}/games/"
+        f"{now_utc.year}/{now_utc.month:02d}"
+    )
     prev_month_date = now_utc.replace(day=1) - timedelta(days=1)
-    prev_month_url = f"https://api.chess.com/pub/player/{player}/games/{prev_month_date.year}/{prev_month_date.month:02d}"
+    prev_month_url = (
+        f"https://api.chess.com/pub/player/{player_lower}/games/"
+        f"{prev_month_date.year}/{prev_month_date.month:02d}"
+    )
 
-    # ВСЕГДА качаем текущий и предыдущий месяц первыми
     fetch_urls = []
     seen_urls = set()
     for u in (current_month_url, prev_month_url):
         if u not in seen_urls:
             fetch_urls.append(u)
             seen_urls.add(u)
-    # Остальные архивы — от старых к новым
     for u in reversed(archives):
         if u not in seen_urls:
             fetch_urls.append(u)
             seen_urls.add(u)
 
-    # ИЗМЕНЕНО: отсекаем более старые, чем 365 дней
     cutoff_utc = int((now_utc - timedelta(days=DAYS_TO_FETCH)).timestamp())
     all_games, existing_urls = [], set()
+
+    counters = {"raw": 0, "time_class": 0, "time_control": 0, "old": 0, "dup": 0, "kept": 0}
+    fetched_months = 0
+    empty_months = []
 
     for url in fetch_urls:
         parts = url.split("/")
         if len(parts) < 2:
             continue
         month_str = f"{parts[-2]}/{parts[-1]}"
+        is_recent = url in (current_month_url, prev_month_url)
 
-        is_recent = (url == current_month_url or url == prev_month_url)
         try:
             year, month = int(parts[-2]), int(parts[-1])
             archive_date = datetime(year, month, 1, tzinfo=timezone.utc)
-            # ИЗМЕНЕНО: отсекаем всё, что старше 365 дней
             if archive_date < now_utc - timedelta(days=DAYS_TO_FETCH + 10) and not is_recent:
                 continue
         except ValueError:
@@ -132,36 +198,67 @@ def fetch_all_games(player: str, cache: dict) -> list:
         month_data = get_api_data(url, cache, force=is_recent)
         if not month_data:
             print(f"    ⚠️ пустой ответ")
+            empty_months.append(month_str)
             continue
+        fetched_months += 1
 
         games_in_month = month_data.get("games", [])
         if is_recent and not games_in_month:
             print(f"    ⚠️ {month_str}: 0 партий в ответе (возможно, API лагает)")
 
         for g in games_in_month:
+            counters["raw"] += 1
             g_url = g.get("url")
-            if g_url in existing_urls:
+            if not g_url:
                 continue
-            # ИЗМЕНЕНО: фильтр по времени (365 дней)
+            if g_url in existing_urls:
+                counters["dup"] += 1
+                continue
             if g.get("end_time", 0) < cutoff_utc:
+                counters["old"] += 1
                 continue
             if g.get("time_class") != TIME_CLASS:
+                counters["time_class"] += 1
                 continue
             tc = g.get("time_control", "")
             if tc:
                 try:
                     if int(tc.split("+")[0]) > MAX_BULLET_BASE_TIME:
+                        counters["time_control"] += 1
                         continue
                 except ValueError:
                     pass
             all_games.append(g)
             existing_urls.add(g_url)
+            counters["kept"] += 1
+
+    print(f"📊 Месяцев получено: {fetched_months}, пустых: {len(empty_months)}")
+    if empty_months:
+        print(f"   Пустые: {', '.join(empty_months[:5])}{'...' if len(empty_months) > 5 else ''}")
+    
+    if all_games:
+        latest_end_time = max(g.get("end_time", 0) for g in all_games)
+        dt_utc = datetime.fromtimestamp(latest_end_time, timezone.utc)
+        dt_local = dt_utc.astimezone(timezone(timedelta(hours=3)))
+        print(
+            f"📅 Самая свежая партия в ответе API: "
+            f"{dt_utc.strftime('%Y-%m-%d %H:%M:%S')} UTC "
+            f"({dt_local.strftime('%d.%m.%Y %H:%M:%S')} МСК)"
+        )
+
+    print(
+        f"📊 Отсев: raw={counters['raw']} | "
+        f"time_class≠{TIME_CLASS}={counters['time_class']} | "
+        f"base>{MAX_BULLET_BASE_TIME}с={counters['time_control']} | "
+        f"старше {DAYS_TO_FETCH}д={counters['old']} | "
+        f"дубли={counters['dup']} | "
+        f"✅ kept={counters['kept']}"
+    )
 
     print(f"✅ Всего подходящих партий (bullet за {DAYS_TO_FETCH} дней): {len(all_games)}")
     return all_games
 
 
-# ---------- HELPER ДЛЯ DOMAIN-СКРИПТОВ ----------
 def get_games_from_cache(
     player: str = PLAYER,
     days: int = DAYS_TO_FETCH,
@@ -169,30 +266,45 @@ def get_games_from_cache(
     max_base: int = MAX_BULLET_BASE_TIME,
     require_pgn: bool = True,
 ) -> list:
-    """
-    Читает chess_api_cache.json, возвращает отфильтрованные games.
-    Заменяет download_games() из старого 02_fetch_time.py.
-    Никаких HTTP-запросов — только чтение кэша.
-    """
     if not os.path.exists(CACHE_FILE):
         print(f"⚠️ Нет {CACHE_FILE}. Сначала запусти 01_fetch_chess_api.py.")
         return []
 
-    with open(CACHE_FILE, "r", encoding="utf-8") as f:
-        cache = json.load(f)
+    try:
+        with open(CACHE_FILE, "r", encoding="utf-8") as f:
+            cache = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"❌ Битый JSON в {CACHE_FILE}: {e}. Запусти 01_fetch_chess_api.py.")
+        return []
+    except Exception as e:
+        print(f"❌ Не удалось прочитать {CACHE_FILE}: {e}.")
+        return []
 
-    archives_url = f"https://api.chess.com/pub/player/{player}/games/archives"
-    if archives_url not in cache:
+    player_lower = player.lower()
+    archives_url = f"https://api.chess.com/pub/player/{player_lower}/games/archives"
+
+    archives_data = cache.get(archives_url)
+    if archives_data is None:
+        alt_url = f"https://api.chess.com/pub/player/{player}/games/archives"
+        archives_data = cache.get(alt_url)
+        if archives_data is not None:
+            print(f"🔧 Найден archives_url в другом регистре — использую fallback.")
+    if archives_data is None:
         print("⚠️ В кэше нет списка архивов. Запусти 01_fetch_chess_api.py.")
         return []
 
-    archives = cache[archives_url].get("archives", [])
+    archives = archives_data.get("archives", [])
 
-    # Добавляем текущий и предыдущий месяц (они могут быть не в archives)
     now_utc = datetime.now(timezone.utc)
-    current_month_url = f"https://api.chess.com/pub/player/{player}/games/{now_utc.year}/{now_utc.month:02d}"
+    current_month_url = (
+        f"https://api.chess.com/pub/player/{player_lower}/games/"
+        f"{now_utc.year}/{now_utc.month:02d}"
+    )
     prev_month_date = now_utc.replace(day=1) - timedelta(days=1)
-    prev_month_url = f"https://api.chess.com/pub/player/{player}/games/{prev_month_date.year}/{prev_month_date.month:02d}"
+    prev_month_url = (
+        f"https://api.chess.com/pub/player/{player_lower}/games/"
+        f"{prev_month_date.year}/{prev_month_date.month:02d}"
+    )
 
     all_urls = [current_month_url, prev_month_url] + list(reversed(archives))
 
@@ -225,9 +337,6 @@ def get_games_from_cache(
     return games
 
 
-# ============================================================
-# TEMP: переедет в 10_psych_rating.py на фазе 9.
-# ============================================================
 def get_peak_for_interval(games, player, days_ago_min, days_ago_max):
     now_utc = datetime.now(timezone.utc)
     cutoff_newest = int((now_utc - timedelta(days=days_ago_min)).timestamp())
@@ -253,10 +362,6 @@ def get_peak_for_interval(games, player, days_ago_min, days_ago_max):
 
 
 def calculate_stats(games, player, peak_for_anchor, avg_opp_for_anchor=None):
-    """
-    Считает статистику для окна: win_rate, avg_opp, perf_rating,
-    ЯКОРЬ (anchor_min, anchor_peak, anchor_formula, anchor_final).
-    """
     total = len(games)
     if total == 0:
         return None
@@ -300,7 +405,6 @@ def calculate_stats(games, player, peak_for_anchor, avg_opp_for_anchor=None):
     last_my = my_sorted[-1][1] if my_sorted else 0
     gap = avg_my - actual_avg_opp if (avg_my and actual_avg_opp) else 0
 
-    # --- ЯКОРЬ ---
     min_window = min(my_vals) if my_vals else 0
     anchor_peak = peak_for_anchor - 150
     anchor_formula = actual_avg_opp * 0.98 if actual_avg_opp > 0 else 0
@@ -328,13 +432,11 @@ def calculate_stats(games, player, peak_for_anchor, avg_opp_for_anchor=None):
     }
 
 
-# ---------- РОТАЦИЯ ----------
 def rotate_cache(cache: dict, cutoff_days: int = CACHE_ROTATION_DAYS) -> dict:
-    """Удаляет месячные URL, где нет ни одной игры за последние cutoff_days."""
     cutoff = int((datetime.now(timezone.utc) - timedelta(days=cutoff_days)).timestamp())
     rotated = {}
     for url, data in cache.items():
-        if "archives" in url:
+        if url.startswith("_") or "archives" in url:
             rotated[url] = data
         elif isinstance(data, dict) and data.get("games"):
             if any(g.get("end_time", 0) >= cutoff for g in data["games"]):
@@ -342,31 +444,76 @@ def rotate_cache(cache: dict, cutoff_days: int = CACHE_ROTATION_DAYS) -> dict:
     return rotated
 
 
-# ---------- MAIN ----------
 def main():
     print("=" * 60)
     print(" FETCH CHESS.COM API → data/chess_api_cache.json")
     print("=" * 60)
 
     if not PLAYER:
-        print("⚠️ В config.json не указан 'player' — прерываю.")
-        return
+        print("❌ В config.json не указан 'player' — прерываю.")
+        raise SystemExit(1)
 
     cache = load_cache()
     print(f"📂 В кэше уже: {len(cache)} URL")
 
-    all_games = fetch_all_games(PLAYER, cache)
-    if not all_games:
-        print("❌ Не удалось загрузить партии.")
-        return
+    old_cache_urls = set()
+    for url, data in cache.items():
+        if not isinstance(data, dict):
+            continue
+        for g in data.get("games", []):
+            g_url = g.get("url")
+            if g_url:
+                old_cache_urls.add(g_url)
+    print(f"📂 Партий в JSON-кэше до запроса: {len(old_cache_urls)}")
 
-    print(f"🧹 Ротация кэша (> {CACHE_ROTATION_DAYS} дней)...")
+    db_urls = get_db_game_urls()
+    print(f"🗄️ Проанализировано партий в БД (chess.db): {len(db_urls)}")
+
+    try:
+        all_games = fetch_all_games(PLAYER, cache)
+    except Exception as e:
+        print(f"❌ Критическая ошибка fetch: {e}")
+        traceback.print_exc()
+        raise SystemExit(1)
+
+    if not all_games:
+        print("❌ Fetch вернул 0 партий. Причины: 429/403/404/сеть или "
+              "0 партий в ответе API.")
+        raise SystemExit(1)
+
+    new_in_cache = [g for g in all_games if g.get("url") not in old_cache_urls]
+    missing_in_db = [g for g in all_games if g.get("url") not in db_urls]
+
+    print(
+        f"📊 Итог: всего в окне {len(all_games)} | "
+        f"новых для JSON-кэша: {len(new_in_cache)} | "
+        f"ожидают анализа в БД: {len(missing_in_db)}"
+    )
+
+    print(f"\n🧹 Ротация кэша (> {CACHE_ROTATION_DAYS} дней)...")
     old_size = len(cache)
     cache = rotate_cache(cache)
+    cache["_last_fetch"] = datetime.now(timezone.utc).isoformat()
+    cache["_last_new_count"] = len(new_in_cache)
+    cache["_last_pending_db_count"] = len(missing_in_db)
+    cache["_last_total_count"] = len(all_games)
     save_cache(cache)
-    print(f"🧹 Кэш: {old_size} → {len(cache)} URL")
+    print(f"🧹 Кэш: {old_size} → {len(cache)} URL (включая _meta)")
 
     print(f"\n✅ Готово. Кэш: {CACHE_FILE}")
+    print(f"   HTTP: ok={_STATS['http_ok']}, err={_STATS['http_err']}, "
+          f"429={_STATS['http_429']}, 404={_STATS['http_404']}")
+
+    # Если есть партии, которых ещё нет в БД chess.db — запускаем 02_analyze_stockfish.py
+    if missing_in_db:
+        print(f"\n🚀 Найдено {len(missing_in_db)} партий, которых ещё нет в БД! Запускаю 02_analyze_stockfish.py...")
+        analyze_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "02_analyze_stockfish.py")
+        if os.path.exists(analyze_script):
+            subprocess.run([sys.executable, analyze_script], check=False)
+        else:
+            print(f"⚠️ Файл {analyze_script} не найден. Запусти его вручную.")
+    else:
+        print("\n✅ Все скачанные партии уже проанализированы и находятся в БД chess.db!")
 
 
 if __name__ == "__main__":

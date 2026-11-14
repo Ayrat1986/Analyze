@@ -6,15 +6,17 @@
 
 Найдено 'раскалывающих': 13
 
+♟️ zumpili (13 партий, Score 23%)
+  Дебюты, где он тебя ломает:
+    D31 Magnus Queens Gambit                        2п, Score 0%
+    B01 Scandinavian Defense Modern Portuguese Va   2п, Score 0%
+    A43 Old Benoni Defense                          2п, Score 0%
+  📉 Средний финальный перевес: -2.7 (ты часто доминируешь в начале)
+
 ♟️ bopielmarionglero2 (11 партий, Score 18%)
   Дебюты, где он тебя ломает:
     D18 Slav Defense Modern Alapin Variation Czec   3п, Score 0%
     B01 Scandinavian Defense Mieses Kotrc Main Li   2п, Score 0%
-
-♟️ zumpili (11 партий, Score 27%)
-  Дебюты, где он тебя ломает:
-    B01 Scandinavian Defense Modern Portuguese Va   2п, Score 0%
-    A43 Old Benoni Defense                          2п, Score 0%
 
 ♟️ advay2005 (9 партий, Score 28%)
   Дебюты, где он тебя ломает:

@@ -32,36 +32,36 @@
 #9. Ayrat_1986 vs LarsvanSchooten (ACPL эндшпиля: 489)
     FEN: 5rr1/pp2k3/2n2p2/3Rp1q1/2P1Q3/PPB3PP/5P2/3R2K1 w - - 4 31
 
-#10. Ayrat_1986 vs isaiasdemaurizio (ACPL эндшпиля: 485)
+#10. GK2007 vs Ayrat_1986 (ACPL эндшпиля: 488)
+    FEN: r2r2k1/1p3pp1/2p3p1/2Bb4/p6q/8/1PQ2P2/1K2R1R1 w - - 0 31
+
+#11. Ayrat_1986 vs isaiasdemaurizio (ACPL эндшпиля: 485)
     FEN: r3r3/1Q6/p2b2kp/1p1P1pp1/1P3q2/P4p1P/1B2R1P1/1B2R1K1 w - - 0 31
 
-#11. Ayrat_1986 vs ChessGeo-Dallas1987 (ACPL эндшпиля: 483)
+#12. Ayrat_1986 vs ChessGeo-Dallas1987 (ACPL эндшпиля: 483)
     FEN: 3R4/5p1k/1p3np1/p6p/P1P1qN2/1P2r2P/3Q2P1/6K1 w - - 2 31
 
-#12. Ayrat_1986 vs kaustubh85 (ACPL эндшпиля: 459)
+#13. Ayrat_1986 vs kaustubh85 (ACPL эндшпиля: 459)
     FEN: 5r1k/pppb4/3p1b2/3Pp2q/2P5/1P1BBPQ1/P4KP1/5R2 w - - 5 31
 
-#13. BlueBerries2012 vs Ayrat_1986 (ACPL эндшпиля: 455)
+#14. BlueBerries2012 vs Ayrat_1986 (ACPL эндшпиля: 455)
     FEN: 2k2r2/pp1qb2R/n3p3/2p1P1p1/P1PP2P1/BP5P/2Q5/2K5 w - - 0 31
 
-#14. Ayrat_1986 vs R4nd0mM0ves (ACPL эндшпиля: 452)
+#15. Ayrat_1986 vs R4nd0mM0ves (ACPL эндшпиля: 452)
     FEN: 4k1r1/p1pb4/1p1p1R2/3PpP2/2P1P2Q/2N5/PP2N3/2K5 w - - 1 31
 
-#15. Ayrat_1986 vs zumpili (ACPL эндшпиля: 438)
+#16. Ayrat_1986 vs zumpili (ACPL эндшпиля: 438)
     FEN: 4r2k/6pp/8/1R1Qpq2/8/5P2/r5PP/4R1K1 w - - 5 31
 
-#16. arad_ar vs Ayrat_1986 (ACPL эндшпиля: 434)
+#17. arad_ar vs Ayrat_1986 (ACPL эндшпиля: 434)
     FEN: 5r1k/p1r4p/1p3p1R/4pP2/8/5QP1/4R2P/3q2K1 w - - 2 31
 
-#17. brhath vs Ayrat_1986 (ACPL эндшпиля: 430)
+#18. brhath vs Ayrat_1986 (ACPL эндшпиля: 430)
     FEN: 1r2k2r/Rp2q2p/2p1pp2/1p1p4/3P2P1/4P2P/3QKP2/2R5 w - - 4 31
 
-#18. GelarSagaraDwitama vs Ayrat_1986 (ACPL эндшпиля: 405)
+#19. GelarSagaraDwitama vs Ayrat_1986 (ACPL эндшпиля: 405)
     FEN: 1kr4r/1p2bqp1/p3N1n1/2pQ1p2/P1P2P1p/1P1P3P/5B2/4RRK1 w - - 2 31
 
-#19. bulletknight5522 vs Ayrat_1986 (ACPL эндшпиля: 404)
+#20. bulletknight5522 vs Ayrat_1986 (ACPL эндшпиля: 404)
     FEN: 1k6/1p4RQ/4p3/1p1qP3/3P4/b3P2P/2r3PK/8 w - - 3 31
-
-#20. Ayrat_1986 vs FalconChessFM (ACPL эндшпиля: 386)
-    FEN: 5r2/pp4kp/4Q1p1/8/5p2/3b4/PP3PPP/2R3K1 w - - 3 31
 

@@ -1,7 +1,7 @@
 # ============================================================
-# analysis/psych_rating/monitoring.py (v25.0)
-# Перенос логики из 15_daily_monitor.py (PROJECT_RULES §26).
-# Запускается автоматически из 10_psych_rating.py (шаг 7/7).
+# analysis/psych_rating/monitoring.py (v25.1)
+# FIX: §17 - game_rating импортируется из core.метрики, 
+#      а не пишется руками. Защита от avg_time=0.
 # ============================================================
 import os
 import sqlite3
@@ -11,6 +11,7 @@ import argparse
 from datetime import datetime, timezone, timedelta
 
 import _common
+from core.метрики import game_rating, speed_rating, combined_rating
 
 DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
 PLAYER = _common.CONFIG.get("player", "")
@@ -103,7 +104,9 @@ def calc_metrics_for_window(conn, end_date_str, window_days=7):
     score = (wins + 0.5 * draws) / n
 
     perf = avg_opp + (score - 0.5) * 800 if avg_opp else 0
-    gamr = 3200 - avg_acpl * 10 if avg_acpl else 0
+    
+    # §17: Формула из ядра
+    gamr = game_rating(avg_acpl)
 
     all_times, aggs = [], []
     hunter_games = 0
@@ -120,11 +123,11 @@ def calc_metrics_for_window(conn, end_date_str, window_days=7):
             hunter_games += 1
 
     avg_time = statistics.mean(all_times) if all_times else 1.17
-    # §17: формулы из ядра
-    from core.метрики import speed_rating, combined_rating
+    
+    # §17: Формулы из ядра + защита от нулевого времени
     speedr = speed_rating(avg_time)
     combr = combined_rating(gamr, speedr)
-    delta = gamr - speedr
+    delta = gamr - speedr if speedr > 0 else gamr
 
     stddev = statistics.stdev(acpls) if len(acpls) > 1 else 0
     avg_agg = statistics.mean(aggs) if aggs else 0

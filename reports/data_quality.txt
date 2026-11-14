@@ -2,15 +2,15 @@
  DATA QUALITY REPORT (v25.0)
 ============================================================
 
-✅ OK  БД найдена: 16.4 МБ
+✅ OK  БД найдена: 16.9 МБ
 ✅ OK  PRAGMA integrity_check: ok (файл БД цел)
 ✅ OK  PRAGMA foreign_key_check: 0 нарушений (FK работают)
-✅ OK  FK целостность: 11105 зевков, 0 orphans
-✅ OK  Уникальность games: 2578 партий, 0 дубликатов
+✅ OK  FK целостность: 11401 зевков, 0 orphans
+✅ OK  Уникальность games: 2650 партий, 0 дубликатов
 ✅ OK  Дубликаты PGN: 0 (все партии уникальны)
-✅ OK  next_move_time: 10599/11105 (95.4%) заполнено
-✅ OK  ACPL: n=2497, min=6, avg=65, max=300
-✅ OK  opening_line: 2497/2497 (100.0%) заполнено
-✅ OK  stockfish_cache: 2578 партий (17.6 МБ)
+✅ OK  next_move_time: 10881/11401 (95.4%) заполнено
+✅ OK  ACPL: n=2569, min=6, avg=65, max=300
+✅ OK  opening_line: 2569/2569 (100.0%) заполнено
+✅ OK  stockfish_cache: 2651 партий (18.1 МБ)
 
 Итог: passed=10, warnings=0, failed=0
