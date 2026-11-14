@@ -1,13 +1,31 @@
 # ============================================================
-# web_dashboard/pages/5_Blunders.py (v26.5)
-# FIX: Передан size в Chessboard (решает исчезновение доски 
-#      в скрытых вкладках Streamlit).
-# FIX: Заменены ID на классы для wrapper.
+# web_dashboard/pages/5_Blunders.py (v27.1)
+# FIX: Убраны эмодзи из st.radio (баг исчезновения текста).
+# FIX: Убран текст из шапки файла, вызывавший SyntaxError.
 # ============================================================
+import sys
+import os
+import shutil
+
+# --- ЖЕСТКИЙ СБРОС КЭША PYTHON ---
+def clear_pycache(start_path):
+    for root, dirs, files in os.walk(start_path):
+        for d in dirs:
+            if d == '__pycache__':
+                shutil.rmtree(os.path.join(root, d), ignore_errors=True)
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+SRC_DIR = os.path.join(BASE_DIR, "src")
+clear_pycache(SRC_DIR)
+clear_pycache(os.path.dirname(os.path.abspath(__file__)))
+# ---------------------------------
+
+if BASE_DIR not in sys.path: sys.path.insert(0, BASE_DIR)
+if SRC_DIR not in sys.path: sys.path.insert(0, SRC_DIR)
+
 import streamlit as st
 import pandas as pd
 import numpy as np
-import os
 import json
 import chess
 import chess.pgn
@@ -24,7 +42,18 @@ st.title("⚠️ Разбор зевков и Тренировка")
 
 trainer_db.ensure_table()
 
+# ============================================================
+# БОКОВАЯ ПАНЕЛЬ (Навигация + Фильтры)
+# ============================================================
 with st.sidebar:
+    st.header("🧭 Навигация")
+    view_mode = st.radio(
+        "Раздел:", 
+        ["Разбор зевков", "Колода на сегодня", "Тактические угрозы", "Архив"],
+        label_visibility="collapsed"
+    )
+    
+    st.divider()
     st.header("⚙️ Фильтры")
     days = st.slider("Период (дней)", 7, 365, 90, 1)
     min_loss = st.slider("Мин. потеря (CP)", 150, 1000, 200, 50)
@@ -119,10 +148,9 @@ def render_interactive_board(fen_str, size=500, uid="default"):
             var engineLines = {{}};
 
             $(document).ready(function() {{
-                // ФИКС: Передаем size явно, чтобы доска рисовалась, даже если вкладка скрыта!
                 board = Chessboard('{id_board}', {{
                     draggable: true, position: startFen, orientation: currentOrientation,
-                    size: {size}, // <--- ЖЕСТКИЙ РАЗМЕР
+                    size: {size}, 
                     pieceTheme: 'https://lichess1.org/assets/piece/cburnett/{{piece}}.svg',
                     onDragStart: function(source, piece) {{
                         if (game.game_over() || (game.turn() === 'w' && piece.search(/^b/) !== -1) || (game.turn() === 'b' && piece.search(/^w/) !== -1)) return false;
@@ -331,14 +359,12 @@ def render_analysis_ui(df, state_key, task_type):
                         st.rerun()
 
 # ============================================================
-# ВКЛАДКИ
+# ЛОГИКА ОТОБРАЖЕНИЯ
 # ============================================================
-tab1, tab2, tab3, tab4 = st.tabs([
-    "⚠️ Разбор зевков", "📚 Колода на сегодня", "🎯 Тактические угрозы", "🗄️ Архив"
-])
 
-# --- ВКЛАДКА 1: РАЗБОР ЗЕВКОВ ---
-with tab1:
+# --- РАЗДЕЛ 1: РАЗБОР ЗЕВКОВ ---
+if view_mode == "Разбор зевков":
+    st.subheader("⚠️ Разбор зевков")
     df = query_df(f"""
         SELECT b.id, b.game_url, b.move_num, b.move_uci, b.loss_cp,
                b.pattern_tag, b.time_spent, b.missed_threat,
@@ -392,9 +418,9 @@ with tab1:
         else:
             st.warning("Отчет не найден.")
 
-# --- ВКЛАДКА 2: КОЛОДА ---
-with tab2:
-    st.markdown("### 📚 Умная Колода на сегодня")
+# --- РАЗДЕЛ 2: КОЛОДА ---
+elif view_mode == "Колода на сегодня":
+    st.subheader("📚 Умная Колода на сегодня")
     st.info("Свежие и случайные зевки. Одна ошибка за раз. Решенные автоматически скрываются.")
     
     deck_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "reports", "training", "smart_deck.csv"))
@@ -417,9 +443,9 @@ with tab2:
     else:
         st.warning("Колода не сгенерирована.")
 
-# --- ВКЛАДКА 3: УГРОЗЫ ---
-with tab3:
-    st.markdown("### 🎯 Тактические угрозы (Missed Threats)")
+# --- РАЗДЕЛ 3: УГРОЗЫ ---
+elif view_mode == "Тактические угрозы":
+    st.subheader("🎯 Тактические угрозы (Missed Threats)")
     st.info("Зевки, после которых соперник нанёс тактический удар.")
     
     threats = query_df("""
@@ -435,9 +461,9 @@ with tab3:
     
     render_analysis_ui(threats, "threat_idx", "worst")
 
-# --- ВКЛАДКА 4: АРХИВ ---
-with tab4:
-    st.markdown("### 🗄️ Архив решенных позиций")
+# --- РАЗДЕЛ 4: АРХИВ ---
+elif view_mode == "Архив":
+    st.subheader("🗄️ Архив решенных позиций")
     st.info("Здесь хранятся все зевки, которые ты отметил как 'Решено'.")
     
     archive = trainer_db.get_archive(limit=100)
