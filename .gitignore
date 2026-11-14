@@ -14,3 +14,25 @@ __pycache__/
 
 # Отчеты и графики
 reports/
+data/chess.db-wal
+data/chess.db-shm
+src/core/__pycache__/метрики.cpython-315.pyc
+src/core/__pycache__/__init__.cpython-315.pyc
+src/analysis/__pycache__/dashboard_trends.cpython-315.pyc
+src/analysis/__pycache__/dashboard_helpers.cpython-315.pyc
+src/analysis/__pycache__/dashboard_aggression.cpython-315.pyc
+src/analysis/__pycache__/constants.cpython-315.pyc
+src/analysis/__pycache__/common.cpython-315.pyc
+src/analysis/__pycache__/__init__.cpython-315.pyc
+src/__pycache__/_common.cpython-315.pyc
+src/__pycache__/_chess_utils.cpython-315.pyc
+src/core/__pycache__/метрики.cpython-315.pyc
+src/core/__pycache__/__init__.cpython-315.pyc
+src/analysis/__pycache__/dashboard_trends.cpython-315.pyc
+src/analysis/__pycache__/dashboard_helpers.cpython-315.pyc
+src/analysis/__pycache__/dashboard_aggression.cpython-315.pyc
+src/analysis/__pycache__/constants.cpython-315.pyc
+src/analysis/__pycache__/common.cpython-315.pyc
+src/analysis/__pycache__/__init__.cpython-315.pyc
+src/__pycache__/_common.cpython-315.pyc
+src/__pycache__/_chess_utils.cpython-315.pyc
