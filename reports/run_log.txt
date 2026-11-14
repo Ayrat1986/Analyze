@@ -155,3 +155,14 @@
 [2026-11-14 10:21:49] END   09_psych_state.py — OK
 [2026-11-14 10:21:49] START 13_dashboard_final.py
 [2026-11-14 10:21:50] END   13_dashboard_final.py — OK
+[2026-11-14 13:19:03] START 00_data_quality.py
+[2026-11-14 13:19:04] END   00_data_quality.py — OK
+[2026-11-14 13:19:04] START 01_fetch_chess_api.py
+[2026-11-14 13:19:07] END   01_fetch_chess_api.py — OK
+[2026-11-14 13:19:07] START 02_analyze_stockfish.py
+[2026-11-14 13:19:07] END   02_analyze_stockfish.py — ERROR: 'int' object has no attribute 'get'
+[2026-11-14 13:19:14] START 02_analyze_stockfish.py
+[2026-11-14 13:19:15] END   02_analyze_stockfish.py — ERROR: 'int' object has no attribute 'get'
+[2026-11-14 13:19:41] START 02_analyze_stockfish.py
+[2026-11-14 13:19:42] END   02_analyze_stockfish.py — ERROR: 'int' object has no attribute 'get'
+[2026-11-14 13:22:01] START 02_analyze_stockfish.py

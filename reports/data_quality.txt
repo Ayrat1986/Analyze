@@ -11,6 +11,6 @@
 ✅ OK  next_move_time: 10881/11401 (95.4%) заполнено
 ✅ OK  ACPL: n=2569, min=6, avg=65, max=300
 ✅ OK  opening_line: 2569/2569 (100.0%) заполнено
-✅ OK  stockfish_cache: 2651 партий (18.1 МБ)
+✅ OK  stockfish_cache: 2141 партий (14.7 МБ)
 
 Итог: passed=10, warnings=0, failed=0

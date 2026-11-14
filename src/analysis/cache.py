@@ -1,6 +1,6 @@
 # ============================================================
-# analysis/cache.py — работа с кэшем Stockfish-анализа (v25.0)
-# §21: game_cache_ok требует acpl > 0 (а не только наличие полей).
+# analysis/cache.py — работа с кэшем Stockfish-анализа (v25.1)
+# FIX: Итерация по ключам словаря, чтобы не проверять _schema_version.
 # ============================================================
 import os
 import json
@@ -31,11 +31,6 @@ BLUNDER_FIELDS = (
 def game_cache_ok(r: dict) -> bool:
     """
     Проверка одной записи.
-
-    v25.0 (§21): запись валидна, только если:
-      1) все поля V10_FIELDS присутствуют
-      2) acpl > 0  ← если Stockfish упал и записал 0, это НЕ «ok»
-      3) для каждого blunder есть все BLUNDER_FIELDS
     """
     if not isinstance(r, dict):
         return False
@@ -69,13 +64,6 @@ def game_cache_ok(r: dict) -> bool:
 def cache_needs_recalc(cache: dict) -> bool:
     """
     Проверяет, нужен ли пересчёт всего кэша.
-
-    1. Если кэш пуст > пересчёт.
-    2. Если версия схемы не совпадает > пересчёт.
-    3. Если хоть одно поле V10_FIELDS отсутствует в первых 5 записях > пересчёт.
-    4. Если ни в одной из первых 5 записей acpl > 0 > пересчёт.
-    5. Патч v18.4: если в кэше 50+ «моих» зевков, но next_move_time НИ У ОДНОГО
-       не заполнен — это кэш v18.2 (сломанная формула). Пересчёт.
     """
     if not cache:
         return True
@@ -90,8 +78,10 @@ def cache_needs_recalc(cache: dict) -> bool:
 
     # 3. Проверка полей в первых 5 записях
     sample = []
-    for i, r in enumerate(cache.values()):
-        if i >= 5:
+    for key, r in cache.items():
+        if key.startswith("_"):
+            continue
+        if len(sample) >= 5:
             break
         sample.append(r)
         for f in V10_FIELDS:
@@ -119,8 +109,8 @@ def cache_needs_recalc(cache: dict) -> bool:
     # 5. Патч v18.4: next_move_time
     total_blunders = 0
     filled_nmt = 0
-    for r in cache.values():
-        if r is None or r == "_schema_version":
+    for key, r in cache.items():
+        if key.startswith("_"):
             continue
         for b in r.get("blunders", []):
             if not b.get("is_my_blunder"):
