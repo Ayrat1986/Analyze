@@ -1,4 +1,5 @@
 url,white,black,opponent,move_num,loss_cp,fen,best_move,pattern
+https://www.chess.com/game/live/187280910350,Ayrat_1986,Sametvsever,sametvsever,26,2212,6k1/2R4p/pn1p2p1/2b1qp2/8/1P1Q4/P3N1PP/5K2 w - - 4 26,d3c3,positional
 https://www.chess.com/game/live/173236301516,Ayrat_1986,Khachikyan-Hayko,khachikyan-hayko,15,1934,r1b2rk1/2pn1ppp/p7/2bPN3/3q1B2/2N3P1/PP4KP/R2Q3R w - - 3 15,d1d4,positional
 https://www.chess.com/game/live/186777036684,BREADFATHER,Ayrat_1986,breadfather,30,1502,r7/3Q2kp/1p2p3/1P2N3/2PP2P1/rNK1n3/7q/3R4 b - - 1 30,g7h8,lost_piece
 https://www.chess.com/game/live/186536978492,Ayrat_1986,SwadanusaR9_Youtube,swadanusar9_youtube,34,1354,4r1k1/5pp1/5n1p/4NQ2/5B2/5R1P/5qP1/1r5K w - - 2 34,f5b1,positional
@@ -20,6 +21,7 @@ https://www.chess.com/game/live/173234658632,Ayrat_1986,1YaraYaraPhonk,1yarayara
 https://www.chess.com/game/live/186777036684,BREADFATHER,Ayrat_1986,breadfather,31,1016,r7/7p/1p2Q2k/1P2N3/2PP2P1/rNK1n3/7q/3R4 b - - 0 31,h6g7,positional
 https://www.chess.com/game/live/173038051818,Ayrat_1986,Lyushin9494,lyushin9494,27,1000,1b1r2k1/p4ppp/1p1Pn3/4P3/4Q3/5P1q/PB3P2/1Br1R1K1 w - - 0 27,b2c1,positional
 https://www.chess.com/game/live/173903394962,elchiricr,Ayrat_1986,elchiricr,12,999,rn1qkb1r/1b3ppp/4pn2/1Q2N3/3P4/4P3/5PPP/R1B1KB1R b KQkq - 0 12,b8d7,lost_piece
+https://www.chess.com/game/live/187205724282,Ayrat_1986,InvictusPower1,invictuspower1,24,998,1r3r1k/1p5p/6p1/p1q5/2P1P3/2P3Q1/P4P2/R3R1K1 w - - 1 24,a1d1,positional
 https://www.chess.com/game/live/184736377900,EatingMyMeal,Ayrat_1986,eatingmymeal,22,985,2r2rk1/1b3p1p/pp2p1p1/2b1P3/3q1P2/P1NB4/1P2Q1PP/R2R3K b - - 5 22,d4f4,positional
 https://www.chess.com/game/live/186302529352,BalukPro,Ayrat_1986,balukpro,8,984,2kr1b1r/ppp1pppp/2n2n2/q7/2B3b1/2NP1N2/PPPB1PPP/R2Q1RK1 b - - 2 8,a5h5,positional
 https://www.chess.com/game/live/173662353024,Ayrat_1986,armmm_00,armmm_00,33,982,5r1k/1p6/2p3p1/2P4p/1P2p2P/1Q2PqbB/3R1P2/6K1 w - - 0 33,b3b2,lost_piece
@@ -61,6 +63,7 @@ https://www.chess.com/game/live/186565254900,Ayrat_1986,khaihoangilious,khaihoan
 https://www.chess.com/game/live/184518805262,AMIGODEARTHURPHELIPE,Ayrat_1986,amigodearthurphelipe,21,734,r3r1k1/p4p1p/2p1n1pQ/1p2PP1n/3q4/2NB4/PP5P/3R1R1K b - - 1 21,d4h4,lost_piece
 https://www.chess.com/game/live/186635481174,Ayrat_1986,nikita_2011,nikita_2011,30,733,4r1k1/pp5p/6p1/2PPrb2/5K2/3B1R1P/P7/R7 w - - 0 30,d3b5,positional
 https://www.chess.com/game/live/186553297364,Ayrat_1986,Botezgambit124,botezgambit124,19,731,4rrk1/pp4pp/3b2p1/2pp4/3P2Pq/3Q1P2/PPPB1R1P/R5K1 w - - 0 19,d4c5,positional
+https://www.chess.com/game/live/187280910350,Ayrat_1986,Sametvsever,sametvsever,35,731,6k1/2R4p/Qn1p2p1/2b2p2/4q3/1P6/P5PP/4K3 w - - 14 35,e1d1,positional
 https://www.chess.com/game/live/186254895748,sireiously,Ayrat_1986,sireiously,38,723,8/k5p1/pBp5/3q4/8/1P1rQNPP/P4PK1/8 b - - 0 38,a7b7,positional
 https://www.chess.com/game/live/186796140902,Ayrat_1986,sagitario1995,sagitario1995,46,721,8/5p1k/6pp/p3P3/Pp1K1P2/1P5q/3Q4/8 w - - 0 46,d4c4,positional
 https://www.chess.com/game/live/187182998240,XZXXXXXZXZZ,Ayrat_1986,xzxxxxxzxzz,37,719,1rk5/p1r4p/4Q3/8/5PP1/7P/P7/K7 b - - 2 37,c7d7,positional
@@ -85,6 +88,7 @@ https://www.chess.com/game/live/173234658632,Ayrat_1986,1YaraYaraPhonk,1yarayara
 https://www.chess.com/game/live/184720185214,Ayrat_1986,RomanRybachok,romanrybachok,22,663,2r1r1k1/pp3p1p/4qb2/7p/5P2/1PBRP3/P1Q2P1P/1R4K1 w - - 0 22,e3e4,positional
 https://www.chess.com/game/live/186645882996,Ayrat_1986,J4m3sSter,j4m3sster,19,660,r2r2k1/2q1bppp/1p2pn2/pP2N3/Pn1p4/1Q2P3/3BBPPP/1R3RK1 w - - 0 19,d2b4,lost_piece
 https://www.chess.com/game/live/173235559202,Ayrat_1986,jorgeperezxxx,jorgeperezxxx,18,652,3qr1k1/2p2ppp/1p1p1nb1/8/1PPQ4/4P3/r2NBPPP/3R1RK1 w - - 1 18,e2f3,lost_piece
+https://www.chess.com/game/live/187205015038,Tactician_07,Ayrat_1986,tactician_07,14,651,2kr1b1r/ppp2ppp/2n1q1b1/4p1N1/6P1/4B2P/PPP1QPB1/R4RK1 b - - 3 14,e6e8,lost_piece
 https://www.chess.com/game/live/186055613562,Tonychess32,Ayrat_1986,tonychess32,19,648,2k1r3/1ppn1ppp/2n5/p1bN4/2N5/P5B1/1P3PPP/2R3K1 b - - 3 19,c6d4,lost_piece
 https://www.chess.com/game/live/186608277842,Ayrat_1986,Christ333888,christ333888,50,642,3r2k1/p4p2/1p2pQp1/8/P7/1P5P/3q2P1/2R4K w - - 11 50,c1c4,positional
 https://www.chess.com/game/live/185329053900,Ogmogrt,Ayrat_1986,ogmogrt,35,641,8/1p6/4p2p/3k4/1p1p1pPP/3P1P2/2P2K2/8 b - - 2 35,d5d6,positional
@@ -93,9 +97,5 @@ https://www.chess.com/game/live/186670032746,Ayrat_1986,Bjerkagon,bjerkagon,27,6
 https://www.chess.com/game/live/186777036684,BREADFATHER,Ayrat_1986,breadfather,18,624,r3r3/1Qpk1ppp/1p2pn2/1P5q/2PP2b1/bK2PN2/3NB1PP/3R3R b - - 1 18,a3d6,positional
 https://www.chess.com/game/live/185124239642,Manon-reja,Ayrat_1986,manon-reja,31,623,5k2/1R2np2/1q2r3/6Q1/p6P/6P1/5PB1/6K1 b - - 0 31,b6d6,positional
 https://www.chess.com/game/live/186420303512,Ayrat_1986,SwadanusaR9_Youtube,swadanusar9_youtube,26,622,2r2r1k/p1q3pp/3bQ3/2pR4/8/PP2P1P1/5n1P/1RB1N1K1 w - - 2 26,d5d6,positional
+https://www.chess.com/game/live/186415088926,Ayrat_1986,Sametvsever,sametvsever,27,621,3r2k1/1b3pp1/pq2p2p/3pB3/Pp2n3/1Pr1P2P/4BPP1/1R1Q1RK1 w - - 2 27,e2d3,lost_piece
 https://www.chess.com/game/live/173032749644,Ayrat_1986,LoiNoiDoi,loinoidoi,12,619,r2q1rk1/pb1nbpp1/1pp1pn1p/6B1/2BP4/P1N1PN2/1P3PPP/2RQ1RK1 w - - 0 12,g5f4,lost_piece
-https://www.chess.com/game/live/184617429396,Ayrat_1986,AMIGODEARTHURPHELIPE,amigodearthurphelipe,13,618,r1b1k1nr/1p3p1p/p5pb/4p1Q1/2Bnq3/N7/PP3P1P/R1B2KNR w kq - 2 13,g5g2,lost_queen
-https://www.chess.com/game/live/185824465978,Ayrat_1986,direnling7,direnling7,11,616,r1bq1rk1/pp2bppp/2pp1n2/3Pp3/2P1Pn2/1PNB4/PB1N1PPP/R2QK2R w KQ - 2 11,d3f1,lost_piece
-https://www.chess.com/game/live/173489304480,AIStockfish,Ayrat_1986,aistockfish,65,616,7r/k6P/5N2/p7/8/1P5K/8/8 b - - 4 65,a7b6,positional
-https://www.chess.com/game/live/173990820568,Ayrat_1986,Virat_269_kohli,virat_269_kohli,27,614,5bk1/5p1p/4p1p1/1q2n3/4P3/Q4P2/P3N1PP/5RK1 w - - 0 27,a3c3,lost_piece
-https://www.chess.com/game/live/186565254900,Ayrat_1986,khaihoangilious,khaihoangilious,9,612,rn2k2r/pp3ppp/2p1p3/q2p1b2/1bPPn3/1PN1PN2/PB3PPP/2RQKB1R w Kkq - 5 9,a2a3,lost_piece

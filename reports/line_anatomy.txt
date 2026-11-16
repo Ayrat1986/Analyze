@@ -1,7 +1,7 @@
 ============================================================
  АНАТОМИЯ ДЕБЮТОВ ПО ЛИНИЯМ (топ-6 ходов)
 ============================================================
-Всего линий (n >= 3): 85
+Всего линий (n >= 3): 89
 
 📈 ЛИНИИ-КОЗЫРИ (winrate >= 60%, n >= 5):
   A43 Old Benoni Defense                | 6п, 83%, ACPL 45
@@ -31,8 +31,8 @@
   B01 Scandinavian Defense Mieses Kot   | 5п, 60%, ACPL 43
     └─ 1. e4 d5 2. exd5 Qxd5 3. Nc3 Qa5 4. Nf3 Nf6 5. Be2 Bg4 6. O-O Nc6 7. b4 Nxb...
 
-  D15 Slav Defense Modern Three Knigh   | 5п, 60%, ACPL 43
-    └─ 1. d4 c6 2. c4 d5 3. Nc3 Nf6 4. Nf3 Bg4 5. Bf4 Bxf3 6. gxf3 e6 7. e3 Bd6 8....
+  B01 Scandinavian Defense Mieses Kot   | 5п, 60%, ACPL 50
+    └─ 1. e4 d5 2. exd5 Qxd5 3. Nc3 Qa5 4. Nf3 Nf6 5. d4 Bg4 6. Be2 Nc6 7. Bd2 O-O...
 
 📉 ЛИНИИ-УБИЙЦЫ (winrate <= 40%, n >= 5):
   A43 Old Benoni Defense                | 11п, 23%, ACPL 60

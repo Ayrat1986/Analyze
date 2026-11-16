@@ -1,9 +1,11 @@
-name: Fast Update Database
+name: Full Update Pipeline
 
 on:
-  workflow_dispatch: # Кнопка для ручного запуска
+  workflow_dispatch:
   schedule:
-    - cron: '0 */2 * * *' # Каждые 2 часа
+    # Запуск в 03:00 и 06:00 UTC (это 06:00 и 09:00 по МСК)
+    # К твоему приходу на работу в 8:00 всё уже будет готово
+    - cron: '0 3,6 * * *' 
 
 permissions:
   contents: write
@@ -14,25 +16,35 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
+      - name: Install Stockfish
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y stockfish
+
       - name: Install dependencies
         run: |
-          pip install curl_cffi requests python-chess
+          pip install -r requirements.txt
 
-      - name: Run Light Update
+      - name: Run Full Pipeline
         run: |
-          python src/update_light.py
+          # Запускаем API, Stockfish, БД и Дашборды
+          python run.py --steps 1,2,3,4,13 --keep-going
+        env:
+          STOCKFISH_PATH: /usr/games/stockfish
 
       - name: Commit and Push changes
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add data/chess.db data/chess_api_cache.json
-          # Коммитим, только если есть изменения
-          git diff-index --quiet HEAD || git commit -m "Auto-update DB [skip ci]"
+          # Добавляем базу, кэш и папку отчетов (чтобы Streamlit их увидел)
+          git add data/chess.db data/stockfish_cache.json reports/
+          git diff-index --quiet HEAD || git commit -m "Auto-update DB and Reports [skip ci]"
           git push

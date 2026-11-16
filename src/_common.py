@@ -16,6 +16,10 @@ def load_config():
 
 CONFIG = load_config()
 
+# ФИКС: Если на сервере GitHub передан путь, используем его
+if os.environ.get("STOCKFISH_PATH"):
+    CONFIG["stockfish_path"] = os.environ.get("STOCKFISH_PATH")
+
 def log_start(script_name):
     REPORTS_DIR.mkdir(exist_ok=True)
     with open(REPORTS_DIR / "run_log.txt", "a", encoding="utf-8") as f:
