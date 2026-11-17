@@ -3,11 +3,14 @@ name: Full Update Pipeline
 on:
   workflow_dispatch:
   schedule:
-    # Запуск в 03:00, 06:00 и 09:00 UTC (06:00, 09:00, 12:00 МСК)
     - cron: '0 3,6,9 * * *' 
 
 permissions:
   contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   update:
@@ -34,7 +37,6 @@ jobs:
 
       - name: Run Full Pipeline
         run: |
-          # Запускаем API, Стокфиш, БД и Дашборды
           python run.py --steps 1,2,3,4,13 --keep-going
         env:
           STOCKFISH_PATH: /usr/games/stockfish
@@ -43,7 +45,10 @@ jobs:
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          # Добавляем базу, кэш и отчеты
-          git add data/chess.db data/stockfish_cache.json reports/
+          
+          # Флаг -f заставляет добавить файлы, даже если они в .gitignore
+          git add -f data/chess.db data/stockfish_cache.json data/chess_api_cache.json reports/
+          
           git diff-index --quiet HEAD || git commit -m "Auto-update DB and Reports [skip ci]"
+          git pull --rebase origin main || true
           git push
