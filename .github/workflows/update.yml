@@ -37,7 +37,8 @@ jobs:
 
       - name: Run Full Pipeline
         run: |
-          python run.py --steps 1,2,3,4,13 --keep-going
+          # Запускаем ВСЕ шаги конвейера (от сбора API до дашбордов)
+          python run.py --keep-going
         env:
           STOCKFISH_PATH: /usr/games/stockfish
 
@@ -45,7 +46,9 @@ jobs:
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add -f data/chess.db data/stockfish_cache.json data/chess_api_cache.json reports/
+          
+          # Добавляем все измененные файлы
+          git add -A
+          
           git diff-index --quiet HEAD || git commit -m "Auto-update DB and Reports [skip ci]"
-          git pull --rebase origin main || true
           git push
