@@ -262,3 +262,13 @@
 [2026-11-17 11:49:33] END   12_coach.py — OK
 [2026-11-17 11:49:33] START 13_dashboard_final.py
 [2026-11-17 11:49:41] END   13_dashboard_final.py — OK
+[2026-11-17 09:07:00] START 01_fetch_chess_api.py
+[2026-11-17 09:07:03] END   01_fetch_chess_api.py — OK
+[2026-11-17 09:07:03] START 02_analyze_stockfish.py
+[2026-11-17 09:07:03] END   02_analyze_stockfish.py — OK
+[2026-11-17 09:07:03] START 03_migrate_sqlite.py
+[2026-11-17 09:07:04] END   03_migrate_sqlite.py — OK
+[2026-11-17 09:07:04] START 04_export_csv.py
+[2026-11-17 09:07:07] END   04_export_csv.py — OK
+[2026-11-17 09:07:07] START 13_dashboard_final.py
+[2026-11-17 09:07:14] END   13_dashboard_final.py — OK
