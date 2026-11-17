@@ -8,7 +8,6 @@ on:
 permissions:
   contents: write
 
-# ДОБАВЛЕНО: Защита от одновременных запусков (если один идет, второй ждет)
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
@@ -46,10 +45,10 @@ jobs:
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add data/chess.db data/stockfish_cache.json reports/
+          
+          # Флаг -f заставляет добавить файлы, даже если они в .gitignore
+          git add -f data/chess.db data/stockfish_cache.json data/chess_api_cache.json reports/
+          
           git diff-index --quiet HEAD || git commit -m "Auto-update DB and Reports [skip ci]"
-          
-          # ДОБАВЛЕНО: Подтягиваем изменения, если кто-то успел запушить раньше нас
           git pull --rebase origin main || true
-          
           git push
