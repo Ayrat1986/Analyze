@@ -1,7 +1,7 @@
 # ============================================================
-# web_dashboard/pages/11_Trainer.py (v29.4)
-# FIX: Клик на телефоне (добавлен touchstart/touchend).
-# FIX: min размер доски 250px для телефонов.
+# web_dashboard/pages/11_Trainer.py (v29.5)
+# FIX: Разделение клика и перетаскивания на телефоне.
+# NEW: Зеленая подсветка поля назначения.
 # ============================================================
 import sys
 import os
@@ -77,7 +77,10 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
             .controls {{ margin-top: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }}
             button {{ padding: 6px 12px; font-size: 14px; cursor: pointer; border-radius: 4px; border: 1px solid #ccc; background: #f8f9fa; }}
             button:hover {{ background: #e2e6ea; }}
-            .highlight-from {{ box-shadow: inset 0 0 3px 3px rgba(255, 255, 0, 0.8); }}
+            
+            /* Стили для подсветки */
+            .highlight-from {{ box-shadow: inset 0 0 3px 3px rgba(255, 255, 0, 0.8) !important; }}
+            .highlight-to {{ box-shadow: inset 0 0 3px 3px rgba(0, 255, 0, 0.8) !important; }}
         </style>
     </head>
     <body>
@@ -108,6 +111,8 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
             var altEvalAfter = null;
             
             var selectedSquare = null;
+            var touchStartX = 0;
+            var touchStartY = 0;
             
             $(document).ready(function() {{
                 board = Chessboard('board-container', {{
@@ -118,12 +123,14 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
                     onDragStart: function(source, piece, position, orientation) {{
                         if (game.game_over() || sfState === 'bot_reply' || sfState === 'check_alt' || taskSolved) return false;
                         if ((game.turn() === 'w' && piece.search(/^b/) !== -1) || (game.turn() === 'b' && piece.search(/^w/) !== -1)) return false;
+                        clearHighlights(); // Сбрасываем клики при начале перетаскивания
                     }},
                     onDrop: function(source, target) {{
                         if (sfState === 'bot_reply' || sfState === 'check_alt' || taskSolved) return 'snapback';
-                        clearHighlights();
                         var move = game.move({{ from: source, to: target, promotion: 'q' }});
                         if (move === null) return 'snapback';
+                        clearHighlights();
+                        $('.square-' + target).addClass('highlight-to'); // Подсветка прибытия
                         processMove(move);
                     }},
                     onSnapEnd: function() {{
@@ -131,49 +138,44 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
                     }}
                 }});
                 
-                // ФИКС: Обработка кликов и тапов
-                $('#board-container').on('mousedown touchstart touchend', '.square-55d63', function(e) {{
-                    if (e.type === 'mousedown' && !e.button) return; 
+                // --- ЛОГИКА КЛИКА/ТАПА ---
+                var touchStartX = 0, touchStartY = 0;
+                
+                $('#board-container').on('touchstart mousedown', '.square-55d63', function(e) {{
+                    if (e.type === 'mousedown' && e.which !== 1) return;
+                    if (e.type === 'touchstart') {{
+                        var t = e.originalEvent.touches[0];
+                        touchStartX = t.pageX; touchStartY = t.pageY;
+                    }} else {{
+                        touchStartX = e.pageX; touchStartY = e.pageY;
+                    }}
+                }});
+
+                $('#board-container').on('touchend mouseup', '.square-55d63', function(e) {{
+                    if (e.type === 'mouseup' && e.which !== 1) return;
                     if (sfState === 'bot_reply' || sfState === 'check_alt' || taskSolved) return;
                     
-                    e.preventDefault(); // Убираем задержку и зум на телефоне
-                    
-                    var classes = $(this).attr('class').split(' ');
-                    var sqClass = classes.find(c => c.startsWith('square-') && c !== 'square-55d63');
-                    if (!sqClass) return;
-                    var square = sqClass.replace('square-', '');
-                    if (square.length !== 2) return;
-
-                    if (!selectedSquare) {{
-                        var piece = game.get(square);
-                        if (piece && piece.color === game.turn()) {{
-                            clearHighlights();
-                            selectedSquare = square;
-                            $('.square-' + square).addClass('highlight-from');
-                        }}
+                    var dx = 0, dy = 0;
+                    if (e.type === 'touchend') {{
+                        var t = e.originalEvent.changedTouches[0];
+                        dx = t.pageX - touchStartX; dy = t.pageY - touchStartY;
                     }} else {{
-                        if (square === selectedSquare) {{
-                            clearHighlights();
-                            return;
-                        }}
-                        var move = game.move({{ from: selectedSquare, to: square, promotion: 'q' }});
-                        if (move) {{
-                            board.position(game.fen());
-                            clearHighlights();
-                            processMove(move);
-                        }} else {{
-                            var newPiece = game.get(square);
-                            if (newPiece && newPiece.color === game.turn()) {{
-                                clearHighlights();
-                                selectedSquare = square;
-                                $('.square-' + square).addClass('highlight-from');
-                            }} else {{
-                                clearHighlights();
-                            }}
+                        dx = e.pageX - touchStartX; dy = e.pageY - touchStartY;
+                    }}
+
+                    // Если сдвиг меньше 10 пикселей — это КЛИК, а не перетаскивание
+                    if (Math.abs(dx) < 10 && Math.abs(dy) < 10) {{
+                        var classes = $(this).attr('class').split(' ');
+                        var sqClass = classes.find(c => c.startsWith('square-') && c !== 'square-55d63');
+                        if (!sqClass) return;
+                        var square = sqClass.replace('square-', '');
+                        if (square.length === 2) {{
+                            handleSquareTap(square);
                         }}
                     }}
                 }});
-                
+                // -------------------------
+
                 fetch('https://cdnjs.cloudflare.com/ajax/libs/stockfish.js/10.0.2/stockfish.js')
                     .then(response => response.blob())
                     .then(blob => {{
@@ -221,13 +223,17 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
                                         $('#status').text('❌ Ошибка. Есть ход намного сильнее. Пробуй еще.').removeClass('correct').addClass('wrong');
                                         game.undo();
                                         board.position(game.fen());
+                                        clearHighlights();
                                         startPlayerTurnEval();
                                     }}
                                 }} 
                                 else if (sfState === 'bot_reply') {{
                                     if (bm && bm !== '(none)') {{
-                                        game.move({{ from: bm.substring(0,2), to: bm.substring(2,4), promotion: 'q' }});
+                                        var botMove = game.move({{ from: bm.substring(0,2), to: bm.substring(2,4), promotion: 'q' }});
                                         board.position(game.fen());
+                                        clearHighlights();
+                                        // Подсветка хода бота
+                                        if(botMove) $('.square-' + bm.substring(2,4)).addClass('highlight-to');
                                     }}
                                     
                                     if (game.game_over()) {{
@@ -249,7 +255,41 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
 
             function clearHighlights() {{
                 selectedSquare = null;
-                $('.square-55d63').removeClass('highlight-from');
+                $('.square-55d63').removeClass('highlight-from highlight-to');
+            }}
+
+            function handleSquareTap(square) {{
+                var piece = game.get(square);
+                
+                if (!selectedSquare) {{
+                    if (piece && piece.color === game.turn()) {{
+                        selectedSquare = square;
+                        $('.square-' + square).addClass('highlight-from');
+                    }}
+                }} else {{
+                    if (square === selectedSquare) {{
+                        clearHighlights();
+                        return;
+                    }}
+                    
+                    var move = game.move({{ from: selectedSquare, to: square, promotion: 'q' }});
+                    if (move) {{
+                        board.position(game.fen());
+                        var fromSq = selectedSquare;
+                        clearHighlights();
+                        $('.square-' + fromSq).addClass('highlight-from'); // Оставляем подсветку откуда
+                        $('.square-' + square).addClass('highlight-to');   // И куда
+                        processMove(move);
+                    }} else {{
+                        if (piece && piece.color === game.turn()) {{
+                            clearHighlights();
+                            selectedSquare = square;
+                            $('.square-' + square).addClass('highlight-from');
+                        }} else {{
+                            clearHighlights();
+                        }}
+                    }}
+                }}
             }}
 
             function processMove(move) {{
@@ -273,7 +313,7 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
                     stockfish.postMessage('go depth 10');
                 }} else {{
                     $('#status').text('❌ Ошибка. Пробуй еще.').removeClass('correct').addClass('wrong');
-                    setTimeout(function() {{ game.undo(); board.position(game.fen()); }}, 800);
+                    setTimeout(function() {{ game.undo(); board.position(game.fen()); clearHighlights(); }}, 800);
                 }}
             }}
 
@@ -319,6 +359,7 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
                 if (userMovesCount === 0) dbBestMove = {best_move_js};
                 
                 board.position(game.fen());
+                clearHighlights();
                 $('#status').text('Сделай ход (' + (userMovesCount + 1) + ' из ' + targetMoves + ')').removeClass('correct wrong task-complete');
                 startPlayerTurnEval();
             }}
@@ -345,6 +386,9 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
                     var move = game.move({{ from: from, to: to, promotion: 'q' }});
                     if (move) {{
                         board.position(game.fen());
+                        clearHighlights();
+                        $('.square-' + from).addClass('highlight-from');
+                        $('.square-' + to).addClass('highlight-to');
                         acceptPlayerMove('✅ Лучший ход: ' + from + ' → ' + to + '.');
                     }} else {{
                         if (engineBestMove && engineBestMove !== best) {{
@@ -353,6 +397,9 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
                             var m2 = game.move({{ from: f2, to: t2, promotion: 'q' }});
                             if (m2) {{
                                 board.position(game.fen());
+                                clearHighlights();
+                                $('.square-' + f2).addClass('highlight-from');
+                                $('.square-' + t2).addClass('highlight-to');
                                 acceptPlayerMove('✅ Лучший ход: ' + f2 + ' → ' + t2 + '.');
                                 return;
                             }}
