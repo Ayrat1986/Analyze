@@ -1,0 +1,5 @@
+opponent_style,games,wins,win_rate,my_avg_acpl
+universal,764,344,45.0%,58
+positional,258,166,64.3%,52
+aggressive,138,27,19.6%,70
+tactical,52,16,30.8%,70
