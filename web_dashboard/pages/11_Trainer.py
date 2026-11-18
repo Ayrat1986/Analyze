@@ -1,8 +1,7 @@
 # ============================================================
-# web_dashboard/pages/11_Trainer.py (v29.2)
-# - Серия из 3 правильных ходов для решения тактической задачи.
-# - На каждом шаге бот отвечает и рассчитывает лучший ход для проверки следующего шага игрока.
-# - Режим Эндшпиля работает без лимита в 3 хода (доигрывание).
+# web_dashboard/pages/11_Trainer.py (v29.3)
+# FIX: Уменьшен min размер доски (250px) для мобильных.
+# NEW: Добавлено управление кликом (тап по фигуре -> тап по полю).
 # ============================================================
 import sys
 import os
@@ -39,10 +38,11 @@ st.divider()
 
 with st.sidebar:
     st.header("⚙️ Настройки")
-    board_size = st.slider("Размер доски (px)", 400, 1000, 500, 50)
+    # ФИКС: Уменьшен минимум до 250px для телефонов
+    board_size = st.slider("Размер доски (px)", 250, 800, 320, 10)
     target_moves = st.slider("Ходов для решения задачи", 1, 5, 3)
 
-def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500, max_moves: int = 3, is_endgame: bool = False) -> str:
+def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max_moves: int = 3, is_endgame: bool = False) -> str:
     fen_json = json.dumps(fen)
     
     valid_best_move = None
@@ -102,11 +102,12 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500, max
             var isEndgame = {is_endgame_js};
             var taskSolved = false;
             
-            // Режимы работы движка: 'idle' | 'eval_player_turn' | 'bot_reply' | 'check_alt'
             var sfState = 'idle';
             var engineBestMove = null;
             var bestEvalBefore = null;
             var altEvalAfter = null;
+            
+            var selectedSquare = null; // Для кликов
             
             $(document).ready(function() {{
                 board = Chessboard('board-container', {{
@@ -116,13 +117,56 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500, max
                     pieceTheme: 'https://lichess1.org/assets/piece/cburnett/{{piece}}.svg',
                     onDragStart: function(source, piece, position, orientation) {{
                         if (game.game_over() || sfState === 'bot_reply' || sfState === 'check_alt' || taskSolved) return false;
-                        if ((game.turn() === 'w' && piece.search(/^b/) !== -1) || (game.turn() === 'b' && piece.search(/^w/) !== -1)) {{
-                            return false;
-                        }}
+                        if ((game.turn() === 'w' && piece.search(/^b/) !== -1) || (game.turn() === 'b' && piece.search(/^w/) !== -1)) return false;
                     }},
-                    onDrop: onDrop,
+                    onDrop: function(source, target) {{
+                        if (sfState === 'bot_reply' || sfState === 'check_alt' || taskSolved) return 'snapback';
+                        var move = game.move({{ from: source, to: target, promotion: 'q' }});
+                        if (move === null) return 'snapback';
+                        processMove(move);
+                    }},
                     onSnapEnd: function() {{
                         board.position(game.fen());
+                    }}
+                }});
+                
+                // Click-to-move (Тап по фигуре -> Тап по полю)
+                $('#board-container').on('click', '.square-55d63', function() {{
+                    if (sfState === 'bot_reply' || sfState === 'check_alt' || taskSolved) return;
+                    
+                    var classes = $(this).attr('class').split(' ');
+                    var sqClass = classes.find(c => c.startsWith('square-') && c !== 'square-55d63');
+                    if (!sqClass) return;
+                    var square = sqClass.replace('square-', '');
+                    if (square.length !== 2) return;
+
+                    $('.square-55d63').css('box-shadow', '');
+
+                    if (!selectedSquare) {{
+                        var piece = game.get(square);
+                        if (piece && piece.color === game.turn()) {{
+                            selectedSquare = square;
+                            $('.square-' + square).css('box-shadow', 'inset 0 0 3px 3px rgba(255, 255, 0, 0.7)');
+                        }}
+                    }} else {{
+                        if (square === selectedSquare) {{
+                            selectedSquare = null;
+                            return;
+                        }}
+                        var move = game.move({{ from: selectedSquare, to: square, promotion: 'q' }});
+                        if (move) {{
+                            board.position(game.fen());
+                            selectedSquare = null;
+                            processMove(move);
+                        }} else {{
+                            var newPiece = game.get(square);
+                            if (newPiece && newPiece.color === game.turn()) {{
+                                selectedSquare = square;
+                                $('.square-' + square).css('box-shadow', 'inset 0 0 3px 3px rgba(255, 255, 0, 0.7)');
+                            }} else {{
+                                selectedSquare = null;
+                            }}
+                        }}
                     }}
                 }});
                 
@@ -135,7 +179,6 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500, max
                             var msg = event.data;
                             if (typeof msg !== 'string') return;
                             
-                            // Читаем оценку и лучшую линию
                             if (msg.indexOf('info depth') !== -1) {{
                                 var scoreCpMatch = msg.match(/score cp (-?\\d+)/);
                                 var scoreMateMatch = msg.match(/score mate (-?\\d+)/);
@@ -156,20 +199,15 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500, max
                                 }}
                             }}
                             
-                            // Завершение расчета движка
                             if (msg.indexOf('bestmove') === 0) {{
                                 var bm = msg.split(' ')[1];
                                 
                                 if (sfState === 'eval_player_turn') {{
-                                    if (!engineBestMove && bm && bm !== '(none)') {{
-                                        engineBestMove = bm;
-                                    }}
+                                    if (!engineBestMove && bm && bm !== '(none)') engineBestMove = bm;
                                     sfState = 'idle';
                                 }} 
                                 else if (sfState === 'check_alt') {{
-                                    // Сравниваем оценку до хода (bestEvalBefore) и после хода соперника (-altEvalAfter)
                                     var playerEvalAfter = (altEvalAfter !== null) ? -altEvalAfter : null;
-                                    // Допускаем потерю до 60 сантипешек для альтернативного хода
                                     var isGoodAlt = (bestEvalBefore !== null && playerEvalAfter !== null && (bestEvalBefore - playerEvalAfter) <= 60);
                                     
                                     if (isGoodAlt) {{
@@ -205,6 +243,31 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500, max
                     }}).catch(e => console.log('Ошибка движка:', e));
             }});
 
+            function processMove(move) {{
+                var moveUci = move.from + move.to + (move.promotion || '');
+                
+                if (isEndgame) {{
+                    acceptPlayerMove('Ход сделан.');
+                    return;
+                }}
+                
+                var activeBest = (userMovesCount === 0 && dbBestMove) ? dbBestMove : engineBestMove;
+                
+                if ((activeBest && moveUci === activeBest) || (engineBestMove && moveUci === engineBestMove)) {{
+                    acceptPlayerMove('✅ Отлично!');
+                }} else if (stockfish) {{
+                    $('#status').text('Проверка хода...').removeClass('correct wrong');
+                    sfState = 'check_alt';
+                    altEvalAfter = null;
+                    stockfish.postMessage('stop');
+                    stockfish.postMessage('position fen ' + game.fen());
+                    stockfish.postMessage('go depth 10');
+                }} else {{
+                    $('#status').text('❌ Ошибка. Пробуй еще.').removeClass('correct').addClass('wrong');
+                    setTimeout(function() {{ game.undo(); board.position(game.fen()); }}, 800);
+                }}
+            }}
+
             function startPlayerTurnEval() {{
                 if (!stockfish || taskSolved) return;
                 sfState = 'eval_player_turn';
@@ -217,8 +280,6 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500, max
 
             function acceptPlayerMove(msgText) {{
                 userMovesCount++;
-                
-                // На 2-м и 3-м ходу старый ход из БД больше не актуален
                 dbBestMove = null; 
                 
                 if (!isEndgame && (userMovesCount >= targetMoves || game.game_over())) {{
@@ -234,37 +295,6 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500, max
                     stockfish.postMessage('stop');
                     stockfish.postMessage('position fen ' + game.fen());
                     stockfish.postMessage('go depth 10');
-                }}
-            }}
-
-            function onDrop(source, target) {{
-                if (sfState === 'bot_reply' || sfState === 'check_alt' || taskSolved) return 'snapback';
-                var move = game.move({{ from: source, to: target, promotion: 'q' }});
-                if (move === null) return 'snapback';
-                
-                var moveUci = move.from + move.to + (move.promotion || '');
-                
-                if (isEndgame) {{
-                    acceptPlayerMove('Ход сделан.');
-                    return;
-                }}
-                
-                // 1. Проверяем совпадение с БД (только на 1-м ходу) или с лучшим ходом движка
-                var activeBest = (userMovesCount === 0 && dbBestMove) ? dbBestMove : engineBestMove;
-                
-                if ((activeBest && moveUci === activeBest) || (engineBestMove && moveUci === engineBestMove)) {{
-                    acceptPlayerMove('✅ Отлично!');
-                }} else if (stockfish) {{
-                    // Проверяем альтернативный ход по оценке (если есть несколько равных ходов, как при шахе)
-                    $('#status').text('Проверка хода...').removeClass('correct wrong');
-                    sfState = 'check_alt';
-                    altEvalAfter = null;
-                    stockfish.postMessage('stop');
-                    stockfish.postMessage('position fen ' + game.fen());
-                    stockfish.postMessage('go depth 10');
-                }} else {{
-                    $('#status').text('❌ Ошибка. Пробуй еще.').removeClass('correct').addClass('wrong');
-                    setTimeout(function() {{ game.undo(); board.position(game.fen()); }}, 800);
                 }}
             }}
 
@@ -308,7 +338,6 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 500, max
                         board.position(game.fen());
                         acceptPlayerMove('✅ Лучший ход: ' + from + ' → ' + to + '.');
                     }} else {{
-                        // Если ход из БД оказался битым, берем ход от движка
                         if (engineBestMove && engineBestMove !== best) {{
                             var f2 = engineBestMove.substring(0, 2);
                             var t2 = engineBestMove.substring(2, 4);
