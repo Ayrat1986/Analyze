@@ -1,7 +1,7 @@
 # ============================================================
-# web_dashboard/pages/11_Trainer.py (v29.3)
-# FIX: Уменьшен min размер доски (250px) для мобильных.
-# NEW: Добавлено управление кликом (тап по фигуре -> тап по полю).
+# web_dashboard/pages/11_Trainer.py (v29.4)
+# FIX: Клик на телефоне (добавлен touchstart/touchend).
+# FIX: min размер доски 250px для телефонов.
 # ============================================================
 import sys
 import os
@@ -38,7 +38,6 @@ st.divider()
 
 with st.sidebar:
     st.header("⚙️ Настройки")
-    # ФИКС: Уменьшен минимум до 250px для телефонов
     board_size = st.slider("Размер доски (px)", 250, 800, 320, 10)
     target_moves = st.slider("Ходов для решения задачи", 1, 5, 3)
 
@@ -70,7 +69,7 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
         <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
         <style>
             body {{ text-align: center; font-family: sans-serif; margin: 0; padding: 0; background-color: transparent; }}
-            #board-container {{ width: {size}px; margin: 0 auto; }}
+            #board-container {{ width: {size}px; margin: 0 auto; touch-action: manipulation; }}
             .status {{ font-size: 16px; font-weight: bold; margin-top: 10px; min-height: 28px; }}
             .correct {{ color: #2ecc71; }}
             .wrong {{ color: #e74c3c; }}
@@ -78,6 +77,7 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
             .controls {{ margin-top: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }}
             button {{ padding: 6px 12px; font-size: 14px; cursor: pointer; border-radius: 4px; border: 1px solid #ccc; background: #f8f9fa; }}
             button:hover {{ background: #e2e6ea; }}
+            .highlight-from {{ box-shadow: inset 0 0 3px 3px rgba(255, 255, 0, 0.8); }}
         </style>
     </head>
     <body>
@@ -107,7 +107,7 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
             var bestEvalBefore = null;
             var altEvalAfter = null;
             
-            var selectedSquare = null; // Для кликов
+            var selectedSquare = null;
             
             $(document).ready(function() {{
                 board = Chessboard('board-container', {{
@@ -121,6 +121,7 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
                     }},
                     onDrop: function(source, target) {{
                         if (sfState === 'bot_reply' || sfState === 'check_alt' || taskSolved) return 'snapback';
+                        clearHighlights();
                         var move = game.move({{ from: source, to: target, promotion: 'q' }});
                         if (move === null) return 'snapback';
                         processMove(move);
@@ -130,9 +131,12 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
                     }}
                 }});
                 
-                // Click-to-move (Тап по фигуре -> Тап по полю)
-                $('#board-container').on('click', '.square-55d63', function() {{
+                // ФИКС: Обработка кликов и тапов
+                $('#board-container').on('mousedown touchstart touchend', '.square-55d63', function(e) {{
+                    if (e.type === 'mousedown' && !e.button) return; 
                     if (sfState === 'bot_reply' || sfState === 'check_alt' || taskSolved) return;
+                    
+                    e.preventDefault(); // Убираем задержку и зум на телефоне
                     
                     var classes = $(this).attr('class').split(' ');
                     var sqClass = classes.find(c => c.startsWith('square-') && c !== 'square-55d63');
@@ -140,31 +144,31 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
                     var square = sqClass.replace('square-', '');
                     if (square.length !== 2) return;
 
-                    $('.square-55d63').css('box-shadow', '');
-
                     if (!selectedSquare) {{
                         var piece = game.get(square);
                         if (piece && piece.color === game.turn()) {{
+                            clearHighlights();
                             selectedSquare = square;
-                            $('.square-' + square).css('box-shadow', 'inset 0 0 3px 3px rgba(255, 255, 0, 0.7)');
+                            $('.square-' + square).addClass('highlight-from');
                         }}
                     }} else {{
                         if (square === selectedSquare) {{
-                            selectedSquare = null;
+                            clearHighlights();
                             return;
                         }}
                         var move = game.move({{ from: selectedSquare, to: square, promotion: 'q' }});
                         if (move) {{
                             board.position(game.fen());
-                            selectedSquare = null;
+                            clearHighlights();
                             processMove(move);
                         }} else {{
                             var newPiece = game.get(square);
                             if (newPiece && newPiece.color === game.turn()) {{
+                                clearHighlights();
                                 selectedSquare = square;
-                                $('.square-' + square).css('box-shadow', 'inset 0 0 3px 3px rgba(255, 255, 0, 0.7)');
+                                $('.square-' + square).addClass('highlight-from');
                             }} else {{
-                                selectedSquare = null;
+                                clearHighlights();
                             }}
                         }}
                     }}
@@ -242,6 +246,11 @@ def render_smart_board(fen: str, best_move_uci: str = None, size: int = 320, max
                         startPlayerTurnEval();
                     }}).catch(e => console.log('Ошибка движка:', e));
             }});
+
+            function clearHighlights() {{
+                selectedSquare = null;
+                $('.square-55d63').removeClass('highlight-from');
+            }}
 
             function processMove(move) {{
                 var moveUci = move.from + move.to + (move.promotion || '');
