@@ -1,6 +1,7 @@
 # ============================================================
-# 02a_check_cheaters.py — v19.6
-# Исправлено: сохранение дат в cheaters.txt (не перезаписывать старые)
+# 02a_check_cheaters.py — v19.7
+# FIX: Поиск соперников с учетом регистра и текущего месяца.
+#      Теперь корректно находит новых соперников для проверки.
 # ============================================================
 from curl_cffi import requests
 import time
@@ -18,7 +19,7 @@ CHEATERS_FILE = str(_common.BASE_DIR / "data" / "cheaters.txt")
 CHECKED_FILE = str(_common.BASE_DIR / "data" / "checked_players.txt")
 PLAYER = _common.CONFIG.get("player", "")
 EMAIL = _common.CONFIG.get("email", "")
-DAYS_TO_FETCH = 95
+DAYS_TO_FETCH = 365
 
 HEADERS = {"User-Agent": f"MyChessExport/1.0 (contact: {EMAIL})"}
 
@@ -54,7 +55,6 @@ def load_known_cheaters_dict() -> dict:
             date_str = "2026-01-01"  # fallback
             if len(parts) > 1:
                 comment = parts[1]
-                # "добавлен 2026-11-06"
                 import re
                 m = re.search(r"(\d{4}-\d{2}-\d{2})", comment)
                 if m:
@@ -78,7 +78,7 @@ def save_cheaters(cheaters: dict) -> None:
 
 
 # ============================================================
-# CHECKED — set (без дат, как было)
+# CHECKED — set (без дат)
 # ============================================================
 def load_checked_players() -> set:
     if not os.path.exists(CHECKED_FILE):
@@ -110,27 +110,60 @@ def get_opponents_from_cache(days: int = DAYS_TO_FETCH) -> set:
     with open(CACHE_FILE, "r", encoding="utf-8") as f:
         cache = json.load(f)
 
-    archives_url = f"https://api.chess.com/pub/player/{PLAYER}/games/archives"
-    if archives_url not in cache:
+    player_lower = PLAYER.lower()
+    archives_url = f"https://api.chess.com/pub/player/{player_lower}/games/archives"
+    
+    # Fallback: ищем в оригинальном регистре
+    archives_data = cache.get(archives_url)
+    if not archives_data:
+        alt_url = f"https://api.chess.com/pub/player/{PLAYER}/games/archives"
+        archives_data = cache.get(alt_url)
+        if archives_data:
+            archives_url = alt_url
+
+    if not archives_data:
+        print("⚠️ В кэше нет списка архивов (возможно, нужно запустить 01_fetch).")
         return set()
 
     cutoff_ts = int((datetime.now(timezone.utc) - timedelta(days=days)).timestamp())
     opponents = set()
 
-    for url in cache.get(archives_url, {}).get("archives", []):
-        if url not in cache:
+    # Добавляем текущий и предыдущий месяц (их может не быть в archives)
+    now_utc = datetime.now(timezone.utc)
+    current_month_url = f"https://api.chess.com/pub/player/{player_lower}/games/{now_utc.year}/{now_utc.month:02d}"
+    prev_month_date = now_utc.replace(day=1) - timedelta(days=1)
+    prev_month_url = f"https://api.chess.com/pub/player/{player_lower}/games/{prev_month_date.year}/{prev_month_date.month:02d}"
+
+    all_urls = [current_month_url, prev_month_url] + list(reversed(archives_data.get("archives", [])))
+    seen_urls = set()
+
+    for url in all_urls:
+        if url in seen_urls:
             continue
-        for g in cache[url].get("games", []):
+        seen_urls.add(url)
+
+        data = cache.get(url)
+        if not data:
+            # Пробуем найти с оригинальным регистром
+            mixed_url = url.replace(player_lower, PLAYER)
+            data = cache.get(mixed_url)
+
+        if not data:
+            continue
+
+        for g in data.get("games", []):
             if g.get("end_time", 0) < cutoff_ts:
                 continue
             white = g.get("white", {}).get("username", "").lower()
             black = g.get("black", {}).get("username", "").lower()
-            if white == PLAYER.lower():
+            
+            if white == player_lower:
                 if black:
                     opponents.add(black)
-            elif black == PLAYER.lower():
+            elif black == player_lower:
                 if white:
                     opponents.add(white)
+                    
     return opponents
 
 
@@ -140,6 +173,7 @@ def check_one(opp: str) -> tuple[str, str | None]:
         res = requests.get(
             url, headers=HEADERS, impersonate="safari184",
             verify=False, timeout=15,
+            # Причина: обход ошибки curl(77) на Windows (корпоративный антивирус).
         )
         if res.status_code == 200:
             data = res.json()
@@ -163,7 +197,7 @@ def main():
     args = parser.parse_args()
 
     print("=" * 60)
-    print(" 02a_check_cheaters.py — v19.6 (сохранение дат)")
+    print(" 02a_check_cheaters.py — v19.7 (fix cache lookup)")
     print("=" * 60)
 
     if not PLAYER:
@@ -192,7 +226,7 @@ def main():
         return
 
     today = datetime.now().strftime("%Y-%m-%d")
-    new_cheaters = {}  # {nick: today}
+    new_cheaters = {}
     new_checked = set()
     rate_limited = False
 
@@ -219,7 +253,7 @@ def main():
 
         time.sleep(0.8)
 
-    # Объединяем: старые даты + новые
+    # Объединяем: старые данные + новые
     all_cheaters = {**existing_cheaters, **new_cheaters}
     all_checked = checked | new_checked
 
