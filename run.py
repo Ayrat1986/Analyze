@@ -1,16 +1,15 @@
 # ============================================================
-# run.py — Оркестратор конвейера (v25.5)
-# ФИКС: Устранена проблема с регистром папки (Analyze / analyze).
-#       Теперь sys.path всегда знает, где лежат _common и src.
+# run.py — Оркестратор конвейера (v26.0 - Subprocess isolation)
+# FIX: Заменен importlib на subprocess.run для чистой изоляции памяти.
 # ============================================================
 import os
 import sys
 import time
 import argparse
-import traceback
+import subprocess
 from datetime import datetime
 
-# --- ИСПРАВЛЕНИЕ ПУТЕЙ (v25.5) ---
+# --- ИСПРАВЛЕНИЕ ПУТЕЙ ---
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(CURRENT_DIR) if os.path.basename(CURRENT_DIR).lower() == "src" else CURRENT_DIR
 SRC_DIR = os.path.join(BASE_DIR, "src")
@@ -19,7 +18,6 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 if SRC_DIR not in sys.path:
     sys.path.insert(0, SRC_DIR)
-# -------------------------
 
 import _common
 from analysis.utils.build_cache import is_up_to_date, mark_completed, cleanup_old_cache
@@ -66,19 +64,17 @@ def _run_step(step_key, name, filename, fast_mode, force=False):
     print(f"{'='*60}")
 
     _common.log_start(filename)
-    
     start_time = time.time()
-    
-    old_argv = sys.argv.copy()
-    sys.argv = [os.path.join(SRC_DIR, filename)]
-    
+    script_path = os.path.join(SRC_DIR, filename)
+
+    # ФИКС: Изолированный запуск через subprocess
     try:
-        import importlib.util
-        spec = importlib.util.spec_from_file_location("mod", os.path.join(SRC_DIR, filename))
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-        if hasattr(mod, "main"):
-            mod.main()
+        result = subprocess.run(
+            [sys.executable, script_path],
+            check=True,
+            capture_output=False, # Вывод идет прямо в консоль
+            text=True
+        )
         elapsed = time.time() - start_time
         print(f"\n✅ ШАГ {step_key} завершен за {elapsed:.1f} сек")
         
@@ -88,24 +84,16 @@ def _run_step(step_key, name, filename, fast_mode, force=False):
             mark_completed(name, deps)
 
         return True, elapsed
-    except SystemExit as e:
+    except subprocess.CalledProcessError as e:
         elapsed = time.time() - start_time
-        if e.code == 0:
-            print(f"\n✅ ШАГ {step_key} завершен за {elapsed:.1f} сек (sys.exit 0)")
-            _common.log_end(filename, "OK (sys.exit)")
-            return True, elapsed
-        else:
-            print(f"\n❌ ОШИБКА в шаге {step_key} ({elapsed:.1f} сек): sys.exit {e.code}")
-            _common.log_end(filename, f"ERROR: sys.exit {e.code}")
-            return False, elapsed
+        print(f"\n❌ ОШИБКА в шаге {step_key} ({elapsed:.1f} сек): код {e.returncode}")
+        _common.log_end(filename, f"ERROR: subprocess code {e.returncode}")
+        return False, elapsed
     except Exception as e:
         elapsed = time.time() - start_time
         print(f"\n❌ ОШИБКА в шаге {step_key} ({elapsed:.1f} сек): {e}")
-        traceback.print_exc()
         _common.log_end(filename, f"ERROR: {e}")
         return False, elapsed
-    finally:
-        sys.argv = old_argv
 
 def main():
     parser = argparse.ArgumentParser()
@@ -149,7 +137,7 @@ def main():
         return
 
     print("=" * 60)
-    print(" ЗАПУСК КОНВЕЙЕРА (v25.5)")
+    print(" ЗАПУСК КОНВЕЙЕРА (v26.0 - subprocess)")
     print("=" * 60)
     print(f"Игрок: {_common.CONFIG.get('player', '?')}")
     print(f"Время: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")

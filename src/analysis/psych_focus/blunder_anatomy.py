@@ -1,6 +1,6 @@
 # ============================================================
-# analysis/psych_focus/blunder_anatomy.py (v25.1)
-# NEW: Кластеризация ошибок A/B/C (Мисклик / Тактика / Каскад).
+# analysis/psych_focus/blunder_anatomy.py (v25.2)
+# NEW: Детальная кластеризация A/B/C/D1/D2.
 # ============================================================
 from collections import Counter
 from analysis.common import report_context
@@ -9,7 +9,6 @@ from .common import _conn
 def report_blunder_anatomy():
     conn = _conn(); cur = conn.cursor()
     
-    # Достаем зевки вместе с предыдущим ходом (для поиска каскадов)
     cur.execute("""
         WITH ranked_blunders AS (
             SELECT b.game_url, b.move_num, b.loss_cp, b.time_spent, b.pattern_tag,
@@ -42,12 +41,14 @@ def report_blunder_anatomy():
             "deep": {"label": "> 10 сек (глубоко)", "n": 0, "loss": 0, "phases": Counter()},
         }
         
-        # НОВЫЕ КАТЕГОРИИ (A/B/C)
+        # НОВАЯ МАТРИЦА КЛАСТЕРИЗАЦИИ (A/B/C/D1/D2/E)
         clusters = {
-            "A_misclick": {"label": "A: Мисклик/Премув (<0.3с, потеря >300)", "n": 0, "loss": 0},
-            "B_tactic": {"label": "B: Тактическая слепота (1-5с, не каскад)", "n": 0, "loss": 0},
-            "C_cascade": {"label": "C: Психологический обвал (Паника после зевка)", "n": 0, "loss": 0},
-            "D_other": {"label": "D: Прочее (позиционный провал и т.д.)", "n": 0, "loss": 0},
+            "A":  {"label": "A: Мисклик / Срыв премува (<0.35с)", "n": 0, "loss": 0},
+            "C":  {"label": "C: Каскадный тильт (паника после ошибки)", "n": 0, "loss": 0},
+            "D1": {"label": "D1: Импульсивный ход (интуитивная слепота, 0.35-1с)", "n": 0, "loss": 0},
+            "B":  {"label": "B: Тактический расчёт (сбой чеклиста, 1-4с)", "n": 0, "loss": 0},
+            "D2": {"label": "D2: Зависание / Перегруз тайм-банка (>4с)", "n": 0, "loss": 0},
+            "E":  {"label": "E: Прочее", "n": 0, "loss": 0},
         }
 
         def phase_of(mn):
@@ -70,21 +71,24 @@ def report_blunder_anatomy():
             total_n += 1
             total_loss += loss or 0
 
-            # --- КЛАСТЕРИЗАЦИЯ A/B/C ---
-            is_cascade = (prev_move is not None and (move_num - prev_move) <= 5 and prev_loss and prev_loss > 150)
+            # --- НОВАЯ ЛОГИКА КЛАСТЕРИЗАЦИИ ---
+            is_after_blunder = (prev_move is not None and (move_num - prev_move) <= 5 and prev_loss and prev_loss > 150)
             
-            if time_spent < 0.3 and loss > 300:
-                clusters["A_misclick"]["n"] += 1
-                clusters["A_misclick"]["loss"] += loss
-            elif is_cascade and time_spent < 1.0:
-                clusters["C_cascade"]["n"] += 1
-                clusters["C_cascade"]["loss"] += loss
-            elif 1.0 <= time_spent <= 5.0 and not is_cascade:
-                clusters["B_tactic"]["n"] += 1
-                clusters["B_tactic"]["loss"] += loss
+            if time_spent < 0.35 and loss >= 300:
+                cat = "A"
+            elif is_after_blunder and time_spent < 1.0:
+                cat = "C"
+            elif 0.35 <= time_spent < 1.0:
+                cat = "D1"
+            elif 1.0 <= time_spent <= 4.0:
+                cat = "B"
+            elif time_spent > 4.0:
+                cat = "D2"
             else:
-                clusters["D_other"]["n"] += 1
-                clusters["D_other"]["loss"] += loss
+                cat = "E"
+                
+            clusters[cat]["n"] += 1
+            clusters[cat]["loss"] += loss or 0
 
         w.w(f"Всего зевков (без берсерка): {total_n}")
         w.w(f"Средняя потеря: {total_loss / total_n:.0f} CP" if total_n else "")
@@ -101,10 +105,11 @@ def report_blunder_anatomy():
             w.w(f"  {d['label']:<25} {d['n']:<6} {pct:<7.1f} {avg_loss:<12.0f} {top_phase[0]}")
         w.w()
 
-        w.w("🎯 КЛАСТЕРИЗАЦИЯ ОШИБОК (A/B/C):")
+        w.w("🎯 КЛАСТЕРИЗАЦИЯ ОШИБОК (A/B/C/D1/D2):")
         w.w(f"  {'Тип ошибки':<50} {'N':<6} {'%':<7} {'Ср.потеря'}")
         w.w("  " + "-" * 70)
-        for k, d in clusters.items():
+        for k in ["A", "C", "D1", "B", "D2", "E"]:
+            d = clusters[k]
             if d["n"] == 0: continue
             pct = d["n"] / total_n * 100
             avg_loss = d["loss"] / d["n"]
@@ -116,33 +121,27 @@ def report_blunder_anatomy():
             w.w("  ⚠️ Нет данных.")
             conn.close(); return
 
-        # Анализ самого частого паттерна
-        top_cluster = max(clusters.items(), key=lambda x: x[1]["n"])
-        top_name = top_cluster[0]
-        top_pct = top_cluster[1]["n"] / total_n * 100
+        # Формируем вывод по самым проблемным зонам
+        sorted_clusters = sorted([(k, v) for k, v in clusters.items() if v["n"] > 0], key=lambda x: x[1]["n"], reverse=True)
+        top_key, top_data = sorted_clusters[0]
+        top_pct = top_data["n"] / total_n * 100
 
-        if top_name == "C_cascade":
-            w.w(f"  ⚠️ Твой главный враг — КАСКАДНЫЙ ТИЛЬТ ({top_pct:.0f}% зевков).")
-            w.w("  💡 Правило «3 секунды»: после зевка замри, выдохни и посмотри на часы.")
-        elif top_name == "B_tactic":
-            w.w(f"  ⚠️ Твой главный враг — ТАКТИЧЕСКАЯ СЛЕПОТА ({top_pct:.0f}% зевков).")
-            w.w("  💡 Дело не в скорости, а в глубине. Тренируй вилки (fork_heavy) в 11_Trainer.")
-        elif top_name == "A_misclick":
-            w.w(f"  ⚠️ Твой главный враг — МИСКЛИКИ ({top_pct:.0f}% зевков).")
-            w.w("  💡 Замедлись на 0.1 сек. Это не потеря времени, это спасение фигуры.")
-        else:
-            w.w(f"  ⚠️ Преобладают прочие ошибки ({top_pct:.0f}%).")
-            w.w("  💡 Скорее всего, это позиционные провалы. Играй проще.")
-
-        # Если есть паника, но нет каскада (просто разогнался)
-        if cats["panic"]["n"] / total_n > 0.2:
-            w.w(f"  ⚠️ {cats['panic']['n']/total_n*100:.0f}% зевков — за < 0.5 сек. Это ПАНИКА.")
-            w.w("  💡 Правило «Щит-Клик»: перед каждым ходом — пауза 0.5 сек.")
+        if top_key == "D1":
+            w.w(f"  ⚠️ Главный враг — ИМПУЛЬСИВНЫЙ ХОД ({top_pct:.0f}%).")
+            w.w("  💡 Ты делаешь визуально логичный ход без чеклиста. Делай микропаузу 0.2 сек: 'Есть ли шах?'")
+        elif top_key == "B":
+            w.w(f"  ⚠️ Главный враг — СБОЙ ЧЕКЛИСТА ({top_pct:.0f}%).")
+            w.w("  💡 Ты думаешь 1-4 сек, но не проверяешь вилки. Сканируй поля для коневых вилок.")
+        elif top_key == "C":
+            w.w(f"  ⚠️ Главный враг — КАСКАДНЫЙ ТИЛЬТ ({top_pct:.0f}%).")
+            w.w("  💡 После первого зевка — стоп 3 секунды. Ошибся — забудь.")
+        elif top_key == "D2":
+            w.w(f"  ⚠️ Главный враг — ЗАВИСАНИЕ ({top_pct:.0f}%).")
+            w.w("  💡 Ты думаешь >4 сек и все равно ошибаешься. Играй достаточно сильный ход за 0.5 сек.")
+        elif top_key == "A":
+            w.w(f"  ⚠️ Главный враг — СРЫВ ПРЕМУВА ({top_pct:.0f}%).")
+            w.w("  💡 Контролируй палец. Премувы только на 1-4 горизонталях.")
             
-        if cats["normal"]["n"] / total_n > 0.5:
-            w.w(f"  📊 {cats['normal']['n']/total_n*100:.0f}% зевков — в норме по времени (1-3 сек).")
-            w.w("  💡 Это тактическая слепота. Тренируй вилки.")
-
     conn.close()
 
 def run_blunder_anatomy():

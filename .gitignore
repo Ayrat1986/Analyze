@@ -12,3 +12,6 @@ data/build_cache/
 # Питон-мусор
 __pycache__/
 *.pyc
+
+# Папки
+stockfish/
