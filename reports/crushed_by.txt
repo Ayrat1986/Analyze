@@ -8,8 +8,8 @@
   zumpili                2555   13    3/0/10       23.1     56         57
   bopielmarionglero2     2583   11    2/0/9        18.2     63         85
   canadiandragon         2578   9     1/1/7        16.7     56         38
+  gidel33                2518   8     1/1/6        18.8     78         73
   blakmore               2478   7     2/0/5        28.6     65         77
-  gidel33                2508   7     1/1/5        21.4     80         72
   honzaslanec            2571   7     2/0/5        28.6     96         79
   ren_tur                2538   7     2/0/5        28.6     49         66
   blitzmind1             2610   6     1/0/5        16.7     41         38
