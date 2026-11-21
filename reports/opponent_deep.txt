@@ -23,13 +23,14 @@
     A56 Benoni Defense                              2п, Score 0%
   📉 Средний финальный перевес: -8.1 (ты часто доминируешь в начале)
 
+♟️ gidel33 (8 партий, Score 19%)
+  Дебюты, где он тебя ломает:
+    E46 Nimzo Indian Defense Normal Line 4...O O    2п, Score 25%
+    B01 Scandinavian Defense Modern Variation 3.N   2п, Score 0%
+
 ♟️ blakmore (7 партий, Score 29%)
   Дебюты, где он тебя ломает:
     (нет явно слабых дебютов — проблема в миттельшпиле)
-
-♟️ gidel33 (7 партий, Score 21%)
-  Дебюты, где он тебя ломает:
-    E46 Nimzo Indian Defense Normal Line 4...O O    2п, Score 25%
 
 ♟️ honzaslanec (7 партий, Score 29%)
   Дебюты, где он тебя ломает:

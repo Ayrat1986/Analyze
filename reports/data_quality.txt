@@ -2,7 +2,7 @@
  DATA QUALITY REPORT (v25.0)
 ============================================================
 
-✅ OK  БД найдена: 17.6 МБ
+✅ OK  БД найдена: 17.7 МБ
 ✅ OK  PRAGMA integrity_check: ok (файл БД цел)
 ✅ OK  PRAGMA foreign_key_check: 0 нарушений (FK работают)
 ✅ OK  FK целостность: 11841 зевков, 0 orphans
