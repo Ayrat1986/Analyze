@@ -1,21 +1,11 @@
-category,fen,move_num,loss_cp,best_move_uci,white,black,url,end_time
-fresh,6k1/2R4p/pn1p2p1/2b1qp2/8/1P1Q4/P3N1PP/5K2 w - - 4 26,26,2212,d3c3,Ayrat_1986,Sametvsever,https://www.chess.com/game/live/187280910350,1794766654
-fresh,1k2r3/1p3Qp1/p1p4p/8/4P2P/1qN5/1B6/1K1R4 b - - 1 31,31,1427,b3f7,LifeOfRyan,Ayrat_1986,https://www.chess.com/game/live/187673592752,1795241837
-fresh,rnb1kbnr/ppp1pppp/8/3q4/1P6/8/P1PP1PPP/RNBQKBNR b KQkq - 0 3,3,1386,d5e5,advay2005,Ayrat_1986,https://www.chess.com/game/live/187352649548,1794854590
-fresh,r2r2k1/p3n1pp/1pnqbR2/2p4N/2R1P3/1P1P4/P3B1PP/2Q4K b - - 0 20,20,1373,d6e5,Monkey_D_Zorro,Ayrat_1986,https://www.chess.com/game/live/187355306292,1794857076
-fresh,8/6p1/4Qpkp/3p1n2/5P2/5K2/R7/8 b - - 0 58,58,1191,f5d4,Bubus_2010,Ayrat_1986,https://www.chess.com/game/live/187357771318,1794859487
-fresh,5q2/1p2rk2/p1bR1p2/2p2P2/2P1PKpP/1PN3P1/P2R2B1/8 w - - 9 44,44,1085,f4g4,Ayrat_1986,TuanngocChess1,https://www.chess.com/game/live/187358298842,1794860008
-fresh,8/8/8/4k1p1/4p3/4P1K1/2r2P2/8 w - - 2 62,62,989,g3g4,Ayrat_1986,dutrul1,https://www.chess.com/game/live/187280739742,1794766517
-fresh,1b1r2k1/6p1/p2r4/1pN5/1PqP3Q/P6P/1B3PP1/1R2R1K1 w - - 3 37,37,976,c5e6,Ayrat_1986,sohamk742,https://www.chess.com/game/live/187424749294,1794940525
-fresh,1k6/1pp2pp1/p1qb2bp/8/1P4Q1/P5PP/2P2P2/4R1K1 b - - 0 30,30,953,h6h5,narek_107,Ayrat_1986,https://www.chess.com/game/live/187351951546,1794854053
-fresh,2Q3k1/p4q1p/2p3p1/1p1p2Pr/3Pp2P/1P3rB1/P1P5/6RK b - - 9 34,34,915,f7f8,KanseiMigatte,Ayrat_1986,https://www.chess.com/game/live/187358694888,1794860382
-random,8/6p1/4K3/7k/Pp6/1P6/8/8 b - a3 0 63,63,1652,b4a3,Prisma-261,Ayrat_1986,https://www.chess.com/game/live/185706768452,1792603360
-random,8/6pk/5p1p/8/2p5/3q2R1/6PP/5Q1K w - - 8 47,47,1818,g3d3,Ayrat_1986,ChessForLife2006,https://www.chess.com/game/live/184736960288,1791002510
-random,r3k3/1pp1b1p1/p1n2p2/4p2q/4N3/2BQ1P2/PPP5/2KR4 b q - 1 24,24,1254,a8d8,reivitz,Ayrat_1986,https://www.chess.com/game/live/173808049586,1788203368
-random,8/3bkpp1/8/3P4/3R1q2/5P1P/7P/3R2K1 w - - 17 48,48,1365,d4f4,Ayrat_1986,quickplaynothink,https://www.chess.com/game/live/173087795064,1786905835
-random,6k1/1pr2p2/6r1/6qp/3Q4/1P3R1P/P5P1/5R1K w - - 6 35,35,1305,d4f2,Ayrat_1986,Player_No1204,https://www.chess.com/game/live/173908296906,1788383051
-random,6k1/ppn3p1/8/1q2N3/8/PP1Q3P/6P1/5K2 b - - 2 36,36,1574,b5e5,elseres,Ayrat_1986,https://www.chess.com/game/live/186797924734,1794161190
-random,r4rk1/pp3p2/2p1pQp1/4P3/1P4p1/P7/3R1PPK/2q4R b - - 3 28,28,1399,g4g3,Entropy_Vibe,Ayrat_1986,https://www.chess.com/game/live/173235490080,1787168735
-random,b1r3k1/p1P2r1p/4p1p1/1B2Bn1q/4R3/P4P2/4QP1P/6RK w - - 2 31,31,1471,g1d1,Ayrat_1986,pacosh,https://www.chess.com/game/live/174142448054,1788808365
-random,6k1/p2q1p2/6p1/5n2/3p2N1/1P1P1QP1/P1r1rPB1/5RK1 b - - 1 28,28,1257,g8g7,TuanngocChess1,Ayrat_1986,https://www.chess.com/game/live/186075348446,1793161773
-random,8/1b1nb1p1/pk2q3/1p1nN3/3P4/8/4QP2/2R1K2B b - - 5 33,33,1559,d7e5,Ahmed_Farag2003,Ayrat_1986,https://www.chess.com/game/live/173234753918,1787167639
+category,fen,move_num,loss_cp,played_uci,best_move_uci,pattern_tag,white,black,url,end_time
+fresh,6k1/2R4p/pn1p2p1/2b1qp2/8/1P1Q4/P3N1PP/5K2 w - - 4 26,26,2212,d3a6,d3c3,positional,Ayrat_1986,Sametvsever,https://www.chess.com/game/live/187280910350,1794766654
+fresh,1k2r3/1p3Qp1/p1p4p/8/4P2P/1qN5/1B6/1K1R4 b - - 1 31,31,1427,e8c8,b3f7,lost_queen,LifeOfRyan,Ayrat_1986,https://www.chess.com/game/live/187673592752,1795241837
+fresh,rnb1kbnr/ppp1pppp/8/3q4/1P6/8/P1PP1PPP/RNBQKBNR b KQkq - 0 3,3,1386,d5a5,d5e5,lost_queen,advay2005,Ayrat_1986,https://www.chess.com/game/live/187352649548,1794854590
+fresh,r2r2k1/p3n1pp/1pnqbR2/2p4N/2R1P3/1P1P4/P3B1PP/2Q4K b - - 0 20,20,1373,g7f6,d6e5,positional,Monkey_D_Zorro,Ayrat_1986,https://www.chess.com/game/live/187355306292,1794857076
+fresh,1r6/1NR2p2/p4p1k/4pPnP/PP1p2P1/3K4/8/8 b - - 1 36,36,746,b8d8,g5h3,lost_piece,IMShanMeruga,Ayrat_1986,https://www.chess.com/game/live/187352224954,1794854311
+fresh,2k2rr1/pppnq3/3bb2p/5p2/3PpN2/2P1P2B/PP1N3P/R3QR1K b - - 0 22,22,699,d7f6,d6f4,lost_piece,Aplecons,Ayrat_1986,https://www.chess.com/game/live/187350449352,1794852705
+fresh,8/5K2/2B5/1Pk5/8/8/8/8 b - - 2 61,61,374,c5b6,c5b4,missed_mate,Noobdestroyerr,Ayrat_1986,https://www.chess.com/game/live/187358032496,1794859744
+fresh,2Q5/1P2q2k/7p/2n2p2/4p3/6P1/3R1PBP/6K1 b - - 0 41,41,348,h7g7,e7b7,missed_mate,notpolux,Ayrat_1986,https://www.chess.com/game/live/187673931948,1795242427
+fresh,4Nr1r/p2knP2/1pn4p/2p1p2Q/3p4/3P4/PPP4P/4RR1K b - - 6 24,24,300,h8h7,f8e8,blunder,bn61555,Ayrat_1986,https://www.chess.com/game/live/187358823168,1794860490
+fresh,8/1p6/p2p4/3Pbkp1/2P3p1/1Pr3P1/P3R1K1/5N2 w - - 5 36,36,299,f1d2,f1e3,blunder,Ayrat_1986,BetterCallSacul,https://www.chess.com/game/live/187642832492,1795199745
