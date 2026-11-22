@@ -1,9 +1,12 @@
 # ============================================================
-# analysis/coach/voice.py — v22.1 (acpl_endgame без флагов)
+# analysis/coach/voice.py — v26.2
+# Убрано дублирование заголовка (теперь его добавляет dashboards/coach.py).
+# Убран пункт «Не углубляйся в тактику» (противоречил плану недели и CODEX §4.4.1).
 # ============================================================
 import os
 import sqlite3
 from datetime import datetime
+
 import _common
 from core.метрики import game_rating as calc_gr, perf_rating as calc_perf
 from .codex import get_metrics, check_rules
@@ -24,8 +27,8 @@ def report_coach_voice():
     metrics = get_metrics(conn)
     matched = check_rules(metrics)
     matched.sort(key=lambda r: -r.get("priority", 1))
-    cur = conn.cursor()
 
+    cur = conn.cursor()
     # Базовые ACPL — как раньше
     cur.execute("""
         SELECT ROUND(AVG(acpl), 1), ROUND(AVG(acpl_middlegame), 1),
@@ -40,8 +43,7 @@ def report_coach_voice():
 
     # acpl_endgame БЕЗ флагов — согласовано с codex.py (endgame_weak) и endgame_skills.txt
     cur.execute("""
-        SELECT ROUND(AVG(acpl_endgame), 1)
-        FROM games
+        SELECT ROUND(AVG(acpl_endgame), 1) FROM games
         WHERE is_lag=0 AND is_cheater=0 AND acpl_endgame > 0
           AND reason NOT LIKE '%просроч%' AND reason NOT LIKE '%time%'
     """)
@@ -49,12 +51,15 @@ def report_coach_voice():
 
     # Для справки — с флагами (как в endgame_skills «все»)
     cur.execute("""
-        SELECT ROUND(AVG(acpl_endgame), 1)
-        FROM games WHERE is_lag=0 AND is_cheater=0 AND acpl_endgame > 0
+        SELECT ROUND(AVG(acpl_endgame), 1) FROM games
+        WHERE is_lag=0 AND is_cheater=0 AND acpl_endgame > 0
     """)
     acpl_end_all = cur.fetchone()[0] or 0
 
-    cur.execute("SELECT COUNT(*), SUM(won), SUM(draw), ROUND(AVG(acpl), 1), ROUND(AVG(opp_rating), 1) FROM games WHERE is_lag=0 AND is_cheater=0 AND acpl > 0")
+    cur.execute("""
+        SELECT COUNT(*), SUM(won), SUM(draw), ROUND(AVG(acpl), 1), ROUND(AVG(opp_rating), 1)
+        FROM games WHERE is_lag=0 AND is_cheater=0 AND acpl > 0
+    """)
     row = cur.fetchone()
     n = row[0] or 1
     wins = row[1] or 0
@@ -64,7 +69,14 @@ def report_coach_voice():
     game_rating_val = calc_gr(avg_acpl_recent)
     perf_val = calc_perf(avg_opp, wins, draws, n)
 
-    cur.execute("SELECT MIN(b.move_num) FROM blunders b JOIN games g ON g.url = b.game_url WHERE g.is_lag=0 AND g.is_cheater=0 AND b.is_my_blunder=1 AND b.is_berserk=0 AND b.is_instant=0 AND b.loss_cp > 150 GROUP BY g.url")
+    cur.execute("""
+        SELECT MIN(b.move_num) FROM blunders b
+        JOIN games g ON g.url = b.game_url
+        WHERE g.is_lag=0 AND g.is_cheater=0
+          AND b.is_my_blunder=1 AND b.is_berserk=0 AND b.is_instant=0
+          AND b.loss_cp > 150
+        GROUP BY g.url
+    """)
     first_moves = [r[0] for r in cur.fetchall() if r[0]]
     avg_first = sum(first_moves) / len(first_moves) if first_moves else 0
 
@@ -74,27 +86,27 @@ def report_coach_voice():
             print(line)
             f.write(line + "\n")
 
-        w("=" * 60)
-        w(" 🎯 СОВЕТ ТРЕНЕРА НА СЕГОДНЯ")
-        w("=" * 60)
+        # Заголовок НЕ пишем — его добавляет dashboards/coach.py
         w(f"Сформирован: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
         w()
-        w("📊 ПРОФИЛЬ:")
-        w(f"  ACPL: деб {acpl_op:.0f} / мит {acpl_mid:.0f} / энд {acpl_end:.0f}  (энд без флагов)")
-        w(f"  ACPL энд (с флагами): {acpl_end_all:.0f}  — флаговые победы дают «грязную» цифру, техника в мат/сдаче чище")
+        w(" ПРОФИЛЬ:")
+        w(f"  ACPL: деб {acpl_op:.0f} / мит {acpl_mid:.0f} / энд {acpl_end:.0f} (энд без флагов)")
+        w(f"  ACPL энд (с флагами): {acpl_end_all:.0f} — флаговые победы дают «грязную» цифру, техника в мат/сдаче чище")
+
         perf_label = (
             "оверперформер" if perf_val > game_rating_val + 50
             else ("недоигрываешь" if game_rating_val > perf_val + 50 else "баланс")
         )
-        w(f"  GameR {game_rating_val:.0f} vs Perf {perf_val:.0f}  ({perf_label})")
+        w(f"  GameR {game_rating_val:.0f} vs Perf {perf_val:.0f} ({perf_label})")
+
         first_label = (
             "⚠️ дебют" if avg_first <= 10
             else ("⚠️ переход" if avg_first <= 20 else "миттельшпиль")
         )
-        w(f"  1-й зевок: в среднем на {avg_first:.0f}-м ходу  ({first_label})")
+        w(f"  1-й зевок: в среднем на {avg_first:.0f}-м ходу ({first_label})")
         w()
 
-        w("🎯 ДЕЛАТЬ СЕГОДНЯ:")
+        w(" ДЕЛАТЬ СЕГОДНЯ:")
         if not matched:
             w("  1. Все показатели в норме — играй как обычно.")
             w("  2. Держи паузу 0.2 сек перед ходом.")
@@ -108,10 +120,10 @@ def report_coach_voice():
                 w(f"     → {r['name']} (метрика: {r['metric_val']:.1f})")
         w()
 
-        w("🚫 НЕ ДЕЛАТЬ:")
+        w(" НЕ ДЕЛАТЬ:")
         negatives = []
-        if acpl_mid > 70:
-            negatives.append("Не углубляйся в тактику — у тебя не тактика, а миттельшпиль.")
+        # ❌ УБРАНО: "Не углубляйся в тактику — у тебя не тактика, а миттельшпиль."
+        #    Причина: противоречит плану недели (Д1 — Тактика) и CODEX §4.4.1 (вилки — главный паттерн зевков).
         if avg_first > 0 and avg_first <= 12:
             negatives.append(f"Не играй на автомате до {avg_first + 5}-го хода.")
         if perf_val > game_rating_val + 100:
@@ -124,7 +136,7 @@ def report_coach_voice():
             w(f"  {i}. {neg}")
         w()
 
-        w("🗣️ МАНТРА ДНЯ:")
+        w(" МАНТРА ДНЯ:")
         if matched:
             mantra = matched[0].get("mantra", "")
             if mantra:
