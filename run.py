@@ -1,15 +1,17 @@
 # ============================================================
-# run.py — Оркестратор конвейера (v26.0 - Subprocess isolation)
-# FIX: Заменен importlib на subprocess.run для чистой изоляции памяти.
+# run.py — Оркестратор конвейера (v26.1)
+# NEW: Lock-файл (защита от двойного запуска).
+# NEW: Smoke-test (проверка, что дашборды сгенерировались).
 # ============================================================
 import os
 import sys
 import time
 import argparse
 import subprocess
+import traceback
 from datetime import datetime
 
-# --- ИСПРАВЛЕНИЕ ПУТЕЙ ---
+# --- ИСПРАВЛЕНИЕ ПУТЕЙ (v25.5) ---
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(CURRENT_DIR) if os.path.basename(CURRENT_DIR).lower() == "src" else CURRENT_DIR
 SRC_DIR = os.path.join(BASE_DIR, "src")
@@ -27,6 +29,7 @@ SF_CACHE = str(_common.BASE_DIR / "data" / "stockfish_cache.json")
 API_CACHE = str(_common.BASE_DIR / "data" / "chess_api_cache.json")
 RULES_FILE = str(_common.BASE_DIR / "data" / "codex_rules.json")
 CONFIG_FILE = str(_common.BASE_DIR / "data" / "config.json")
+LOCK_FILE = os.path.join(BASE_DIR, "run.py.lock")
 
 STEPS = {
     0:  ("Data quality",   "00_data_quality.py",       False, [DB_FILE, CONFIG_FILE], False),
@@ -44,6 +47,36 @@ STEPS = {
     12: ("Coach",          "12_coach.py",              False, [DB_FILE, RULES_FILE, CONFIG_FILE], False),
     13: ("Dashboard",      "13_dashboard_final.py",    False, [DB_FILE, CONFIG_FILE], True),
 }
+
+def check_lock():
+    """Проверяет, не запущен ли уже конвейер."""
+    if os.path.exists(LOCK_FILE):
+        print(f"\n🛑 ОШИБКА: Найден файл {LOCK_FILE}.")
+        print("   Возможно, конвейер уже запущен в другом окне, или произошло падение.")
+        print(f"   Если вы уверены, что ничего не работает, удалите файл: {LOCK_FILE}")
+        return False
+    with open(LOCK_FILE, "w") as f:
+        f.write(str(os.getpid()))
+    return True
+
+def release_lock():
+    """Удаляет lock-файл."""
+    if os.path.exists(LOCK_FILE):
+        os.remove(LOCK_FILE)
+
+def run_smoke_test():
+    """Проверяет, что все 8 файлов дашбордов созданы и не пусты."""
+    dash_dir = os.path.join(str(_common.REPORTS_DIR), "dashboards")
+    expected_files = [f for f in os.listdir(dash_dir) if f.endswith(".txt")] if os.path.exists(dash_dir) else []
+    if len(expected_files) < 8:
+        print(f"⚠️ SMOKE-TEST FAIL: Найдено {len(expected_files)} из 8 файлов дашбордов.")
+        return
+    for fname in expected_files:
+        fpath = os.path.join(dash_dir, fname)
+        if os.path.getsize(fpath) < 100: # Файл меньше 100 байт считается пустым
+            print(f"⚠️ SMOKE-TEST FAIL: Файл {fname} слишком мал (возможно, пустой).")
+            return
+    print("✅ SMOKE-TEST OK: Все дашборды сгенерированы и не пусты.")
 
 def _run_step(step_key, name, filename, fast_mode, force=False):
     step_info = STEPS[step_key]
@@ -67,22 +100,20 @@ def _run_step(step_key, name, filename, fast_mode, force=False):
     start_time = time.time()
     script_path = os.path.join(SRC_DIR, filename)
 
-    # ФИКС: Изолированный запуск через subprocess
     try:
+        # Изолированный запуск через subprocess
         result = subprocess.run(
             [sys.executable, script_path],
             check=True,
-            capture_output=False, # Вывод идет прямо в консоль
+            capture_output=False,
             text=True
         )
         elapsed = time.time() - start_time
         print(f"\n✅ ШАГ {step_key} завершен за {elapsed:.1f} сек")
         
         _common.log_end(filename, "OK")
-
         if not always_run:
             mark_completed(name, deps)
-
         return True, elapsed
     except subprocess.CalledProcessError as e:
         elapsed = time.time() - start_time
@@ -136,38 +167,50 @@ def main():
         print(f"\nВсего шагов: {len(steps_to_run)}")
         return
 
-    print("=" * 60)
-    print(" ЗАПУСК КОНВЕЙЕРА (v26.0 - subprocess)")
-    print("=" * 60)
-    print(f"Игрок: {_common.CONFIG.get('player', '?')}")
-    print(f"Время: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"Режим: {'--fast' if args.fast else 'полный'}")
-    print(f"Флаг --force: {'ВКЛ' if args.force else 'ВЫКЛ'}")
-    print(f"Шагов: {len(steps_to_run)}")
+    # --- LOCK LOGIC ---
+    if not check_lock():
+        return
 
-    total_time = 0.0
-    success_count = 0
-    fail_count = 0
+    try:
+        print("=" * 60)
+        print(" ЗАПУСК КОНВЕЙЕРА (v26.1)")
+        print("=" * 60)
+        print(f"Игрок: {_common.CONFIG.get('player', '?')}")
+        print(f"Время: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print(f"Режим: {'--fast' if args.fast else 'полный'}")
+        print(f"Флаг --force: {'ВКЛ' if args.force else 'ВЫКЛ'}")
+        print(f"Шагов: {len(steps_to_run)}")
 
-    for s in steps_to_run:
-        name, filename, _, _, _ = STEPS[s]
-        ok, elapsed = _run_step(s, name, filename, args.fast, force=args.force)
-        total_time += elapsed
-        if ok:
-            success_count += 1
-        else:
-            fail_count += 1
-            if not args.keep_going:
-                print(f"\n🛑 СТОП: шаг {s} упал. Флаг --keep-going не установлен.")
-                break
+        total_time = 0.0
+        success_count = 0
+        fail_count = 0
 
-    print("\n" + "=" * 60)
-    print(" ИТОГИ")
-    print("=" * 60)
-    print(f"  ✅ Успешно: {success_count}")
-    print(f"  ❌ Ошибок:  {fail_count}")
-    print(f"  ⏱️  Время:  {total_time:.1f} сек")
-    print("=" * 60)
+        for s in steps_to_run:
+            name, filename, _, _, _ = STEPS[s]
+            ok, elapsed = _run_step(s, name, filename, args.fast, force=args.force)
+            total_time += elapsed
+            if ok:
+                success_count += 1
+            else:
+                fail_count += 1
+                if not args.keep_going:
+                    print(f"\n🛑 СТОП: шаг {s} упал. Флаг --keep-going не установлен.")
+                    break
+
+        print("\n" + "=" * 60)
+        print(" ИТОГИ")
+        print("=" * 60)
+        print(f"  ✅ Успешно: {success_count}")
+        print(f"  ❌ Ошибок:  {fail_count}")
+        print(f"  ⏱️  Время:  {total_time:.1f} сек")
+        print("=" * 60)
+
+        # --- SMOKE TEST ---
+        if 13 in steps_to_run and fail_count == 0:
+            run_smoke_test()
+
+    finally:
+        release_lock()
 
 if __name__ == "__main__":
     main()
