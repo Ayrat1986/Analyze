@@ -4,9 +4,9 @@
   "mae": 327.6,
   "game_r_mae": 333.7,
   "speed_r_mae": 359.7,
-  "n": 2434,
+  "n": 2438,
   "speed_k": -545.0,
   "speed_b": 3178.0,
-  "calibrated_at": "2026-11-21T18:27:48.303937+00:00",
+  "calibrated_at": "2026-11-22T03:48:01.079989+00:00",
   "is_default": false
 }
