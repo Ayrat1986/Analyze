@@ -1,30 +1,31 @@
-# src/core/метрики.py (v25.0)
+# src/core/метрики.py (v26.0)
 """
 Единый источник правды для формул (PROJECT_RULES §17).
 Все отчёты читают SpeedR/CombR/GameR/Perf ТОЛЬКО отсюда.
 
-Дефолт при отсутствии data/combined_rating_coefs.json:
-  SpeedR = 3178 - 545 * avg_time
-  CombR  = 0.7 * GameR + 0.3 * SpeedR
-
-После калибровки (combined_rating.py пишет coefs.json):
-  SpeedR = speed_b + speed_k * avg_time  (обычно 2547 - 2 * t)
-  CombR  = w1 * GameR + w2 * SpeedR      (обычно 0.7 / 0.3)
+Калибровка шкалы для Bullet 1+0:
+  GameR:  3140 - 10 * ACPL (при рабочем ACPL=60 даёт рейтинг 2540, точно равный Perf и Дому).
+  SpeedR: speed_b + speed_k * avg_time (по умолчанию 3178 - 545 * t).
+  CombR:  w1 * GameR + w2 * SpeedR (калиброванные веса, по умолчанию 0.75 / 0.25).
 """
 import os
 import json
 
-# Дефолтные коэффициенты (до первой калибровки)
+# Калибровочные константы GameR
+GAMER_BASE = 3140.0
+GAMER_SLOPE = 10.0
+
+# Дефолтные коэффициенты скорости и весов
 _DEFAULT_SPEED_B = 3178.0
 _DEFAULT_SPEED_K = -545.0
-_DEFAULT_W1 = 0.7
-_DEFAULT_W2 = 0.3
+_DEFAULT_W1 = 0.75
+_DEFAULT_W2 = 0.25
 
 # Кэш чтения coefs.json (по mtime)
 _COEFS_CACHE = {"mtime": 0.0, "coefs": None}
 
 
-def _coefs_path():
+def _coefs_path() -> str:
     """Путь к data/combined_rating_coefs.json без жёсткого импорта _common."""
     try:
         import _common
@@ -60,38 +61,36 @@ def _load_coefs() -> dict:
         return {}
 
 
-def game_rating(acpl) -> float:
+def game_rating(acpl: float) -> float:
     """
     Потенциал точности по ACPL.
-    Формула: 3200 - acpl * 10, обрезка [1000, 3200].
-    40 ACPL → 2800, 60 ACPL → 2600.
+    Формула: 3140 - acpl * 10, диапазон [1000, 3200].
+    ACPL 40 → 2740, ACPL 60 → 2540.
     """
-    if not acpl or acpl <= 0:
+    if acpl is None or acpl <= 0:
         return 0.0
-    return max(1000.0, min(3200.0, 3200.0 - acpl * 10.0))
+    return max(1000.0, min(3200.0, GAMER_BASE - float(acpl) * GAMER_SLOPE))
 
 
-def speed_rating(avg_time, coefs=None) -> float:
+def speed_rating(avg_time: float, coefs: dict = None) -> float:
     """
     Потенциал скорости по среднему времени на ход (1+0).
     coefs=None → читаем из data/combined_rating_coefs.json.
-    Если файла нет → дефолт 3178 - 545 * avg_time.
     Обрезка [1000, 3200].
     """
-    if not avg_time or avg_time <= 0:
+    if avg_time is None or avg_time <= 0:
         return 0.0
     if coefs is None:
         coefs = _load_coefs()
     b = float(coefs.get("speed_b", _DEFAULT_SPEED_B))
     k = float(coefs.get("speed_k", _DEFAULT_SPEED_K))
-    return max(1000.0, min(3200.0, b + k * avg_time))
+    return max(1000.0, min(3200.0, b + k * float(avg_time)))
 
 
-def combined_rating(game_r, speed_r, coefs=None) -> float:
+def combined_rating(game_r: float, speed_r: float, coefs: dict = None) -> float:
     """
     CombinedR = w1 * GameR + w2 * SpeedR.
     coefs=None → читаем из data/combined_rating_coefs.json.
-    Если файла нет → w1=0.7, w2=0.3.
     """
     if not game_r or not speed_r:
         return 0.0
@@ -99,10 +98,10 @@ def combined_rating(game_r, speed_r, coefs=None) -> float:
         coefs = _load_coefs()
     w1 = float(coefs.get("w1", _DEFAULT_W1))
     w2 = float(coefs.get("w2", _DEFAULT_W2))
-    return w1 * game_r + w2 * speed_r
+    return w1 * float(game_r) + w2 * float(speed_r)
 
 
-def perf_rating(avg_opp, wins, draws, total) -> float:
+def perf_rating(avg_opp: float, wins: int, draws: int, total: int) -> float:
     """
     Performance Rating (результат).
     avg_opp + (score - 0.5) * 800, где score = (wins + 0.5*draws) / total.
@@ -110,25 +109,24 @@ def perf_rating(avg_opp, wins, draws, total) -> float:
     if not total or not avg_opp:
         return 0.0
     score = (wins + 0.5 * draws) / total
-    return avg_opp + (score - 0.5) * 800.0
+    return float(avg_opp) + (score - 0.5) * 800.0
 
 
-def anchor(min_window, peak, avg_opp) -> float:
+def anchor(min_window: float, peak: float, avg_opp: float) -> float:
     """
     Якорь (дно, ниже которого не падаешь — диагностика).
     Среднее из трёх: минимум за окно, пик−150, ср.сопер×0.98.
     """
     if not min_window or not peak or not avg_opp:
         return 0.0
-    return (min_window + (peak - 150) + avg_opp * 0.98) / 3.0
+    return (float(min_window) + (float(peak) - 150.0) + float(avg_opp) * 0.98) / 3.0
 
 
-def home_zone(hist_peak, avg_my) -> float:
+def home_zone(hist_peak: float, avg_my: float) -> float:
     """
     Домашняя зона (где рейтинг «живёт»).
     ((пик − 100) + средний + средний) / 3.
-    Используется в 13 (build_sql_summary).
     """
     if not hist_peak or not avg_my:
         return 0.0
-    return ((hist_peak - 100) + avg_my + avg_my) / 3.0
+    return ((float(hist_peak) - 100.0) + float(avg_my) + float(avg_my)) / 3.0
