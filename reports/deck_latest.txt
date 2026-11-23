@@ -1,4 +1,4 @@
-Сформирована: 2026-11-22 11:03
+Сформирована: 2026-11-23 00:09
 Причина включения указана у каждой позиции. Не более 1 позиции из одной партии, не более 2 на pattern_tag.
 Свежих (7 дней): 10 | Случайных из топ-100: 0
 
@@ -10,33 +10,33 @@
   Оценка успеха: ✅ решено / ⚠️ частично / ❌ не решено.
 
  СВЕЖИЕ (последние 7 дней):
-  1. Ayrat_1986 vs Sametvsever (15.11.26, ход 26, потеря 2212 CP)
-     Причина включения: свежая ошибка (≤7 дней)
-     FEN: 6k1/2R4p/pn1p2p1/2b1qp2/8/1P1Q4/P3N1PP/5K2 w - - 4 26
-     Сыграно: Qxa6  (UCI d3a6)
-     Лучше:   Qc3  (UCI d3c3)
-     Тренируй: https://lichess.org/analysis/standard/6k1/2R4p/pn1p2p1/2b1qp2/8/1P1Q4/P3N1PP/5K2_w_-_-_4_26
-
-  2. LifeOfRyan vs Ayrat_1986 (21.11.26, ход 31, потеря 1427 CP)
+  1. LifeOfRyan vs Ayrat_1986 (21.11.26, ход 31, потеря 1427 CP)
      Причина включения: свежая ошибка (≤7 дней)
      FEN: 1k2r3/1p3Qp1/p1p4p/8/4P2P/1qN5/1B6/1K1R4 b - - 1 31
      Сыграно: Rc8  (UCI e8c8)
      Лучше:   Qxf7  (UCI b3f7)
      Тренируй: https://lichess.org/analysis/standard/1k2r3/1p3Qp1/p1p4p/8/4P2P/1qN5/1B6/1K1R4_b_-_-_1_31
 
-  3. advay2005 vs Ayrat_1986 (16.11.26, ход 3, потеря 1386 CP)
+  2. advay2005 vs Ayrat_1986 (16.11.26, ход 3, потеря 1386 CP)
      Причина включения: свежая ошибка (≤7 дней)
      FEN: rnb1kbnr/ppp1pppp/8/3q4/1P6/8/P1PP1PPP/RNBQKBNR b KQkq - 0 3
      Сыграно: Qa5  (UCI d5a5)
      Лучше:   Qe5+  (UCI d5e5)
      Тренируй: https://lichess.org/analysis/standard/rnb1kbnr/ppp1pppp/8/3q4/1P6/8/P1PP1PPP/RNBQKBNR_b_KQkq_-_0_3
 
-  4. Monkey_D_Zorro vs Ayrat_1986 (16.11.26, ход 20, потеря 1373 CP)
+  3. Monkey_D_Zorro vs Ayrat_1986 (16.11.26, ход 20, потеря 1373 CP)
      Причина включения: свежая ошибка (≤7 дней)
      FEN: r2r2k1/p3n1pp/1pnqbR2/2p4N/2R1P3/1P1P4/P3B1PP/2Q4K b - - 0 20
      Сыграно: gxf6  (UCI g7f6)
      Лучше:   Qe5  (UCI d6e5)
      Тренируй: https://lichess.org/analysis/standard/r2r2k1/p3n1pp/1pnqbR2/2p4N/2R1P3/1P1P4/P3B1PP/2Q4K_b_-_-_0_20
+
+  4. Bubus_2010 vs Ayrat_1986 (16.11.26, ход 58, потеря 1191 CP)
+     Причина включения: свежая ошибка (≤7 дней)
+     FEN: 8/6p1/4Qpkp/3p1n2/5P2/5K2/R7/8 b - - 0 58
+     Сыграно: d4  (UCI d5d4)
+     Лучше:   Nd4+  (UCI f5d4)
+     Тренируй: https://lichess.org/analysis/standard/8/6p1/4Qpkp/3p1n2/5P2/5K2/R7/8_b_-_-_0_58
 
   5. IMShanMeruga vs Ayrat_1986 (16.11.26, ход 36, потеря 746 CP)
      Причина включения: свежая ошибка (≤7 дней)
