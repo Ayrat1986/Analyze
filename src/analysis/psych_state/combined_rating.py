@@ -1,160 +1,4 @@
-# ============================================================
-# analysis/psych_state/combined_rating.py (v25.4)
-#!/usr/bin/env python3
-"""
-Скрипт исправления расчета GameR, SpeedR, CombinedR.
-Устраняет системное завышение GameR (база 3140 вместо 3200) и 
-убирает ломающие bias-костыли из combined_rating.py.
-"""
-import os
-import ast
-import shutil
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parent
-
-METRIKI_FILE = ROOT / "src" / "core" / "метрики.py"
-COMBINED_FILE = ROOT / "src" / "analysis" / "psych_state" / "combined_rating.py"
-
-
-NEW_METRIKI_CONTENT = '''# src/core/метрики.py (v26.0)
-"""
-Единый источник правды для формул рейтинга и перформанса (PROJECT_RULES §17).
-Все отчёты читают SpeedR/CombR/GameR/Perf ТОЛЬКО отсюда.
-
-Калибровка для Bullet 1+0:
-  GameR:  3140 - 10 * ACPL (при ACPL=60 дает 2540 - идеальное совпадение с Домом).
-  SpeedR: speed_b + speed_k * avg_time (по умолчанию 3178 - 545 * t).
-  CombR:  w1 * GameR + w2 * SpeedR (по умолчанию 0.75 / 0.25).
-"""
-import os
-import json
-
-# Константы GameR
-GAMER_BASE = 3140.0
-GAMER_SLOPE = 10.0
-
-# Дефолтные коэффициенты (до первой калибровки)
-_DEFAULT_SPEED_B = 3178.0
-_DEFAULT_SPEED_K = -545.0
-_DEFAULT_W1 = 0.75
-_DEFAULT_W2 = 0.25
-
-# Кэш чтения coefs.json (по mtime)
-_COEFS_CACHE = {"mtime": 0.0, "coefs": None}
-
-
-def _coefs_path():
-    """Путь к data/combined_rating_coefs.json без жесткого импорта _common."""
-    try:
-        import _common
-        return str(_common.BASE_DIR / "data" / "combined_rating_coefs.json")
-    except Exception:
-        return ""
-
-
-def _load_coefs() -> dict:
-    """
-    Читает coefs.json. Кэш инвалидируется по mtime.
-    Пустой dict, если файла нет — тогда используются дефолты.
-    """
-    global _COEFS_CACHE
-    path = _coefs_path()
-    if not path or not os.path.exists(path):
-        return {}
-    try:
-        mtime = os.path.getmtime(path)
-    except OSError:
-        return {}
-    if _COEFS_CACHE["mtime"] == mtime and _COEFS_CACHE["coefs"] is not None:
-        return _COEFS_CACHE["coefs"]
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            coefs = json.load(f)
-        if not isinstance(coefs, dict):
-            coefs = {}
-        _COEFS_CACHE["mtime"] = mtime
-        _COEFS_CACHE["coefs"] = coefs
-        return coefs
-    except Exception:
-        return {}
-
-
-def game_rating(acpl: float) -> float:
-    """
-    Потенциал точности по ACPL для 1+0.
-    Формула: 3140 - acpl * 10, обрезка [1000, 3200].
-    ACPL 40 → 2740 (пиковая форма)
-    ACPL 60 → 2540 (базовый уровень 1+0)
-    ACPL 80 → 2340 (спад/тильт)
-    """
-    if acpl is None or acpl <= 0:
-        return 0.0
-    return max(1000.0, min(3200.0, GAMER_BASE - float(acpl) * GAMER_SLOPE))
-
-
-def speed_rating(avg_time: float, coefs=None) -> float:
-    """
-    Потенциал скорости по среднему времени на ход (1+0).
-    coefs=None → читаем из data/combined_rating_coefs.json.
-    Если файла нет → дефолт 3178 - 545 * avg_time.
-    Обрезка [1000, 3200].
-    """
-    if avg_time is None or avg_time <= 0:
-        return 0.0
-    if coefs is None:
-        coefs = _load_coefs()
-    b = float(coefs.get("speed_b", _DEFAULT_SPEED_B))
-    k = float(coefs.get("speed_k", _DEFAULT_SPEED_K))
-    return max(1000.0, min(3200.0, b + k * float(avg_time)))
-
-
-def combined_rating(game_r: float, speed_r: float, coefs=None) -> float:
-    """
-    CombinedR = w1 * GameR + w2 * SpeedR.
-    Предиктивный композитный рейтинг качества и темпа.
-    """
-    if not game_r or not speed_r:
-        return 0.0
-    if coefs is None:
-        coefs = _load_coefs()
-    w1 = float(coefs.get("w1", _DEFAULT_W1))
-    w2 = float(coefs.get("w2", _DEFAULT_W2))
-    return max(1000.0, min(3200.0, w1 * float(game_r) + w2 * float(speed_r)))
-
-
-def perf_rating(avg_opp: float, wins: int, draws: int, total: int) -> float:
-    """
-    Performance Rating (фактический результат турнирной выборки).
-    avg_opp + (score - 0.5) * 800, где score = (wins + 0.5*draws) / total.
-    """
-    if not total or not avg_opp:
-        return 0.0
-    score = (wins + 0.5 * draws) / float(total)
-    return avg_opp + (score - 0.5) * 800.0
-
-
-def anchor(min_window: float, peak: float, avg_opp: float) -> float:
-    """
-    Якорь (дно, ниже которого не падаешь — диагностика).
-    Среднее из трёх: минимум за окно, пик−150, ср.сопер×0.98.
-    """
-    if not min_window or not peak or not avg_opp:
-        return 0.0
-    return (min_window + (peak - 150.0) + avg_opp * 0.98) / 3.0
-
-
-def home_zone(hist_peak: float, avg_my: float) -> float:
-    """
-    Домашняя зона (где рейтинг «живёт»).
-    ((пик − 100) + средний + средний) / 3.
-    """
-    if not hist_peak or not avg_my:
-        return 0.0
-    return ((hist_peak - 100.0) + avg_my + avg_my) / 3.0
-'''
-
-NEW_COMBINED_CONTENT = '''# analysis/psych_state/combined_rating.py (v26.0)
+# analysis/psych_state/combined_rating.py (v26.0)
 """
 Расчет и калибровка CombinedR, SpeedR и GameR.
 Единый расчет без искусственных bias-смещений.
@@ -191,7 +35,7 @@ def load_coefs():
 
 
 def combined_rating_value(acpl, avg_time, coefs=None):
-    """Возвращает прямой честный CombinedR без скрытых вычитаний."""
+    """Возвращает прямой CombinedR без скрытых вычитаний."""
     if coefs is None:
         coefs = load_coefs()
     g_r = game_rating(acpl)
@@ -230,7 +74,6 @@ def _calibrate_combined(conn, days=90):
         avg_time = t["avg"]
         g_r = game_rating(acpl)
         s_r = max(1000.0, min(3200.0, b + k * avg_time))
-        # Perf для одной партии (score: 1.0 победа, 0.5 ничья, 0.0 поражение)
         score = 1.0 if won else (0.5 if draw else 0.0)
         perf_single = opp_rating + (score - 0.5) * 800.0
         samples.append((g_r, s_r, perf_single))
@@ -243,7 +86,6 @@ def _calibrate_combined(conn, days=90):
             "n_samples": len(samples)
         }
 
-    # Подбор весов w1, w2 с шагом 0.05 для минимизации MAE к фактическому Perf
     best_w1 = 0.75
     best_mae = float("inf")
     for step in range(10, 19):  # w1 от 0.50 до 0.90
@@ -267,6 +109,31 @@ def _calibrate_combined(conn, days=90):
     return coefs
 
 
+def report_combined_rating():
+    """Точка входа для 09_psych_state.py."""
+    conn = _conn()
+    try:
+        with report_context("combined_rating") as w:
+            w.w_separator(title="COMBINED RATING (GameR + SpeedR)")
+            w.w("CombinedR = w1 × GameR + w2 × SpeedR")
+            w.w("GameR = 3140 − ACPL×10 (калибровано для Bullet 1+0)")
+            w.w("SpeedR = speed_b + speed_k × avg_time")
+            w.w("§17: формулы — только из core/метрики.py")
+            w.w()
+            w.w_separator(title="КАЛИБРОВКА (90 дней)")
+            coefs = _calibrate_combined(conn, days=90)
+            if coefs:
+                w.w(f" N = {coefs.get('n_samples', 0)} партий")
+                w.w(f" w1 (GameR) = {coefs['w1']}, w2 (SpeedR) = {coefs['w2']}")
+                w.w(f" SpeedR = {coefs['speed_b']:.0f} + ({coefs['speed_k']:.0f}) × avg_time")
+                w.w(f" MAE (CombinedR vs Perf) = {coefs.get('train_mae', 0.0):.1f}")
+            else:
+                w.w(" ⚠️ Мало данных для калибровки, применены дефолты.")
+            w.w()
+    finally:
+        conn.close()
+
+
 def run(conn=None):
     close_at_end = False
     if conn is None:
@@ -285,37 +152,11 @@ def run(conn=None):
             f"# Веса: CombR = {coefs.get('w1', 0.75)} * GameR + {coefs.get('w2', 0.25)} * SpeedR",
             ""
         ]
-        return "\\n".join(lines)
+        return "\n".join(lines)
     finally:
         if close_at_end:
             conn.close()
 
 
 if __name__ == "__main__":
-    report = run()
-    print(report)
-'''
-
-
-def apply_patch():
-    for path, content in [(METRIKI_FILE, NEW_METRIKI_CONTENT), (COMBINED_FILE, NEW_COMBINED_CONTENT)]:
-        if not path.exists():
-            print(f"❌ Файл не найден: {path}")
-            continue
-
-        # Проверка синтаксиса перед записью
-        ast.parse(content, filename=str(path))
-
-        # Создание резервной копии
-        backup = path.with_suffix(".py.v25_bak")
-        shutil.copyfile(path, backup)
-        print(f"📦 Создан бэкап: {backup.name}")
-
-        # Запись
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(content)
-        print(f"✅ Успешно обновлен: {path.name}")
-
-
-if __name__ == "__main__":
-    apply_patch()
+    report_combined_rating()
