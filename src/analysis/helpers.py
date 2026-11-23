@@ -1,10 +1,13 @@
 # ============================================================
-# analysis/helpers.py — хелперы для Stockfish-анализа
+# analysis/helpers.py (v25.2)
+# FIX v25.2: describe_blunder() разделяет матовые теги
+#   на missed_own_mate и allowed_opponent_mate.
+#   Старый missed_mate больше не возвращается.
 # ============================================================
+
 import math
 import chess
 import chess.pgn
-
 
 PIECE_NAMES_RU = {
     chess.QUEEN: "ферзь",
@@ -37,13 +40,10 @@ def get_opening_name(game: chess.pgn.Game) -> str:
 def get_result_info(game, player_is_white):
     result = game.headers.get("Result", "?")
     termination = game.headers.get("Termination", "?").lower()
-
     won = (result == "1-0") if player_is_white else (result == "0-1")
     draw = (result == "1/2-1/2")
-
     if draw:
         return {"won": False, "draw": True, "reason": "ничья", "termination": termination}
-
     if "time" in termination or "timeout" in termination:
         reason = "просрочка"
     elif "checkmate" in termination or "mate" in termination:
@@ -54,7 +54,6 @@ def get_result_info(game, player_is_white):
         reason = "отключение"
     else:
         reason = termination or "unknown"
-
     return {"won": won, "draw": False, "reason": reason, "termination": termination}
 
 
@@ -68,33 +67,49 @@ def calculate_accuracy(avg_cp_loss) -> float:
     return max(0.0, min(100.0, 100 * math.exp(-0.002 * avg_cp_loss)))
 
 
-def describe_blunder(board_before, board_after_response, my_color, loss,
-                     eval_before, eval_after, score_after, score_after_response=None):
-    """Определяет паттерн зевка (потеря ферзя, зевок мата и т.д.)"""
+def describe_blunder(
+    board_before,
+    board_after_response,
+    my_color,
+    loss,
+    eval_before,
+    eval_after,
+    score_after,
+    score_after_response=None,
+):
+    """
+    Определяет паттерн зевка.
+    Возвращает (описание, тег).
+    Теги:
+      missed_own_mate       — игрок мог поставить мат, но не поставил
+      allowed_opponent_mate — игрок допустил мат соперника
+      lost_queen / lost_piece / positional / blunder
+    """
+    # 1. Матовые признаки (с учётом цвета)
+    if score_after is not None and score_after.is_mate():
+        mate_n = score_after.mate()
+        if mate_n is not None:
+            # score_after — с точки зрения белых
+            # если мат в пользу игрока — это missed_own_mate
+            is_own_mate = (mate_n > 0) == (my_color == chess.WHITE)
+            if is_own_mate and mate_n > 0:
+                return f"упущен мат в {mate_n}", "missed_own_mate"
+            if not is_own_mate and mate_n < 0:
+                return f"допущен мат в {abs(mate_n)}", "allowed_opponent_mate"
 
-    # 1. Пропущенный мат (сначала проверяем ответ соперника)
-    if score_after_response is not None:
-        try:
-            if score_after_response.is_mate():
-                mate_n = score_after_response.mate()
-                if mate_n is not None and mate_n > 0:
-                    return f"зевок мата в {mate_n}", "missed_mate"
-        except Exception:
-            pass
-
-    try:
-        if score_after.is_mate():
-            mate_n = score_after.mate()
-            if mate_n is not None and mate_n > 0:
-                return f"зевок мата в {mate_n}", "missed_mate"
-    except Exception:
-        pass
+    if score_after_response is not None and score_after_response.is_mate():
+        mate_n = score_after_response.mate()
+        if mate_n is not None:
+            is_own_mate = (mate_n > 0) == (my_color == chess.WHITE)
+            if is_own_mate and mate_n > 0:
+                return f"упущен мат в {mate_n}", "missed_own_mate"
+            if not is_own_mate and mate_n < 0:
+                return f"допущен мат в {abs(mate_n)}", "allowed_opponent_mate"
 
     # 2. Потеря материала
     mat_before = material(board_before, my_color)
     mat_after = material(board_after_response, my_color)
     diff = mat_before - mat_after
-
     if diff > 0 and loss > 300:
         lost_pieces = []
         for pt, val in PIECE_VALUES.items():
@@ -102,13 +117,11 @@ def describe_blunder(board_before, board_after_response, my_color, loss,
             after_count = len(board_after_response.pieces(pt, my_color))
             if after_count < before_count:
                 lost_pieces.append((pt, before_count - after_count, val))
-
         if lost_pieces:
             lost_pieces.sort(key=lambda x: x[2], reverse=True)
             pt, count, val = lost_pieces[0]
             piece_name = PIECE_NAMES_RU.get(pt, "фигура")
             tag = "lost_queen" if pt == chess.QUEEN else "lost_piece"
-
             if count > 1:
                 return f"потеря {count} {piece_name}ов", tag
             return f"потеря {piece_name}", tag
@@ -118,5 +131,4 @@ def describe_blunder(board_before, board_after_response, my_color, loss,
         return "позиционный провал", "positional"
     if loss > 300:
         return "позиционная ошибка", "positional"
-
     return "зевок", "blunder"
