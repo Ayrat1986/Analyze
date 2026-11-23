@@ -1,43 +1,50 @@
 # ============================================================
-# core/time_control.py (v19.4)
+# core/time_control.py (v19.5)
 # Единый парсер time_control из chess.com.
-# Формат: "60" (1+0), "180+2" (3+2), "300+3" (5+3), etc.
+# FIX v19.5: неизвестный контроль больше не считается 1+0.
+#   parse_time_control_strict() возвращает (base, inc, is_known).
+#   parse_time_control() оставлен для совместимости, но для
+#   неизвестных возвращает (None, None).
 # ============================================================
 
-
-# Проект настроен на 1+0 (bullet).
-# 3+2 — турнирный контроль, рассматривается отдельно.
 PRIMARY_TIME_CONTROL = "1+0"
 PRIMARY_BASE_SEC = 60
 PRIMARY_INCREMENT_SEC = 0
 
 
-def parse_time_control(tc: str) -> tuple[int, int]:
+def parse_time_control_strict(tc: str) -> tuple[int | None, int | None, bool]:
     """
-    Возвращает (base_sec, increment_sec).
-    
+    Возвращает (base_sec, increment_sec, is_known).
+    is_known = False, если контроль не распознан.
     Примеры:
-      "60"      → (60, 0)      # 1+0
-      "180+2"   → (180, 2)     # 3+2
-      "300+3"   → (300, 3)     # 5+3
-      ""        → (60, 0)      # fallback
-      "unknown" → (60, 0)      # fallback
+      "60"      → (60, 0, True)
+      "180+2"   → (180, 2, True)
+      "300+3"   → (300, 3, True)
+      ""        → (None, None, False)
+      "unknown" → (None, None, False)
     """
     if not tc or not isinstance(tc, str):
-        return PRIMARY_BASE_SEC, PRIMARY_INCREMENT_SEC
-    
+        return None, None, False
     tc = tc.strip().lower()
     if tc in ("unknown", "?", ""):
-        return PRIMARY_BASE_SEC, PRIMARY_INCREMENT_SEC
-    
+        return None, None, False
     try:
         if "+" in tc:
             base_str, inc_str = tc.split("+", 1)
-            return int(base_str), int(inc_str)
+            return int(base_str), int(inc_str), True
         else:
-            return int(tc), 0
+            return int(tc), 0, True
     except (ValueError, TypeError):
-        return PRIMARY_BASE_SEC, PRIMARY_INCREMENT_SEC
+        return None, None, False
+
+
+def parse_time_control(tc: str) -> tuple[int | None, int | None]:
+    """
+    Обратная совместимость.
+    Для неизвестных возвращает (None, None), а НЕ (60, 0).
+    """
+    base, inc, _ = parse_time_control_strict(tc)
+    return base, inc
 
 
 def is_primary(tc: str) -> bool:
@@ -49,18 +56,17 @@ def is_primary(tc: str) -> bool:
 def format_time_control(tc: str) -> str:
     """Человекочитаемый формат: '1+0', '3+2'."""
     base, inc = parse_time_control(tc)
+    if base is None:
+        return "unknown"
     base_min = base // 60 if base >= 60 else base
     return f"{base_min}+{inc}"
 
 
 def is_supported_for_analysis(tc: str) -> bool:
-    """
-    True, если time_control поддерживается текущими скриптами.
-    Сейчас: 1+0 (основной) и 3+2 (турнирный, ограниченно).
-    """
+    """1+0 (основной) и 3+2 (турнирный, ограниченно)."""
     base, inc = parse_time_control(tc)
-    if base == 60 and inc == 0:      # 1+0
+    if base == 60 and inc == 0:
         return True
-    if base == 180 and inc == 2:     # 3+2
+    if base == 180 and inc == 2:
         return True
     return False
