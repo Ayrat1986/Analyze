@@ -1,10 +1,10 @@
 # ============================================================
-# core/time_control.py (v19.5)
+# core/time_control.py (v25.3)
 # Единый парсер time_control из chess.com.
-# FIX v19.5: неизвестный контроль больше не считается 1+0.
-#   parse_time_control_strict() возвращает (base, inc, is_known).
-#   parse_time_control() оставлен для совместимости, но для
-#   неизвестных возвращает (None, None).
+# FIX v25.3:
+#   - parse_time_control_strict() гарантирует корректный кортеж (base, inc, is_known).
+#   - parse_time_control() оставлен для 100% обратной совместимости.
+#   - Защита от отрицательных и невалидных значений.
 # ============================================================
 
 PRIMARY_TIME_CONTROL = "1+0"
@@ -26,14 +26,21 @@ def parse_time_control_strict(tc: str) -> tuple[int | None, int | None, bool]:
     if not tc or not isinstance(tc, str):
         return None, None, False
     tc = tc.strip().lower()
-    if tc in ("unknown", "?", ""):
+    if tc in ("unknown", "?", "", "none"):
         return None, None, False
     try:
         if "+" in tc:
             base_str, inc_str = tc.split("+", 1)
-            return int(base_str), int(inc_str), True
+            b = int(base_str)
+            inc = int(inc_str)
+            if b < 0 or inc < 0:
+                return None, None, False
+            return b, inc, True
         else:
-            return int(tc), 0, True
+            b = int(tc)
+            if b < 0:
+                return None, None, False
+            return b, 0, True
     except (ValueError, TypeError):
         return None, None, False
 
@@ -41,14 +48,14 @@ def parse_time_control_strict(tc: str) -> tuple[int | None, int | None, bool]:
 def parse_time_control(tc: str) -> tuple[int | None, int | None]:
     """
     Обратная совместимость.
-    Для неизвестных возвращает (None, None), а НЕ (60, 0).
+    Для неизвестных возвращает (None, None), а НЕ дефолтные (60, 0).
     """
     base, inc, _ = parse_time_control_strict(tc)
     return base, inc
 
 
 def is_primary(tc: str) -> bool:
-    """True, если это 1+0 (основной контроль)."""
+    """True, если это 1+0 (основной контроль пули)."""
     base, inc = parse_time_control(tc)
     return base == PRIMARY_BASE_SEC and inc == PRIMARY_INCREMENT_SEC
 
