@@ -1,14 +1,11 @@
 # ============================================================
-# analysis/game.py — анализ одной шахматной партии (v25.2)
-# FIX v25.2:
-#   - Исправлена индексация часов: my_time_before = clocks[i-2],
-#     а не clocks[i-1] (это были часы соперника).
-#   - time_spent считается корректно для любого хода.
-#   - momentum_after_blunder рассчитывается ПОСЛЕ цикла,
-#     когда eval_by_move полностью заполнен.
-#   - base_sec берётся из time_control, а не хардкодится 60.0.
-#   - describe_blunder() вызывается с my_color (новые теги матов).
-# §32: ACPL в зоне берсерка (<10 сек) НЕ СЧИТАЕТСЯ.
+# analysis/game.py — анализ одной шахматной партии (v25.3)
+# FIX v25.3:
+#   - Исправлена критическая ошибка отрицательных индексов clocks[i-2]:
+#     раньше при i=0 или 1 брались часы с конца партии!
+#   - Безопасное вычисление time_spent и my_time_before.
+#   - Momentum рассчитывается строго после формирования истории оценок.
+#   - §32: ACPL в зоне берсерка (<10 сек) исключается из нормального ACPL.
 # ============================================================
 
 import io
@@ -64,7 +61,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
 
     time_control = game_data.get("time_control", "unknown")
     base_sec, _, _ = parse_time_control_strict(time_control)
-    if base_sec is None:
+    if base_sec is None or base_sec <= 0:
         base_sec = PRIMARY_BASE_SEC
 
     blunders = []
@@ -104,22 +101,22 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         move_num = board.fullmove_number
         last_move_num = move_num
 
-        # === ИСПРАВЛЕННЫЙ БЛОК ЧАСОВ ===
-        my_time_before = None
-        opp_time_before = None
         is_my_turn = (is_white == player_is_white)
 
-        if i < len(clocks):
-            if is_my_turn:
-                # Перед своим ходом: clocks[i-2] — свои часы после предыдущего хода
-                my_time_before = clocks[i - 2] if i >= 2 else base_sec
-                # Часы соперника после его последнего хода
-                opp_time_before = clocks[i - 1] if i > 0 else base_sec
-            else:
-                # Перед ходом соперника: clocks[i-2] — его часы после предыдущего хода
-                opp_time_before = clocks[i - 2] if i >= 2 else base_sec
-                # Свои часы после своего последнего хода
-                my_time_before = clocks[i - 1] if i > 0 else base_sec
+        # === БЕЗОПАСНЫЙ РАСЧЁТ ЧАСОВ (БЕЗ ОТРИЦАТЕЛЬНЫХ ИНДЕКСОВ) ===
+        my_time_before = float(base_sec)
+        opp_time_before = float(base_sec)
+
+        if is_my_turn:
+            if i >= 2 and (i - 2) < len(clocks) and clocks[i - 2] is not None:
+                my_time_before = float(clocks[i - 2])
+            if i >= 1 and (i - 1) < len(clocks) and clocks[i - 1] is not None:
+                opp_time_before = float(clocks[i - 1])
+        else:
+            if i >= 2 and (i - 2) < len(clocks) and clocks[i - 2] is not None:
+                opp_time_before = float(clocks[i - 2])
+            if i >= 1 and (i - 1) < len(clocks) and clocks[i - 1] is not None:
+                my_time_before = float(clocks[i - 1])
 
         if move_num <= 10:
             opening_line.append(move.uci())
@@ -142,13 +139,13 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         if abs(eval_before) > 2000 or abs(eval_after) > 2000:
             continue
 
-        if is_white == player_is_white:
+        if is_my_turn:
             eval_by_move[move_num] = eval_before
 
-        if move_num == 10 and is_white == player_is_white:
+        if move_num == 10 and is_my_turn:
             eval_after_opening = eval_after if player_is_white else -eval_after
 
-        if is_white == player_is_white:
+        if is_my_turn:
             eval_player = eval_before if player_is_white else -eval_before
             eval_history.append((move_num, eval_player))
             eval_history_peak.append(eval_player)
@@ -160,34 +157,23 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                 moves_in_winning_position += 1
             our_move_indices.append(i)
 
-        if is_white:
-            loss = eval_before - eval_after
-        else:
-            loss = eval_after - eval_before
+        loss = (eval_before - eval_after) if is_white else (eval_after - eval_before)
 
-        our_move = (is_white == player_is_white)
-
-        if our_move:
+        if is_my_turn:
             our_moves += 1
-            # === ИСПРАВЛЕННЫЙ time_spent ===
+            # === ТОЧНЫЙ time_spent ДЛЯ СВОЕГО ХОДА ===
             time_spent = 0.0
-            if i < len(clocks):
-                # Для любого хода: время = часы после предыдущего своего хода - часы после текущего
-                prev_clock = clocks[i - 2] if i >= 2 else base_sec
-                curr_clock = clocks[i]
-                if prev_clock is not None and curr_clock is not None:
-                    time_spent = prev_clock - curr_clock
+            if i < len(clocks) and clocks[i] is not None:
+                curr_clock = float(clocks[i])
+                prev_clock = float(clocks[i - 2]) if (i >= 2 and clocks[i - 2] is not None) else float(base_sec)
+                time_spent = max(0.0, prev_clock - curr_clock)
 
-            is_berserk = (my_time_before is not None and my_time_before < BERSERK_TIME) or \
-                         (opp_time_before is not None and opp_time_before < BERSERK_TIME)
-            is_normal = (my_time_before is not None and my_time_before > NORMAL_TIME) and \
-                        (opp_time_before is not None and opp_time_before > NORMAL_TIME)
-            is_instant = (time_spent < INSTANT_TIME and
-                          my_time_before is not None and my_time_before > NORMAL_TIME)
+            is_berserk = (my_time_before < BERSERK_TIME) or (opp_time_before < BERSERK_TIME)
+            is_normal = (my_time_before > NORMAL_TIME) and (opp_time_before > NORMAL_TIME)
+            is_instant = (time_spent < INSTANT_TIME and my_time_before > NORMAL_TIME)
+            is_true_berserk_clock = (my_time_before < TRUE_BERSERK_CLOCK)
 
-            is_true_berserk_clock = (my_time_before is not None and my_time_before < TRUE_BERSERK_CLOCK)
-
-            if my_time_before is not None and my_time_before < BERSERK_TIME and berserk_move_enter is None:
+            if my_time_before < BERSERK_TIME and berserk_move_enter is None:
                 berserk_move_enter = move_num
 
             if is_true_berserk_clock:
@@ -301,7 +287,6 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                 opp_blunders_count += 1
 
     # === РАСЧЁТ MOMENTUM ПОСЛЕ ЦИКЛА ===
-    # Теперь eval_by_move полностью заполнен.
     for b in blunders:
         move_num_b = b["move_num"]
         future_losses = []
@@ -309,16 +294,12 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         for next_mn in range(move_num_b + 1, move_num_b + 6):
             if next_mn in eval_by_move:
                 next_eval = eval_by_move[next_mn]
-                if player_is_white:
-                    l_temp = current_eval - next_eval
-                else:
-                    l_temp = next_eval - current_eval
+                l_temp = (current_eval - next_eval) if player_is_white else (next_eval - current_eval)
                 if l_temp > 0:
                     future_losses.append(l_temp)
         if future_losses:
             momentum_after_blunder.append(sum(future_losses) / len(future_losses))
 
-    # next_move_time и is_next_move_blunder (без изменений)
     for b in blunders:
         ply = b["ply"]
         try:
@@ -370,16 +351,18 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
             else:
                 opp_clock_at_timeout = c
 
-    acpl = total_loss / (our_moves - moves_berserk) if (our_moves - moves_berserk) > 0 else 0
+    # §32: нормальные ходы без берсерка
+    moves_normal = our_moves - moves_berserk
+    acpl = (total_loss - loss_berserk) / moves_normal if moves_normal > 0 else 0
     acpl_berserk = loss_berserk / moves_berserk if moves_berserk > 0 else 0
-    accuracy = calculate_accuracy(acpl) if (our_moves - moves_berserk) > 0 else 0.0
+    accuracy = calculate_accuracy(acpl) if moves_normal > 0 else 0.0
 
     acpl_opponent_total = opp_total_loss / opp_total_moves if opp_total_moves > 0 else 0
     accuracy_opponent = calculate_accuracy(acpl_opponent_total) if opp_total_moves > 0 else 0.0
 
     end_berserk = False
     if len(clocks) >= 2:
-        if any(t < BERSERK_TIME for t in clocks[-2:]):
+        if any(t is not None and t < BERSERK_TIME for t in clocks[-2:]):
             end_berserk = True
 
     game_length = len(moves)
@@ -399,7 +382,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
     acpl_end = loss_end / moves_end if moves_end > 0 else 0
 
     avg_momentum = (sum(momentum_after_blunder) / len(momentum_after_blunder)
-                    if momentum_after_blunder else None)  # None, а не 0
+                    if momentum_after_blunder else None)
 
     try:
         opp_style = classify_opponent_style(pgn, player_is_white)
@@ -417,7 +400,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         "acpl_middlegame": acpl_mid,
         "acpl_endgame": acpl_end,
         "accuracy": accuracy,
-        "moves_normal": our_moves - moves_berserk,
+        "moves_normal": moves_normal,
         "moves_berserk": moves_berserk,
         "acpl_opponent_normal": acpl_opponent_total,
         "acpl_opponent_total": acpl_opponent_total,
@@ -450,7 +433,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         "timeout_with_clock": timeout_with_clock,
         "eval_after_opening": eval_after_opening,
         "moves_in_winning_position": moves_in_winning_position,
-        "momentum_after_blunder": avg_momentum,  # None, если нет данных
+        "momentum_after_blunder": avg_momentum,
         "opening_line": " ".join(opening_line),
         "pgn": pgn,
         "clocks": clocks,
@@ -461,4 +444,4 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         "my_clock_at_timeout": my_clock_at_timeout,
         "opp_clock_at_timeout": opp_clock_at_timeout,
         "opp_style": opp_style,
-                }
+    }
