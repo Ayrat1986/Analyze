@@ -944,3 +944,31 @@
 [2026-11-23 17:58:22] END   12_coach.py — OK
 [2026-11-23 17:58:23] START 13_dashboard_final.py
 [2026-11-23 17:58:31] END   13_dashboard_final.py — OK
+[2026-11-23 18:32:28] START 00_data_quality.py
+[2026-11-23 18:32:28] END   00_data_quality.py — OK
+[2026-11-23 18:32:28] START 01_fetch_chess_api.py
+[2026-11-23 18:32:31] END   01_fetch_chess_api.py — OK
+[2026-11-23 18:32:31] START 02_analyze_stockfish.py
+[2026-11-23 18:32:31] END   02_analyze_stockfish.py — OK
+[2026-11-23 18:32:31] START 03_migrate_sqlite.py
+[2026-11-23 18:32:32] END   03_migrate_sqlite.py — OK
+[2026-11-23 18:32:32] START 04_export_csv.py
+[2026-11-23 18:32:35] END   04_export_csv.py — OK
+[2026-11-23 18:32:35] START 05_openings.py
+[2026-11-23 18:32:51] END   05_openings.py — OK
+[2026-11-23 18:32:51] START 06_middlegame.py
+[2026-11-23 18:33:03] END   06_middlegame.py — OK
+[2026-11-23 18:33:03] START 07_endgame.py
+[2026-11-23 18:33:03] END   07_endgame.py — OK
+[2026-11-23 18:33:03] START 08_psych_focus.py
+[2026-11-23 18:33:03] END   08_psych_focus.py — OK
+[2026-11-23 18:33:03] START 09_psych_state.py
+[2026-11-23 18:33:06] END   09_psych_state.py — OK
+[2026-11-23 18:33:06] START 10_psych_rating.py
+[2026-11-23 18:33:07] END   10_psych_rating.py — OK
+[2026-11-23 18:33:07] START 11_psych_opponents.py
+[2026-11-23 18:33:14] END   11_psych_opponents.py — OK
+[2026-11-23 18:33:14] START 12_coach.py
+[2026-11-23 18:33:14] END   12_coach.py — OK
+[2026-11-23 18:33:14] START 13_dashboard_final.py
+[2026-11-23 18:33:22] END   13_dashboard_final.py — OK
