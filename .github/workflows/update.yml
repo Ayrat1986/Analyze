@@ -35,10 +35,10 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run Full Pipeline
-        run: |
-          # Запускаем ВСЕ шаги конвейера (от сбора API до дашбордов)
-          python run.py --keep-going
+     - name: Run Full Pipeline
+       run: |
+         # Запускаем ВСЕ шаги конвейера (от сбора API до дашбордов)
+         python run.py --keep-going --force
         env:
           STOCKFISH_PATH: /usr/games/stockfish
 
