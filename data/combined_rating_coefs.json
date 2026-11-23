@@ -1,9 +1,14 @@
 {
   "speed_k": -545.0,
   "speed_b": 3178.0,
-  "w1": 0.75,
-  "w2": 0.25,
-  "calibrated_at": "2026-11-23T06:49:19.796452+00:00",
-  "n_samples": 2434,
-  "train_mae": 327.5
+  "w1": 0.8,
+  "w2": 0.2,
+  "mae": 335.4,
+  "game_r_mae": 341.2,
+  "speed_r_mae": 363.3,
+  "n": 2433,
+  "n_train": 1703,
+  "n_test": 730,
+  "calibrated_at": "2026-11-23T07:05:16.587823+00:00",
+  "is_default": false
 }
