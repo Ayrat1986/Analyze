@@ -12,7 +12,7 @@ import os
 import json
 
 # Калибровочные константы GameR
-GAMER_BASE = 3140.0
+GAMER_BASE = 3130.0
 GAMER_SLOPE = 10.0
 
 # Дефолтные коэффициенты скорости и весов
