@@ -38,7 +38,7 @@ jobs:
       - name: Run Full Pipeline
         run: |
           # Запускаем ВСЕ шаги конвейера (от сбора API до дашбордов)
-          python run.py --keep-going
+          python run.py --keep-going --force
         env:
           STOCKFISH_PATH: /usr/games/stockfish
 

@@ -3,6 +3,7 @@
   "speed_b": 3178.0,
   "w1": 0.8,
   "w2": 0.2,
+<<<<<<< HEAD
   "mae": 336.2,
   "game_r_mae": 341.7,
   "speed_r_mae": 363.4,
@@ -10,5 +11,14 @@
   "n_train": 1706,
   "n_test": 732,
   "calibrated_at": "2026-11-24T06:47:45.798810+00:00",
+=======
+  "mae": 335.8,
+  "game_r_mae": 341.0,
+  "speed_r_mae": 363.4,
+  "n": 2429,
+  "n_train": 1700,
+  "n_test": 729,
+  "calibrated_at": "2026-11-24T06:05:44.449120+00:00",
+>>>>>>> b0b7f8c9e8d360a85fd369b2ae5b2e10d2b0597c
   "is_default": false
 }

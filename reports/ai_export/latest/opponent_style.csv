@@ -1,5 +1,11 @@
 opponent_style,games,wins,win_rate,my_avg_acpl
+<<<<<<< HEAD
 universal,638,283,44.4%,57
 positional,223,149,66.8%,52
 aggressive,119,25,21.0%,71
+=======
+universal,631,281,44.5%,57
+positional,223,149,66.8%,52
+aggressive,117,24,20.5%,71
+>>>>>>> b0b7f8c9e8d360a85fd369b2ae5b2e10d2b0597c
 tactical,45,16,35.6%,71
