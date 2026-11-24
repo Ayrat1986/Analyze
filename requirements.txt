@@ -5,3 +5,6 @@ python-chess>=1.999
 requests>=2.31
 curl_cffi>=0.5
 matplotlib>=3.8
+libsql-client>=0.3.0
+streamlit
+pandas
