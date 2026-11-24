@@ -3,12 +3,12 @@
   "speed_b": 3178.0,
   "w1": 0.8,
   "w2": 0.2,
-  "mae": 336.2,
-  "game_r_mae": 341.7,
-  "speed_r_mae": 363.4,
-  "n": 2438,
-  "n_train": 1706,
+  "mae": 334.1,
+  "game_r_mae": 339.7,
+  "speed_r_mae": 362.6,
+  "n": 2439,
+  "n_train": 1707,
   "n_test": 732,
-  "calibrated_at": "2026-11-24T13:20:51.604389+00:00",
+  "calibrated_at": "2026-11-24T19:15:42.079166+00:00",
   "is_default": false
 }
