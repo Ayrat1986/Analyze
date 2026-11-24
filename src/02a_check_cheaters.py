@@ -1,20 +1,22 @@
 # ============================================================
-# 02a_check_cheaters.py — v19.7
-# FIX: Поиск соперников с учетом регистра и текущего месяца.
-#      Теперь корректно находит новых соперников для проверки.
+# 02a_check_cheaters.py — v19.8
+# FIX: Защита от пустого/битого chess_api_cache.json (JSONDecodeError)
+#      и резервный сбор соперников из SQLite (chess.db).
 # ============================================================
 from curl_cffi import requests
 import time
 import os
+import re
 import json
+import sqlite3
 import argparse
 from datetime import datetime, timezone, timedelta
-from importlib import import_module
 
 import _common
 from _chess_utils import _HARDCODED_CHEATERS
 
 CACHE_FILE = str(_common.BASE_DIR / "data" / "chess_api_cache.json")
+DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
 CHEATERS_FILE = str(_common.BASE_DIR / "data" / "cheaters.txt")
 CHECKED_FILE = str(_common.BASE_DIR / "data" / "checked_players.txt")
 PLAYER = _common.CONFIG.get("player", "")
@@ -35,32 +37,27 @@ def load_known_cheaters_dict() -> dict:
     """
     if not os.path.exists(CHEATERS_FILE):
         return {c: "2026-01-01" for c in _HARDCODED_CHEATERS}
-    
+
     result = {}
     with open(CHEATERS_FILE, "r", encoding="utf-8") as f:
         for line in f:
-            # Формат: "nick # добавлен 2026-11-06" или просто "nick"
             raw = line.strip()
             if not raw:
                 continue
-            # Убираем комментарий
             parts = raw.split("#", 1)
             nick = parts[0].strip().lower()
             if not nick:
                 continue
-            # Пропускаем заголовки
             if nick.startswith("=") or "найденные" in nick or "читеров не" in nick:
                 continue
-            # Ищем дату в комментарии
-            date_str = "2026-01-01"  # fallback
+            date_str = "2026-01-01"
             if len(parts) > 1:
                 comment = parts[1]
-                import re
                 m = re.search(r"(\d{4}-\d{2}-\d{2})", comment)
                 if m:
                     date_str = m.group(1)
             result[nick] = date_str
-    
+
     return result if result else {c: "2026-01-01" for c in _HARDCODED_CHEATERS}
 
 
@@ -103,17 +100,50 @@ def save_checked(checked: set) -> None:
 # ============================================================
 # ОППОНЕНТЫ
 # ============================================================
+def get_opponents_from_db(days: int = DAYS_TO_FETCH) -> set:
+    """Резервный сбор соперников из SQLite (chess.db), если JSON-кэш пуст или битый."""
+    if not os.path.exists(DB_FILE):
+        return set()
+    try:
+        cutoff_ts = int((datetime.now(timezone.utc) - timedelta(days=days)).timestamp())
+        player_lower = PLAYER.lower()
+        opponents = set()
+        conn = sqlite3.connect(DB_FILE)
+        cur = conn.cursor()
+        cur.execute("SELECT white, black FROM games WHERE end_time >= ?", (cutoff_ts,))
+        for w, b in cur.fetchall():
+            w_l = (w or "").lower()
+            b_l = (b or "").lower()
+            if w_l == player_lower and b_l:
+                opponents.add(b_l)
+            elif b_l == player_lower and w_l:
+                opponents.add(w_l)
+        conn.close()
+        return opponents
+    except Exception as e:
+        print(f"⚠️ Не удалось прочитать соперников из БД: {e}")
+        return set()
+
+
 def get_opponents_from_cache(days: int = DAYS_TO_FETCH) -> set:
     if not os.path.exists(CACHE_FILE):
         print(f"⚠️ Нет {CACHE_FILE}. Запусти 01_fetch_chess_api.py.")
-        return set()
-    with open(CACHE_FILE, "r", encoding="utf-8") as f:
-        cache = json.load(f)
+        return get_opponents_from_db(days)
+
+    try:
+        with open(CACHE_FILE, "r", encoding="utf-8") as f:
+            cache = json.load(f)
+    except (json.JSONDecodeError, Exception) as e:
+        print(f"❌ Файл кэша {CACHE_FILE} пуст или повреждён ({e}).")
+        print("   💡 Запусти 01_fetch_chess_api.py, чтобы пересоздать кэш.")
+        db_opps = get_opponents_from_db(days)
+        if db_opps:
+            print(f"   🔄 Беру резервный список соперников из chess.db: {len(db_opps)}")
+        return db_opps
 
     player_lower = PLAYER.lower()
     archives_url = f"https://api.chess.com/pub/player/{player_lower}/games/archives"
-    
-    # Fallback: ищем в оригинальном регистре
+
     archives_data = cache.get(archives_url)
     if not archives_data:
         alt_url = f"https://api.chess.com/pub/player/{PLAYER}/games/archives"
@@ -122,13 +152,12 @@ def get_opponents_from_cache(days: int = DAYS_TO_FETCH) -> set:
             archives_url = alt_url
 
     if not archives_data:
-        print("⚠️ В кэше нет списка архивов (возможно, нужно запустить 01_fetch).")
-        return set()
+        print("⚠️ В кэше нет списка архивов (возможно, нужно запустить 01_fetch_chess_api.py).")
+        return get_opponents_from_db(days)
 
     cutoff_ts = int((datetime.now(timezone.utc) - timedelta(days=days)).timestamp())
     opponents = set()
 
-    # Добавляем текущий и предыдущий месяц (их может не быть в archives)
     now_utc = datetime.now(timezone.utc)
     current_month_url = f"https://api.chess.com/pub/player/{player_lower}/games/{now_utc.year}/{now_utc.month:02d}"
     prev_month_date = now_utc.replace(day=1) - timedelta(days=1)
@@ -144,7 +173,6 @@ def get_opponents_from_cache(days: int = DAYS_TO_FETCH) -> set:
 
         data = cache.get(url)
         if not data:
-            # Пробуем найти с оригинальным регистром
             mixed_url = url.replace(player_lower, PLAYER)
             data = cache.get(mixed_url)
 
@@ -156,14 +184,14 @@ def get_opponents_from_cache(days: int = DAYS_TO_FETCH) -> set:
                 continue
             white = g.get("white", {}).get("username", "").lower()
             black = g.get("black", {}).get("username", "").lower()
-            
+
             if white == player_lower:
                 if black:
                     opponents.add(black)
             elif black == player_lower:
                 if white:
                     opponents.add(white)
-                    
+
     return opponents
 
 
@@ -197,7 +225,7 @@ def main():
     args = parser.parse_args()
 
     print("=" * 60)
-    print(" 02a_check_cheaters.py — v19.7 (fix cache lookup)")
+    print(" 02a_check_cheaters.py — v19.8 (safe cache + DB fallback)")
     print("=" * 60)
 
     if not PLAYER:
@@ -253,7 +281,6 @@ def main():
 
         time.sleep(0.8)
 
-    # Объединяем: старые данные + новые
     all_cheaters = {**existing_cheaters, **new_cheaters}
     all_checked = checked | new_checked
 
