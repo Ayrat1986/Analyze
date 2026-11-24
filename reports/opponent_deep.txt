@@ -4,7 +4,13 @@
 Анализ только соперников из crushed_by.txt (score < 30%).
 Ищем паттерн: в каких дебютах они ломают твою игру?
 
-Найдено 'раскалывающих': 13
+Найдено 'раскалывающих': 14
+
+♟️ bopielmarionglero2 (13 партий, Score 15%)
+  Дебюты, где он тебя ломает:
+    D18 Slav Defense Modern Alapin Variation Czec   3п, Score 0%
+    D19 Slav Defense Modern Alapin Variation Czec   2п, Score 0%
+    B01 Scandinavian Defense Mieses Kotrc Main Li   2п, Score 0%
 
 ♟️ zumpili (13 партий, Score 23%)
   Дебюты, где он тебя ломает:
@@ -12,12 +18,6 @@
     B01 Scandinavian Defense Modern Portuguese Va   2п, Score 0%
     A43 Old Benoni Defense                          2п, Score 0%
   📉 Средний финальный перевес: -3.5 (ты часто доминируешь в начале)
-
-♟️ bopielmarionglero2 (12 партий, Score 17%)
-  Дебюты, где он тебя ломает:
-    D18 Slav Defense Modern Alapin Variation Czec   3п, Score 0%
-    D19 Slav Defense Modern Alapin Variation Czec   2п, Score 0%
-    B01 Scandinavian Defense Mieses Kotrc Main Li   2п, Score 0%
 
 ♟️ canadiandragon (9 партий, Score 17%)
   Дебюты, где он тебя ломает:
@@ -59,6 +59,11 @@
   Дебюты, где он тебя ломает:
     (нет явно слабых дебютов — проблема в миттельшпиле)
   📉 Средний финальный перевес: -5.6 (ты часто доминируешь в начале)
+
+♟️ memoryreboot_0 (6 партий, Score 0%)
+  Дебюты, где он тебя ломает:
+    D00 Queens Pawn Opening Chigorin Variation 2.   3п, Score 0%
+    A35 English Opening Symmetrical Two Knights V   3п, Score 0%
 
 ♟️ chess3169 (5 партий, Score 20%)
   Дебюты, где он тебя ломает:

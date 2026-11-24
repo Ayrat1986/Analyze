@@ -11,19 +11,19 @@
  OPPONENT WEAKNESS
 ============================================================
 📊 ПО ACPL СОПЕРНИКА (чем выше ACPL соперника — тем он слабее):
-  ACPL < 60 (сильный)       1278п, 34.7%
-  ACPL 60-75 (средний)       592п, 51.7%
-  ACPL 75-90 (слабый)        394п, 54.6%
-  ACPL > 90 (очень слабый)   489п, 64.2%
+  ACPL < 60 (сильный)       1283п, 34.6%
+  ACPL 60-75 (средний)       595п, 51.6%
+  ACPL 75-90 (слабый)        395п, 54.4%
+  ACPL > 90 (очень слабый)   493п, 64.1%
 
 📊 ПО СТИЛЮ (из opponent_style.csv):
-  universal       640п, 44.5%, ACPL 57
-  positional      222п, 66.7%, ACPL 52
+  universal       651п, 44.2%, ACPL 60
+  positional      224п, 66.1%, ACPL 52
   aggressive      119п, 21.0%, ACPL 71
   tactical         45п, 35.6%, ACPL 71
 
 🎯 ВЕРДИКТ:
-  Лучше всего: positional (67%)
+  Лучше всего: positional (66%)
   Хуже всего: aggressive (21%)
 
 ============================================================
@@ -36,8 +36,8 @@
 
   Соперник               Рейт   Игр   W/D/L        Score%   Мой ACPL   Его ACPL
   ----------------------------------------------------------------------------------------
+  bopielmarionglero2     2580   13    2/0/11       15.4     65         89
   zumpili                2555   13    3/0/10       23.1     56         57
-  bopielmarionglero2     2585   12    2/0/10       16.7     65         91
   canadiandragon         2578   9     1/1/7        16.7     56         38
   gidel33                2518   8     1/1/6        18.8     78         73
   blakmore               2478   7     2/0/5        28.6     65         77
@@ -47,6 +47,7 @@
   frenchamiralramon      2555   6     1/1/4        25.0     59         58
   igarami10              2587   6     1/0/5        16.7     68         67
   jonathanwesterberg     2764   6     1/0/5        16.7     62         43
+  memoryreboot_0         2569   6     0/0/6        0.0      126        152
   chess3169              2593   5     1/0/4        20.0     81         44
   gbntomm                2572   5     1/0/4        20.0     67         51
 
@@ -64,7 +65,13 @@
 Анализ только соперников из crushed_by.txt (score < 30%).
 Ищем паттерн: в каких дебютах они ломают твою игру?
 
-Найдено 'раскалывающих': 13
+Найдено 'раскалывающих': 14
+
+♟️ bopielmarionglero2 (13 партий, Score 15%)
+  Дебюты, где он тебя ломает:
+    D18 Slav Defense Modern Alapin Variation Czec   3п, Score 0%
+    D19 Slav Defense Modern Alapin Variation Czec   2п, Score 0%
+    B01 Scandinavian Defense Mieses Kotrc Main Li   2п, Score 0%
 
 ♟️ zumpili (13 партий, Score 23%)
   Дебюты, где он тебя ломает:
@@ -72,12 +79,6 @@
     B01 Scandinavian Defense Modern Portuguese Va   2п, Score 0%
     A43 Old Benoni Defense                          2п, Score 0%
   📉 Средний финальный перевес: -3.5 (ты часто доминируешь в начале)
-
-♟️ bopielmarionglero2 (12 партий, Score 17%)
-  Дебюты, где он тебя ломает:
-    D18 Slav Defense Modern Alapin Variation Czec   3п, Score 0%
-    D19 Slav Defense Modern Alapin Variation Czec   2п, Score 0%
-    B01 Scandinavian Defense Mieses Kotrc Main Li   2п, Score 0%
 
 ♟️ canadiandragon (9 партий, Score 17%)
   Дебюты, где он тебя ломает:
@@ -119,6 +120,11 @@
   Дебюты, где он тебя ломает:
     (нет явно слабых дебютов — проблема в миттельшпиле)
   📉 Средний финальный перевес: -5.6 (ты часто доминируешь в начале)
+
+♟️ memoryreboot_0 (6 партий, Score 0%)
+  Дебюты, где он тебя ломает:
+    D00 Queens Pawn Opening Chigorin Variation 2.   3п, Score 0%
+    A35 English Opening Symmetrical Two Knights V   3п, Score 0%
 
 ♟️ chess3169 (5 партий, Score 20%)
   Дебюты, где он тебя ломает:

@@ -1,3 +1,7 @@
+https://lichess.org/analysis/standard/4r1k1/pp1r3p/1b2N3/q3pp2/3P4/2P5/P4QP1/4BRK1_w_-_-_0_31
+https://lichess.org/analysis/standard/2r1r1k1/5ppp/8/pp1PN3/4nn2/7q/P1Q2R2/2R2K2_w_-_-_2_31
+https://lichess.org/analysis/standard/5rk1/4Qp1p/1N4pb/8/3P4/2P1PP2/7P/4qBK1_w_-_-_1_31
+https://lichess.org/analysis/standard/5k2/1p4bp/p2p4/1q1Ppp2/1P6/nB4P1/1B2QP1P/6K1_w_-_-_0_31
 https://lichess.org/analysis/standard/1k6/2p2prp/1n3pr1/1Q3p2/1P5q/1B1P1P1P/P1P2RP1/5R1K_w_-_-_3_31
 https://lichess.org/analysis/standard/1k2r3/1p4p1/p1p4p/5Q2/4P2P/1qN5/1B6/1K1R4_w_-_-_0_31
 https://lichess.org/analysis/standard/2br2k1/5ppp/p1p4r/4P3/1PQq4/7P/5PP1/R1R1B1K1_w_-_-_0_31
@@ -14,7 +18,3 @@ https://lichess.org/analysis/standard/r2r2k1/1p3pp1/2p3p1/2Bb4/p6q/8/1PQ2P2/1K2R
 https://lichess.org/analysis/standard/3R4/5p1k/1p3np1/p6p/P1P1qN2/1P2r2P/3Q2P1/6K1_w_-_-_2_31
 https://lichess.org/analysis/standard/4r2k/6pp/8/1R1Qpq2/8/5P2/r5PP/4R1K1_w_-_-_5_31
 https://lichess.org/analysis/standard/2k2r2/pp1qb2R/n3p3/2p1P1p1/P1PP2P1/BP5P/2Q5/2K5_w_-_-_0_31
-https://lichess.org/analysis/standard/5nk1/6pp/2Pqp3/3pN3/3P4/8/1P2Q1PP/5RK1_w_-_-_1_31
-https://lichess.org/analysis/standard/5r1k/pppb4/3p1b2/3Pp2q/2P5/1P1BBPQ1/P4KP1/5R2_w_-_-_5_31
-https://lichess.org/analysis/standard/1kr4r/1p2bqp1/p3N1n1/2pQ1p2/P1P2P1p/1P1P3P/5B2/4RRK1_w_-_-_2_31
-https://lichess.org/analysis/standard/2r3k1/p5pp/3Rb1r1/2p1P3/7q/1P2QB2/P5P1/2R4K_w_-_-_5_31
