@@ -15,9 +15,6 @@ except ModuleNotFoundError:
     try:
         import libsql_experimental as libsql
         _USE_LIBSQL_CLIENT = False
-    except ModuleNotFoundError:
-        raise RuntimeError("Установите libsql-client: pip install libsql-client")
-
 
 class _LibsqlClientCursor:
     """Минимальный DB-API-совместимый курсор для libsql_client."""
