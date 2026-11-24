@@ -11,20 +11,20 @@
  OPPONENT WEAKNESS
 ============================================================
 📊 ПО ACPL СОПЕРНИКА (чем выше ACPL соперника — тем он слабее):
-  ACPL < 60 (сильный)       1273п, 34.6%
-  ACPL 60-75 (средний)       590п, 51.7%
-  ACPL 75-90 (слабый)        393п, 54.7%
-  ACPL > 90 (очень слабый)   486п, 64.4%
+  ACPL < 60 (сильный)       1276п, 34.6%
+  ACPL 60-75 (средний)       592п, 51.7%
+  ACPL 75-90 (слабый)        394п, 54.6%
+  ACPL > 90 (очень слабый)   489п, 64.2%
 
 📊 ПО СТИЛЮ (из opponent_style.csv):
-  universal       640п, 44.8%, ACPL 56
-  positional      225п, 67.1%, ACPL 52
-  aggressive      119п, 20.2%, ACPL 70
+  universal       638п, 44.4%, ACPL 57
+  positional      223п, 66.8%, ACPL 52
+  aggressive      119п, 21.0%, ACPL 71
   tactical         45п, 35.6%, ACPL 71
 
 🎯 ВЕРДИКТ:
   Лучше всего: positional (67%)
-  Хуже всего: aggressive (20%)
+  Хуже всего: aggressive (21%)
 
 ============================================================
  🩸 ТЕ, КТО РАСКАЛЫВАЕТ (из crushed_by.txt)
@@ -37,7 +37,7 @@
   Соперник               Рейт   Игр   W/D/L        Score%   Мой ACPL   Его ACPL
   ----------------------------------------------------------------------------------------
   zumpili                2555   13    3/0/10       23.1     56         57
-  bopielmarionglero2     2583   11    2/0/9        18.2     63         85
+  bopielmarionglero2     2585   12    2/0/10       16.7     65         91
   canadiandragon         2578   9     1/1/7        16.7     56         38
   gidel33                2518   8     1/1/6        18.8     78         73
   blakmore               2478   7     2/0/5        28.6     65         77
@@ -73,9 +73,10 @@
     A43 Old Benoni Defense                          2п, Score 0%
   📉 Средний финальный перевес: -3.5 (ты часто доминируешь в начале)
 
-♟️ bopielmarionglero2 (11 партий, Score 18%)
+♟️ bopielmarionglero2 (12 партий, Score 17%)
   Дебюты, где он тебя ломает:
     D18 Slav Defense Modern Alapin Variation Czec   3п, Score 0%
+    D19 Slav Defense Modern Alapin Variation Czec   2п, Score 0%
     B01 Scandinavian Defense Mieses Kotrc Main Li   2п, Score 0%
 
 ♟️ canadiandragon (9 партий, Score 17%)

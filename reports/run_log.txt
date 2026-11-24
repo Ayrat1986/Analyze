@@ -860,3 +860,47 @@
 [2026-11-23 07:11:45] END   12_coach.py — OK
 [2026-11-23 07:11:45] START 13_dashboard_final.py
 [2026-11-23 07:11:52] END   13_dashboard_final.py — OK
+[2026-11-24 09:43:44] START 00_data_quality.py
+[2026-11-24 09:43:45] END   00_data_quality.py — OK
+[2026-11-24 09:43:45] START 01_fetch_chess_api.py
+[2026-11-24 09:44:19] END   01_fetch_chess_api.py — OK
+[2026-11-24 09:44:19] START 02_analyze_stockfish.py
+[2026-11-24 09:44:20] END   02_analyze_stockfish.py — OK
+[2026-11-24 09:44:20] START 03_migrate_sqlite.py
+[2026-11-24 09:44:22] END   03_migrate_sqlite.py — OK
+[2026-11-24 09:44:22] START 04_export_csv.py
+[2026-11-24 09:44:25] END   04_export_csv.py — OK
+[2026-11-24 09:44:25] START 05_openings.py
+[2026-11-24 09:44:45] END   05_openings.py — OK
+[2026-11-24 09:44:45] START 06_middlegame.py
+[2026-11-24 09:45:02] END   06_middlegame.py — OK
+[2026-11-24 09:45:02] START 07_endgame.py
+[2026-11-24 09:45:03] END   07_endgame.py — OK
+[2026-11-24 09:45:03] START 08_psych_focus.py
+[2026-11-24 09:45:03] END   08_psych_focus.py — OK
+[2026-11-24 09:45:03] START 09_psych_state.py
+[2026-11-24 09:45:07] END   09_psych_state.py — OK
+[2026-11-24 09:45:07] START 10_psych_rating.py
+[2026-11-24 09:45:08] END   10_psych_rating.py — OK
+[2026-11-24 09:45:08] START 11_psych_opponents.py
+[2026-11-24 09:45:16] END   11_psych_opponents.py — OK
+[2026-11-24 09:45:16] START 12_coach.py
+[2026-11-24 09:45:16] END   12_coach.py — OK
+[2026-11-24 09:45:16] START 13_dashboard_final.py
+[2026-11-24 09:45:25] END   13_dashboard_final.py — OK
+[2026-11-24 09:47:01] START 00_data_quality.py
+[2026-11-24 09:47:02] END   00_data_quality.py — OK
+[2026-11-24 09:47:02] START 04_export_csv.py
+[2026-11-24 09:47:05] END   04_export_csv.py — OK
+[2026-11-24 09:47:05] START 05_openings.py
+[2026-11-24 09:47:25] END   05_openings.py — OK
+[2026-11-24 09:47:25] START 06_middlegame.py
+[2026-11-24 09:47:42] END   06_middlegame.py — OK
+[2026-11-24 09:47:42] START 07_endgame.py
+[2026-11-24 09:47:43] END   07_endgame.py — OK
+[2026-11-24 09:47:43] START 08_psych_focus.py
+[2026-11-24 09:47:43] END   08_psych_focus.py — OK
+[2026-11-24 09:47:43] START 09_psych_state.py
+[2026-11-24 09:47:47] END   09_psych_state.py — OK
+[2026-11-24 09:47:47] START 13_dashboard_final.py
+[2026-11-24 09:47:48] END   13_dashboard_final.py — OK
