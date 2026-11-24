@@ -1,31 +1,19 @@
 # ============================================================
-# analysis/helpers.py (v25.3)
-# FIX v25.3:
-#   - describe_blunder() строго разделяет missed_own_mate и allowed_opponent_mate.
-#   - Точная проверка точки зрения движка (score.white() vs my_color).
-#   - Корректная обработка потери материала и позиционных ошибок.
+# analysis/helpers.py (v25.4)
+# FIX: describe_blunder() принимает score_before и score_after,
+#      корректно разделяет missed_own_mate и allowed_opponent_mate.
 # ============================================================
-
 import math
 import chess
 import chess.pgn
 
 PIECE_NAMES_RU = {
-    chess.QUEEN: "ферзь",
-    chess.ROOK: "ладья",
-    chess.BISHOP: "слон",
-    chess.KNIGHT: "конь",
-    chess.PAWN: "пешка",
-    chess.KING: "король",
+    chess.QUEEN: "ферзь", chess.ROOK: "ладья", chess.BISHOP: "слон",
+    chess.KNIGHT: "конь", chess.PAWN: "пешка", chess.KING: "король",
 }
-
 PIECE_VALUES = {
-    chess.QUEEN: 900,
-    chess.ROOK: 500,
-    chess.BISHOP: 300,
-    chess.KNIGHT: 300,
-    chess.PAWN: 100,
-    chess.KING: 10000,
+    chess.QUEEN: 900, chess.ROOK: 500, chess.BISHOP: 300,
+    chess.KNIGHT: 300, chess.PAWN: 100, chess.KING: 10000,
 }
 
 
@@ -38,7 +26,7 @@ def get_opening_name(game: chess.pgn.Game) -> str:
     return eco if eco else "Unknown"
 
 
-def get_result_info(game, player_is_white: bool):
+def get_result_info(game, player_is_white):
     result = game.headers.get("Result", "?")
     termination = game.headers.get("Termination", "?").lower()
     won = (result == "1-0") if player_is_white else (result == "0-1")
@@ -63,55 +51,52 @@ def material(board: chess.Board, color: bool) -> int:
 
 
 def calculate_accuracy(avg_cp_loss) -> float:
-    if avg_cp_loss is None or avg_cp_loss < 0:
+    if avg_cp_loss is None:
         return 0.0
-    return max(0.0, min(100.0, 100.0 * math.exp(-0.002 * avg_cp_loss)))
+    return max(0.0, min(100.0, 100 * math.exp(-0.002 * avg_cp_loss)))
+
+
+def _mate_for_player(score, my_color) -> bool | None:
+    """True — мат в пользу игрока, False — против, None — не мат."""
+    if score is None or not score.is_mate():
+        return None
+    mate_n = score.mate()
+    if mate_n is None:
+        return None
+    return (mate_n > 0) == (my_color == chess.WHITE)
 
 
 def describe_blunder(
-    board_before: chess.Board,
-    board_after_response: chess.Board,
-    my_color: bool,
-    loss: int,
-    eval_before: int,
-    eval_after: int,
+    board_before,
+    board_after_response,
+    my_color,
+    loss,
+    eval_before,
+    eval_after,
+    score_before,
     score_after,
     score_after_response=None,
 ):
     """
-    Определяет паттерн зевка.
     Возвращает (описание, тег).
-    Теги:
-      missed_own_mate       — упущен форсированный мат за игрока
-      allowed_opponent_mate — допущен форсированный мат соперника
-      lost_queen / lost_piece / positional / blunder
+    Теги: missed_own_mate / allowed_opponent_mate / lost_queen /
+          lost_piece / positional / blunder.
     """
     # 1. Матовые признаки
-    # score_after берется от лица белых: mate() > 0 => мат ставят белые
-    def check_mate(score):
-        if score is None or not score.is_mate():
-            return None
-        m = score.mate()
-        if m is None:
-            return None
-        is_my_mate = (m > 0) if my_color == chess.WHITE else (m < 0)
-        return is_my_mate, abs(m)
+    mate_before = _mate_for_player(score_before, my_color)
+    mate_after = _mate_for_player(score_after, my_color)
 
-    m_after = check_mate(score_after)
-    if m_after is not None:
-        is_my_mate, moves_count = m_after
-        if is_my_mate:
-            return f"упущен мат в {moves_count}", "missed_own_mate"
-        else:
-            return f"допущен мат в {moves_count}", "allowed_opponent_mate"
+    if mate_before is True and mate_after is not True:
+        return "упущен свой мат", "missed_own_mate"
+    if mate_after is False and mate_before is not False:
+        return "допущен мат соперника", "allowed_opponent_mate"
 
-    m_resp = check_mate(score_after_response)
-    if m_resp is not None:
-        is_my_mate, moves_count = m_resp
-        if is_my_mate:
-            return f"упущен мат в {moves_count}", "missed_own_mate"
-        else:
-            return f"допущен мат в {moves_count}", "allowed_opponent_mate"
+    if score_after_response is not None:
+        mate_resp = _mate_for_player(score_after_response, my_color)
+        if mate_after is False and mate_resp is not False:
+            return "допущен мат соперника", "allowed_opponent_mate"
+        if mate_before is True and mate_resp is not True and mate_after is not True:
+            return "упущен свой мат", "missed_own_mate"
 
     # 2. Потеря материала
     mat_before = material(board_before, my_color)
@@ -133,7 +118,7 @@ def describe_blunder(
                 return f"потеря {count} {piece_name}ов", tag
             return f"потеря {piece_name}", tag
 
-    # 3. Позиционные ошибки
+    # 3. Позиционные
     if loss > 500:
         return "позиционный провал", "positional"
     if loss > 300:
