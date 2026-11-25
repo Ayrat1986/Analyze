@@ -102,8 +102,12 @@ def _run_step(step_key, name, filename, fast_mode, force=False):
 
     try:
         # Изолированный запуск через subprocess
+        cmd = [sys.executable, script_path]
+        if force:
+            cmd.append("--force")  # Передаем флаг, чтобы скрипт игнорировал кэш
+        
         result = subprocess.run(
-            [sys.executable, script_path],
+            cmd,
             check=True,
             capture_output=False,
             text=True
