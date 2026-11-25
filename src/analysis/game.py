@@ -157,10 +157,15 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                 moves_in_winning_position += 1
             our_move_indices.append(i)
 
+        # Ограничиваем оценки для расчета потерь (CPL), чтобы не было гигантских ACPL
+        # при игре в уже выигранных/проигранных позициях (отсекаем на ±1000).
+        eb_clip = max(min(eval_before, 1000), -1000)
+        ea_clip = max(min(eval_after, 1000), -1000)
+        
         if is_white:
-            loss = eval_before - eval_after
+            loss = eb_clip - ea_clip
         else:
-            loss = eval_after - eval_before
+            loss = ea_clip - eb_clip
 
         our_move = (is_white == player_is_white)
 
