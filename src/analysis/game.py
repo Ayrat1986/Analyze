@@ -1,7 +1,11 @@
 # ============================================================
-# analysis/game.py (v25.4)
-# FIX: Матовые оценки (10000) больше не попадают в total_loss,
-#      чтобы не раздувать средний ACPL до небес.
+# analysis/game.py (v25.5)
+# FIX:
+# 1. Часы: my_time_before = clocks[i-2] для своего хода.
+# 2. momentum: считается ПОСЛЕ цикла.
+# 3. Clipping: loss для ACPL ограничивается ±1000, чтобы
+#    не раздувать среднее из-за матовых оценок.
+# 4. Маты: больше не пропускаются (continue убран).
 # ============================================================
 import io
 import chess
@@ -18,6 +22,7 @@ from .helpers import get_opening_name, get_result_info, describe_blunder, calcul
 from core.time_control import parse_time_control_strict, PRIMARY_BASE_SEC
 
 MATE_EVAL = 10000
+CLIP_LIMIT = 1000  # Отсечка для ACPL
 
 
 def _eval_from_score(score) -> int:
@@ -131,14 +136,13 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         eval_before = _eval_from_score(score_before)
         eval_after = _eval_from_score(score_after)
 
-        # Флаг, что ход связан с матом (не считаем его в ACPL)
+        # Флаг, что ход связан с матом (для истории)
         is_mate_eval = score_before.is_mate() or score_after.is_mate()
 
         if not is_mate_eval:
             if abs(eval_before) > 2000 or abs(eval_after) > 2000:
                 continue
 
-        # Не пишем маты в историю оценок для momentum
         if is_white == player_is_white and not is_mate_eval:
             eval_by_move[move_num] = eval_before
 
@@ -157,15 +161,13 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                 moves_in_winning_position += 1
             our_move_indices.append(i)
 
-        # Ограничиваем оценки для расчета потерь (CPL), чтобы не было гигантских ACPL
-        # при игре в уже выигранных/проигранных позициях (отсекаем на ±1000).
-        eb_clip = max(min(eval_before, 1000), -1000)
-        ea_clip = max(min(eval_after, 1000), -1000)
-        
         if is_white:
-            loss = eb_clip - ea_clip
+            raw_loss = eval_before - eval_after
         else:
-            loss = ea_clip - eb_clip
+            raw_loss = eval_after - eval_before
+
+        # Отсечка для ACPL
+        loss = max(min(raw_loss, CLIP_LIMIT), -CLIP_LIMIT)
 
         our_move = (is_white == player_is_white)
 
@@ -196,7 +198,6 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
             if my_time_before is not None and my_time_before < BERSERK_TIME and berserk_move_enter is None:
                 berserk_move_enter = move_num
 
-            # === ГЛАВНОЕ ИСПРАВЛЕНИЕ: Не считаем матовые ходы в ACPL ===
             if not is_mate_eval:
                 our_moves += 1
                 if is_true_berserk_clock:
@@ -220,8 +221,8 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                 if loss > 0:
                     total_loss += loss
 
-            # Блундеры (включая маты) проверяем ВСЕГДА
-            if loss > BLUNDER_THRESHOLD:
+            # Блундеры ищутся по raw_loss, чтобы не пропустить маты
+            if raw_loss > BLUNDER_THRESHOLD:
                 board_before = chess.Board(board_before_fen)
                 board_after_response = board.copy()
                 score_after_response = None
@@ -237,7 +238,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                         pass
 
                 what_happened, pattern_tag = describe_blunder(
-                    board_before, board_after_response, my_color, loss,
+                    board_before, board_after_response, my_color, raw_loss,
                     eval_before, eval_after, score_before, score_after,
                     score_after_response,
                 )
@@ -250,7 +251,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                 elif not is_normal:
                     tag = " [пограничное]"
 
-                eval_swing = (eval_after - eval_before) / 100.0
+                eval_swing = raw_loss / 100.0
                 ply_val = (move_num - 1) * 2 + (0 if player_is_white else 1)
 
                 best_uci = None
@@ -262,7 +263,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                     pass
 
                 missed_threat = 0
-                if i + 1 < len(moves) and loss >= 300:
+                if i + 1 < len(moves) and raw_loss >= 300:
                     next_move = moves[i + 1].move
                     if next_move in board.legal_moves:
                         if board.is_capture(next_move):
@@ -279,7 +280,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                 blunders.append({
                     "move_num": move_num,
                     "move": move.uci(),
-                    "loss": min(loss, 1000), # Ограничиваем loss для БД, чтобы не было 10000
+                    "loss": raw_loss,  # В базу пишем реальный урон (может быть 10000)
                     "eval_before": eval_before,
                     "eval_after": eval_after,
                     "eval_swing": eval_swing,
@@ -300,9 +301,9 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                 })
         else:
             opp_total_moves += 1
-            if loss > 0:
-                opp_total_loss += loss
-            if loss > BLUNDER_THRESHOLD and abs(eval_before) < 1000:
+            if raw_loss > 0:
+                opp_total_loss += raw_loss
+            if raw_loss > BLUNDER_THRESHOLD and abs(eval_before) < 1000:
                 opp_blunders_count += 1
 
     # === MOMENTUM ПОСЛЕ ЦИКЛА ===
@@ -469,4 +470,4 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         "my_clock_at_timeout": my_clock_at_timeout,
         "opp_clock_at_timeout": opp_clock_at_timeout,
         "opp_style": opp_style,
-    }
+        }
