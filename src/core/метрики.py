@@ -7,7 +7,7 @@
 import os
 import json
 
-GAMER_BASE = 3130.0
+GAMER_BASE = 3150.0
 GAMER_SLOPE = 10.0
 
 _DEFAULT_SPEED_B = 3178.0
