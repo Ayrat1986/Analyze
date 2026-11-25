@@ -11,6 +11,6 @@
 ✅ OK  next_move_time: 11589/12113 (95.7%) заполнено
 ⚠️  WARN ACPL sanity: max=1057.3 (слишком много)
 ✅ OK  opening_line: 2769/2769 (100.0%) заполнено
-✅ OK  stockfish_cache: 2859 партий (19.5 МБ)
+⚠️  WARN stockfish_cache.json не найден
 
-Итог: passed=9, warnings=1, failed=0
+Итог: passed=8, warnings=2, failed=0

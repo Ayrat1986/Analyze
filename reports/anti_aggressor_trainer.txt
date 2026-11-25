@@ -1,36 +1,36 @@
 ============================================================
  🛡️ ТРЕНАЖЕР АНТИ-АГРЕССОРА
 ============================================================
-Найдено зевков против агрессоров: 628
+Найдено зевков против агрессоров: 561
 Топ-5 позиций для разбора (открой в Lichess):
 
-• Ход 26 (потеря 2212 CP). Паттерн: positional
+• Ход 43 (потеря 1000 CP). Паттерн: missed_own_mate
+  Соперник: j4m3sster
+  FEN: 1n4Q1/1P2b3/5p1k/p4B1p/P5p1/8/6K1/8 w - - 8 43
+  Лучший ход: g8g6
+  Тренируй: https://lichess.org/analysis/standard/1n4Q1/1P2b3/5p1k/p4B1p/P5p1/8/6K1/8_w_-_-_8_43
+
+• Ход 55 (потеря 1000 CP). Паттерн: missed_own_mate
+  Соперник: ninja0araji
+  FEN: 4k3/6R1/1p5R/pP6/6Kp/5P2/8/8 w - - 4 55
+  Лучший ход: h6h8
+  Тренируй: https://lichess.org/analysis/standard/4k3/6R1/1p5R/pP6/6Kp/5P2/8/8_w_-_-_4_55
+
+• Ход 41 (потеря 1000 CP). Паттерн: missed_own_mate
+  Соперник: tactician_07
+  FEN: 8/8/2pB4/3b3p/1P4k1/5p2/r7/3R2K1 b - - 1 41
+  Лучший ход: f3f2
+  Тренируй: https://lichess.org/analysis/standard/8/8/2pB4/3b3p/1P4k1/5p2/r7/3R2K1_b_-_-_1_41
+
+• Ход 26 (потеря 1000 CP). Паттерн: positional
   Соперник: sametvsever
   FEN: 6k1/2R4p/pn1p2p1/2b1qp2/8/1P1Q4/P3N1PP/5K2 w - - 4 26
   Лучший ход: d3c3
   Тренируй: https://lichess.org/analysis/standard/6k1/2R4p/pn1p2p1/2b1qp2/8/1P1Q4/P3N1PP/5K2_w_-_-_4_26
 
-• Ход 15 (потеря 1934 CP). Паттерн: positional
-  Соперник: khachikyan-hayko
-  FEN: r1b2rk1/2pn1ppp/p7/2bPN3/3q1B2/2N3P1/PP4KP/R2Q3R w - - 3 15
-  Лучший ход: d1d4
-  Тренируй: https://lichess.org/analysis/standard/r1b2rk1/2pn1ppp/p7/2bPN3/3q1B2/2N3P1/PP4KP/R2Q3R_w_-_-_3_15
-
-• Ход 30 (потеря 1502 CP). Паттерн: lost_piece
-  Соперник: breadfather
-  FEN: r7/3Q2kp/1p2p3/1P2N3/2PP2P1/rNK1n3/7q/3R4 b - - 1 30
-  Лучший ход: g7h8
-  Тренируй: https://lichess.org/analysis/standard/r7/3Q2kp/1p2p3/1P2N3/2PP2P1/rNK1n3/7q/3R4_b_-_-_1_30
-
-• Ход 34 (потеря 1354 CP). Паттерн: positional
-  Соперник: swadanusar9_youtube
-  FEN: 4r1k1/5pp1/5n1p/4NQ2/5B2/5R1P/5qP1/1r5K w - - 2 34
-  Лучший ход: f5b1
-  Тренируй: https://lichess.org/analysis/standard/4r1k1/5pp1/5n1p/4NQ2/5B2/5R1P/5qP1/1r5K_w_-_-_2_34
-
-• Ход 36 (потеря 1324 CP). Паттерн: positional
-  Соперник: yourfavsmurf
-  FEN: 8/p5kp/2p2rp1/2N5/2Q5/PP6/K1P2q2/8 b - - 6 36
-  Лучший ход: f2e3
-  Тренируй: https://lichess.org/analysis/standard/8/p5kp/2p2rp1/2N5/2Q5/PP6/K1P2q2/8_b_-_-_6_36
+• Ход 25 (потеря 1000 CP). Паттерн: allowed_opponent_mate
+  Соперник: panku2014
+  FEN: r3r2k/p5pp/2Q5/3P1b2/3P1p2/q4P2/P3BKPP/2R2R2 w - - 3 25
+  Лучший ход: f1e1
+  Тренируй: https://lichess.org/analysis/standard/r3r2k/p5pp/2Q5/3P1b2/3P1p2/q4P2/P3BKPP/2R2R2_w_-_-_3_25
 

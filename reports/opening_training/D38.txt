@@ -1,33 +1,33 @@
 # Домашняя работа: D38
 # Winrate: 47.8%
-# ACPL: деб 13 / мит 82 / энд 52
-# Eval после дебюта: +47.6
+# ACPL: деб 14 / мит 62 / энд 55
+# Eval после дебюта: +43.0
 # Линия-убийца: d2d4 e7e6 c2c4 d7d5 b1c3 g8f6 g1f3 f8b4 c1g5 c7c6 e2e3 b8d7 d1b3 b4c3 b2c3 e8g8 f1d3 d8b6 b3c2 d5c4 (15 зевков)
-# Окно уязвимости: 21-30 (40 зевков)
+# Окно уязвимости: 21-30 (39 зевков)
 # Точка невозврата: после 34-го хода (100% поражений)
 
-# Позиция 1: Ход 34, потеря 1354 CP
-FEN: 4r1k1/5pp1/5n1p/4NQ2/5B2/5R1P/5qP1/1r5K w - - 2 34
-Лучший ход (Stockfish): Qxb1
-Ссылка: https://lichess.org/analysis/standard/4r1k1/5pp1/5n1p/4NQ2/5B2/5R1P/5qP1/1r5K_w_-_-_2_34
+# Позиция 1: Ход 25, потеря 1000 CP
+FEN: r3r2k/p5pp/2Q5/3P1b2/3P1p2/q4P2/P3BKPP/2R2R2 w - - 3 25
+Лучший ход (Stockfish): Rfe1
+Ссылка: https://lichess.org/analysis/standard/r3r2k/p5pp/2Q5/3P1b2/3P1p2/q4P2/P3BKPP/2R2R2_w_-_-_3_25
 
-# Позиция 2: Ход 40, потеря 1089 CP
-FEN: 8/1b3p1k/7p/4PP2/p6q/P1RQ3P/1P4r1/4RK2 w - - 2 40
-Лучший ход (Stockfish): f6+
-Ссылка: https://lichess.org/analysis/standard/8/1b3p1k/7p/4PP2/p6q/P1RQ3P/1P4r1/4RK2_w_-_-_2_40
+# Позиция 2: Ход 28, потеря 1000 CP
+FEN: 2q5/p4pkp/1p3np1/8/1Q1R4/P3PP2/1P3r1P/6RK w - - 0 28
+Лучший ход (Stockfish): Rh4
+Ссылка: https://lichess.org/analysis/standard/2q5/p4pkp/1p3np1/8/1Q1R4/P3PP2/1P3r1P/6RK_w_-_-_0_28
 
-# Позиция 3: Ход 41, потеря 1063 CP
-FEN: 6k1/1b3p2/7p/p3n1p1/1p2P3/3BKP1P/PB4P1/8 w - - 4 41
-Лучший ход (Stockfish): Bxe5
-Ссылка: https://lichess.org/analysis/standard/6k1/1b3p2/7p/p3n1p1/1p2P3/3BKP1P/PB4P1/8_w_-_-_4_41
+# Позиция 3: Ход 44, потеря 1000 CP
+FEN: 4Q3/pp6/8/k4P2/2Q5/8/PB5P/6K1 w - - 1 44
+Лучший ход (Stockfish): Qeb5#
+Ссылка: https://lichess.org/analysis/standard/4Q3/pp6/8/k4P2/2Q5/8/PB5P/6K1_w_-_-_1_44
 
-# Позиция 4: Ход 41, потеря 870 CP
-FEN: 4r2k/1p2B1p1/2p4p/p2bQ3/P2P1P2/3q1P2/4RK2/8 w - - 4 41
-Лучший ход (Stockfish): Re3
-Ссылка: https://lichess.org/analysis/standard/4r2k/1p2B1p1/2p4p/p2bQ3/P2P1P2/3q1P2/4RK2/8_w_-_-_4_41
+# Позиция 4: Ход 46, потеря 1000 CP
+FEN: 7k/3R1Qr1/5p1p/p7/Pp3P2/5B1P/1P4P1/6K1 w - - 8 46
+Лучший ход (Stockfish): Qxg7#
+Ссылка: https://lichess.org/analysis/standard/7k/3R1Qr1/5p1p/p7/Pp3P2/5B1P/1P4P1/6K1_w_-_-_8_46
 
-# Позиция 5: Ход 34, потеря 840 CP
-FEN: 6k1/8/2Rbqp2/p2p2p1/Pp1Pr2p/1P2P2P/3BQPP1/6K1 w - - 1 34
-Лучший ход (Stockfish): Qa6
-Ссылка: https://lichess.org/analysis/standard/6k1/8/2Rbqp2/p2p2p1/Pp1Pr2p/1P2P2P/3BQPP1/6K1_w_-_-_1_34
+# Позиция 5: Ход 35, потеря 1000 CP
+FEN: 8/pb4Q1/3rk2p/1p1nq3/1PB2p2/P4P2/6PP/B3R1K1 w - - 6 35
+Лучший ход (Stockfish): Rxe5#
+Ссылка: https://lichess.org/analysis/standard/8/pb4Q1/3rk2p/1p1nq3/1PB2p2/P4P2/6PP/B3R1K1_w_-_-_6_35
 
