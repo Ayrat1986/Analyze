@@ -1,13 +1,7 @@
 # ============================================================
-# analysis/game.py (v25.3)
-# FIX v25.3:
-#   - Матовые ходы больше не пропускаются: eval_before/eval_after
-#     получают ±10000, чтобы missed_own_mate/allowed_opponent_mate
-#     могли быть обнаружены.
-#   - Исправлена индексация часов: my_time_before = clocks[i-2]
-#     для своего хода (было clocks[i-1] — часы соперника).
-#   - momentum_after_blunder считается ПОСЛЕ цикла.
-#   - base_sec берётся из time_control.
+# analysis/game.py (v25.4)
+# FIX: Матовые оценки (10000) больше не попадают в total_loss,
+#      чтобы не раздувать средний ACPL до небес.
 # ============================================================
 import io
 import chess
@@ -134,15 +128,18 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         info_after = engine.analyse(board, chess.engine.Limit(depth=DEPTH, time=30.0))
         score_after = info_after["score"].white()
 
-        # === МАТЫ НЕ ПРОПУСКАЕМ ===
         eval_before = _eval_from_score(score_before)
         eval_after = _eval_from_score(score_after)
 
-        if not (score_before.is_mate() or score_after.is_mate()):
+        # Флаг, что ход связан с матом (не считаем его в ACPL)
+        is_mate_eval = score_before.is_mate() or score_after.is_mate()
+
+        if not is_mate_eval:
             if abs(eval_before) > 2000 or abs(eval_after) > 2000:
                 continue
 
-        if is_white == player_is_white:
+        # Не пишем маты в историю оценок для momentum
+        if is_white == player_is_white and not is_mate_eval:
             eval_by_move[move_num] = eval_before
 
         if move_num == 10 and is_white == player_is_white:
@@ -150,11 +147,12 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
 
         if is_white == player_is_white:
             eval_player = eval_before if player_is_white else -eval_before
-            eval_history.append((move_num, eval_player))
-            eval_history_peak.append(eval_player)
-            if prev_eval is not None and abs(eval_player - prev_eval) >= 200:
-                critical_moments += 1
-            prev_eval = eval_player
+            if not is_mate_eval:
+                eval_history.append((move_num, eval_player))
+                eval_history_peak.append(eval_player)
+                if prev_eval is not None and abs(eval_player - prev_eval) >= 200:
+                    critical_moments += 1
+                prev_eval = eval_player
             if eval_player > 300:
                 moves_in_winning_position += 1
             our_move_indices.append(i)
@@ -167,7 +165,6 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         our_move = (is_white == player_is_white)
 
         if our_move:
-            our_moves += 1
             time_spent = 0.0
             if i < len(clocks):
                 prev_clock = clocks[i - 2] if i >= 2 else base_sec
@@ -194,28 +191,32 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
             if my_time_before is not None and my_time_before < BERSERK_TIME and berserk_move_enter is None:
                 berserk_move_enter = move_num
 
-            if is_true_berserk_clock:
-                moves_berserk += 1
-                if loss > 0:
-                    loss_berserk += loss
-            else:
-                if move_num <= 10:
-                    moves_op += 1
+            # === ГЛАВНОЕ ИСПРАВЛЕНИЕ: Не считаем матовые ходы в ACPL ===
+            if not is_mate_eval:
+                our_moves += 1
+                if is_true_berserk_clock:
+                    moves_berserk += 1
                     if loss > 0:
-                        loss_op += loss
-                elif move_num <= 30:
-                    moves_mid += 1
-                    if loss > 0:
-                        loss_mid += loss
+                        loss_berserk += loss
                 else:
-                    moves_end += 1
-                    if loss > 0:
-                        loss_end += loss
+                    if move_num <= 10:
+                        moves_op += 1
+                        if loss > 0:
+                            loss_op += loss
+                    elif move_num <= 30:
+                        moves_mid += 1
+                        if loss > 0:
+                            loss_mid += loss
+                    else:
+                        moves_end += 1
+                        if loss > 0:
+                            loss_end += loss
 
-            if loss > 0:
-                total_loss += loss
+                if loss > 0:
+                    total_loss += loss
 
-            if loss > BLUNDER_THRESHOLD and abs(eval_before) < MATE_EVAL and abs(eval_after) < MATE_EVAL:
+            # Блундеры (включая маты) проверяем ВСЕГДА
+            if loss > BLUNDER_THRESHOLD:
                 board_before = chess.Board(board_before_fen)
                 board_after_response = board.copy()
                 score_after_response = None
@@ -273,7 +274,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                 blunders.append({
                     "move_num": move_num,
                     "move": move.uci(),
-                    "loss": loss,
+                    "loss": min(loss, 1000), # Ограничиваем loss для БД, чтобы не было 10000
                     "eval_before": eval_before,
                     "eval_after": eval_after,
                     "eval_swing": eval_swing,
