@@ -1,7 +1,7 @@
 # ============================================================
-# analysis/helpers.py (v25.4)
+# analysis/helpers.py (v25.5)
 # FIX: describe_blunder() принимает score_before и score_after,
-#      корректно разделяет missed_own_mate и allowed_opponent_mate.
+#      разделяет missed_own_mate и allowed_opponent_mate.
 # ============================================================
 import math
 import chess
@@ -82,7 +82,7 @@ def describe_blunder(
     Теги: missed_own_mate / allowed_opponent_mate / lost_queen /
           lost_piece / positional / blunder.
     """
-    # 1. Матовые признаки
+    # 1. Матовые признаки (с учетом цвета)
     mate_before = _mate_for_player(score_before, my_color)
     mate_after = _mate_for_player(score_after, my_color)
 
