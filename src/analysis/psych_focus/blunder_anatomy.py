@@ -5,10 +5,28 @@
 from collections import Counter
 from analysis.common import report_context
 from .common import _conn
+import os
+import sqlite3
+from datetime import datetime
+import _common
+
+DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
+REPORTS_DIR = str(_common.REPORTS_DIR)
 
 def report_blunder_anatomy():
     conn = _conn(); cur = conn.cursor()
-    
+    conn = sqlite3.connect(DB_FILE)
+    cur = conn.cursor()
+    path = os.path.join(REPORTS_DIR, "blunder_anatomy.txt")
+
+    with open(path, "w", encoding="utf-8") as f:
+        def w(line=""):
+            f.write(line + "\n")
+            print(line)
+
+        w(" АНАТОМИЯ ЗЕВКОВ (без учета берсерка)")
+        w("=" * 60) 
+        
     cur.execute("""
         WITH ranked_blunders AS (
             SELECT b.game_url, b.move_num, b.loss_cp, b.time_spent, b.pattern_tag,
@@ -120,7 +138,75 @@ def report_blunder_anatomy():
         if total_n == 0:
             w.w("  ⚠️ Нет данных.")
             conn.close(); return
+        # 1. Общая статистика
+        cur.execute("""
+            SELECT COUNT(*), ROUND(AVG(loss_cp), 1)
+            FROM blunders b JOIN games g ON g.url = b.game_url
+            WHERE g.is_lag=0 AND g.is_cheater=0 
+              AND b.is_my_blunder=1 AND b.is_berserk=0
+        """)
+        total, avg_loss = cur.fetchone()
+        total = total or 0
+        avg_loss = avg_loss or 0
+        w(f" Всего зевков: {total}")
+        w(f" Средняя потеря: {avg_loss:.0f} CP")
+        w()
 
+        # 2. Распределение по тегам (включая новые маты)
+        w(" РАСПРЕДЕЛЕНИЕ ПО ПАТТЕРНАМ:")
+        cur.execute("""
+            SELECT pattern_tag, COUNT(*), ROUND(AVG(loss_cp), 1)
+            FROM blunders b JOIN games g ON g.url = b.game_url
+            WHERE g.is_lag=0 AND g.is_cheater=0 
+              AND b.is_my_blunder=1 AND b.is_berserk=0
+            GROUP BY pattern_tag
+            ORDER BY COUNT(*) DESC
+        """)
+        for tag, cnt, avg in cur.fetchall():
+            tag_name = tag or "unknown"
+            # Переводим технические теги в человекочитаемый вид
+            if tag_name == "missed_own_mate":
+                tag_name = "Упущен свой мат"
+            elif tag_name == "allowed_opponent_mate":
+                tag_name = "Допущен мат соперника"
+            elif tag_name == "lost_piece":
+                tag_name = "Потеря фигуры"
+            elif tag_name == "lost_queen":
+                tag_name = "Потеря ферзя"
+            elif tag_name == "positional":
+                tag_name = "Позиционная ошибка"
+            elif tag_name == "blunder":
+                tag_name = "Общий зевок"
+
+            pct = (cnt / total * 100) if total else 0
+            w(f"  {tag_name:<25} {cnt:>5} ({pct:>4.1f}%)  Средний урон: {avg:.0f} CP")
+        w()
+
+        # 3. Распределение по времени на ход (эвристики)
+        w(" РАСПРЕДЕЛЕНИЕ ПО ВРЕМЕНИ НА ХОД:")
+        cur.execute("""
+            SELECT 
+                SUM(CASE WHEN b.time_spent < 0.35 THEN 1 ELSE 0 END) AS instant,
+                SUM(CASE WHEN b.time_spent >= 0.35 AND b.time_spent < 1.0 THEN 1 ELSE 0 END) AS fast,
+                SUM(CASE WHEN b.time_spent >= 1.0 AND b.time_spent < 4.0 THEN 1 ELSE 0 END) AS normal,
+                SUM(CASE WHEN b.time_spent >= 4.0 THEN 1 ELSE 0 END) AS slow
+            FROM blunders b JOIN games g ON g.url = b.game_url
+            WHERE g.is_lag=0 AND g.is_cheater=0 
+              AND b.is_my_blunder=1 AND b.is_berserk=0 AND b.time_spent IS NOT NULL
+        """)
+        instant, fast, normal, slow = cur.fetchone()
+        instant = instant or 0
+        fast = fast or 0
+        normal = normal or 0
+        slow = slow or 0
+        tot_t = instant + fast + normal + slow or 1
+        
+        w(f"  < 0.35 сек (мисклик/премув): {instant:>5} ({instant/tot_t*100:>4.1f}%)")
+        w(f"  0.35 - 1.0 сек (импульс):    {fast:>5} ({fast/tot_t*100:>4.1f}%)")
+        w(f"  1.0 - 4.0 сек (расчет):      {normal:>5} ({normal/tot_t*100:>4.1f}%)")
+        w(f"  > 4.0 сек (зависание):       {slow:>5} ({slow/tot_t*100:>4.1f}%)")
+        w()
+        
         # Формируем вывод по самым проблемным зонам
         sorted_clusters = sorted([(k, v) for k, v in clusters.items() if v["n"] > 0], key=lambda x: x[1]["n"], reverse=True)
         top_key, top_data = sorted_clusters[0]
@@ -143,6 +229,7 @@ def report_blunder_anatomy():
             w.w("  💡 Контролируй палец. Премувы только на 1-4 горизонталях.")
             
     conn.close()
+    print(f"\n✅ {path}")
 
 def run_blunder_anatomy():
     report_blunder_anatomy()
