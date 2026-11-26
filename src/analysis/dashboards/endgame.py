@@ -1,11 +1,11 @@
 # ============================================================
-# analysis/dashboards/endgame.py — 03_endgame.txt
+# analysis/dashboards/endgame.py (v26.3)
+# FIX: Объединены дублирующиеся функции. Разделен ACPL эндшпиля и длинных партий.
 # ============================================================
-from analysis.common import read_report_file
 import os
 import sqlite3
 import _common
-from analysis.common import report_context
+from analysis.common import report_context, read_report_file
 
 REPORTS = [
     ("endgame_skills.txt", "🛡️ ЭНДШПИЛЬНАЯ ТЕХНИКА"),
@@ -17,9 +17,15 @@ REPORTS = [
 
 DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
 
+
 def build_endgame(w):
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
+
+    w.w_separator(title="🛡️ ЭНДШПИЛЬ И БЕРСЕРК")
+    w.w("Файл: 03_endgame.txt")
+    w.w("Источник: 07_endgame.py")
+    w.w()
 
     w.w_separator(title="ЭНДШПИЛЬ И ДЛИННЫЕ ПАРТИИ")
 
@@ -52,7 +58,7 @@ def build_endgame(w):
     w.w("    (Это НЕ эндшпиль. Это общая точность в затяжных играх)")
     w.w()
 
-    # 3. Победы по флагу и мату в эндшпиле
+    # 3. Победы по флагу и мату в длинных партиях
     cur.execute("""
         SELECT 
             SUM(CASE WHEN reason='мат' AND won=1 THEN 1 ELSE 0 END) AS mate_wins,
@@ -85,12 +91,8 @@ def build_endgame(w):
     w.w()
 
     conn.close()
-    
-def build_endgame(w):
-    w.w_separator(char="#", length=60, title="🛡️ ЭНДШПИЛЬ И БЕРСЕРК")
-    w.w("Файл: 03_endgame.txt")
-    w.w("Источник: 07_endgame.py")
-    w.w()
+
+    # Вывод остальных отчетов
     for filename, title in REPORTS:
         w.w_separator(title=f"{title} (из {filename})")
         lines = read_report_file(filename)
