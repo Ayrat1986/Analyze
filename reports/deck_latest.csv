@@ -1,11 +1,11 @@
 category,fen,move_num,loss_cp,played_uci,best_move_uci,pattern_tag,white,black,url,end_time
 fresh,6Q1/p1q5/1p4pk/2P1b1Np/1P5P/P5r1/4K2n/2B1R3 b - - 3 33,33,10476,c7g7,g3g2,allowed_opponent_mate,chepf,Ayrat_1986,https://www.chess.com/game/live/188036502574,1795667941
+fresh,5R2/8/4pp1p/3p2k1/3Bn1P1/4P3/6N1/4K3 w - - 0 44,44,9535,g2f4,f8g8,missed_own_mate,Ayrat_1986,CallMeTony10,https://www.chess.com/game/live/188083976244,1795717967
 fresh,8/8/PQ5p/1p5P/2k1p3/8/4K3/8 w - - 3 63,63,8967,b6h6,b6e3,missed_own_mate,Ayrat_1986,mrmusicwriter,https://www.chess.com/game/live/188036088998,1795667278
-fresh,b2qr1k1/p3b1n1/5BQ1/4P3/3pp3/P7/5PPP/2r1R1K1 w - - 0 26,26,1000,g6g7,g6g7,missed_own_mate,Ayrat_1986,BenjaminAnda,https://www.chess.com/game/live/187642272426,1795199169
+fresh,8/5R2/1k3p2/3p4/P2b2P1/4p2P/5P2/6K1 b - - 1 44,44,1014,e3f2,e3e2,positional,KidColombia7,Ayrat_1986,https://www.chess.com/game/live/188084636822,1795718551
 fresh,4r1k1/2r2p2/5Q2/pRNP3q/2P5/P7/6P1/4BK2 w - - 0 37,37,1000,e1f2,e1c3,allowed_opponent_mate,Ayrat_1986,adikdubov,https://www.chess.com/game/live/187673418760,1795241599
 fresh,1k2r3/1p3Qp1/p1p4p/8/4P2P/1qN5/1B6/1K1R4 b - - 1 31,31,1000,e8c8,b3f7,lost_queen,LifeOfRyan,Ayrat_1986,https://www.chess.com/game/live/187673592752,1795241837
 fresh,8/p4p1k/3b1Prp/3Pp2Q/P1p1q3/2P2R1P/3B2PK/8 w - - 2 39,39,1000,d2e3,d2h6,positional,Ayrat_1986,bopielmarionglero2,https://www.chess.com/game/live/187885327288,1795495001
-fresh,3k4/1p2p3/p3r3/3P4/2P5/8/P3BP2/4K3 w - - 1 53,53,991,c4c5,d5e6,positional,Ayrat_1986,MemoryReboot_0,https://www.chess.com/game/live/187933608156,1795545565
 fresh,4r1k1/pp1r3p/1b2N1p1/q3pP2/3P4/2P5/P4QP1/4BRK1 b - - 0 30,30,987,g6f5,e5d4,lost_piece,MemoryReboot_0,Ayrat_1986,https://www.chess.com/game/live/187933774036,1795545659
 fresh,2rr2k1/p5bp/q4pp1/3ppn2/1N6/1PP4P/P1R1QPP1/B1R4K b - - 7 29,29,974,a6b5,a6e2,lost_queen,Vitaminasvi,Ayrat_1986,https://www.chess.com/game/live/187932409506,1795544451
 fresh,2kr1b1r/ppp2ppp/8/q2np2b/1PB5/P3BP2/2P1N1PP/R2Q1RK1 b - - 0 13,13,849,a5a4,d5e3,lost_piece,alarmm1k,Ayrat_1986,https://www.chess.com/game/live/187885232448,1795494770

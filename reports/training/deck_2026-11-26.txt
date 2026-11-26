@@ -1,4 +1,4 @@
-Сформирована: 2026-11-26 16:47
+Сформирована: 2026-11-26 18:57
 Причина включения указана у каждой позиции. Не более 1 позиции из одной партии, не более 2 на pattern_tag.
 Свежих (7 дней): 10 | Случайных из топ-100: 0
 
@@ -17,47 +17,47 @@
      Лучше:   Rg2+  (UCI g3g2)
      Тренируй: https://lichess.org/analysis/standard/6Q1/p1q5/1p4pk/2P1b1Np/1P5P/P5r1/4K2n/2B1R3_b_-_-_3_33
 
-  2. Ayrat_1986 vs mrmusicwriter (26.11.26, ход 63, потеря 8967 CP)
+  2. Ayrat_1986 vs CallMeTony10 (26.11.26, ход 44, потеря 9535 CP)
+     Причина включения: свежая ошибка (≤7 дней)
+     FEN: 5R2/8/4pp1p/3p2k1/3Bn1P1/4P3/6N1/4K3 w - - 0 44
+     Сыграно: Nf4  (UCI g2f4)
+     Лучше:   Rg8#  (UCI f8g8)
+     Тренируй: https://lichess.org/analysis/standard/5R2/8/4pp1p/3p2k1/3Bn1P1/4P3/6N1/4K3_w_-_-_0_44
+
+  3. Ayrat_1986 vs mrmusicwriter (26.11.26, ход 63, потеря 8967 CP)
      Причина включения: свежая ошибка (≤7 дней)
      FEN: 8/8/PQ5p/1p5P/2k1p3/8/4K3/8 w - - 3 63
      Сыграно: Qxh6  (UCI b6h6)
      Лучше:   Qe3  (UCI b6e3)
      Тренируй: https://lichess.org/analysis/standard/8/8/PQ5p/1p5P/2k1p3/8/4K3/8_w_-_-_3_63
 
-  3. Ayrat_1986 vs BenjaminAnda (20.11.26, ход 26, потеря 1000 CP)
+  4. KidColombia7 vs Ayrat_1986 (26.11.26, ход 44, потеря 1014 CP)
      Причина включения: свежая ошибка (≤7 дней)
-     FEN: b2qr1k1/p3b1n1/5BQ1/4P3/3pp3/P7/5PPP/2r1R1K1 w - - 0 26
-     Сыграно: Qxg7#  (UCI g6g7)
-     Лучше:   Qxg7#  (UCI g6g7)
-     Тренируй: https://lichess.org/analysis/standard/b2qr1k1/p3b1n1/5BQ1/4P3/3pp3/P7/5PPP/2r1R1K1_w_-_-_0_26
+     FEN: 8/5R2/1k3p2/3p4/P2b2P1/4p2P/5P2/6K1 b - - 1 44
+     Сыграно: exf2+  (UCI e3f2)
+     Лучше:   e2  (UCI e3e2)
+     Тренируй: https://lichess.org/analysis/standard/8/5R2/1k3p2/3p4/P2b2P1/4p2P/5P2/6K1_b_-_-_1_44
 
-  4. Ayrat_1986 vs adikdubov (21.11.26, ход 37, потеря 1000 CP)
+  5. Ayrat_1986 vs adikdubov (21.11.26, ход 37, потеря 1000 CP)
      Причина включения: свежая ошибка (≤7 дней)
      FEN: 4r1k1/2r2p2/5Q2/pRNP3q/2P5/P7/6P1/4BK2 w - - 0 37
      Сыграно: Bf2  (UCI e1f2)
      Лучше:   Bc3  (UCI e1c3)
      Тренируй: https://lichess.org/analysis/standard/4r1k1/2r2p2/5Q2/pRNP3q/2P5/P7/6P1/4BK2_w_-_-_0_37
 
-  5. LifeOfRyan vs Ayrat_1986 (21.11.26, ход 31, потеря 1000 CP)
+  6. LifeOfRyan vs Ayrat_1986 (21.11.26, ход 31, потеря 1000 CP)
      Причина включения: свежая ошибка (≤7 дней)
      FEN: 1k2r3/1p3Qp1/p1p4p/8/4P2P/1qN5/1B6/1K1R4 b - - 1 31
      Сыграно: Rc8  (UCI e8c8)
      Лучше:   Qxf7  (UCI b3f7)
      Тренируй: https://lichess.org/analysis/standard/1k2r3/1p3Qp1/p1p4p/8/4P2P/1qN5/1B6/1K1R4_b_-_-_1_31
 
-  6. Ayrat_1986 vs bopielmariongle (24.11.26, ход 39, потеря 1000 CP)
+  7. Ayrat_1986 vs bopielmariongle (24.11.26, ход 39, потеря 1000 CP)
      Причина включения: свежая ошибка (≤7 дней)
      FEN: 8/p4p1k/3b1Prp/3Pp2Q/P1p1q3/2P2R1P/3B2PK/8 w - - 2 39
      Сыграно: Be3  (UCI d2e3)
      Лучше:   Bxh6  (UCI d2h6)
      Тренируй: https://lichess.org/analysis/standard/8/p4p1k/3b1Prp/3Pp2Q/P1p1q3/2P2R1P/3B2PK/8_w_-_-_2_39
-
-  7. Ayrat_1986 vs MemoryReboot_0 (24.11.26, ход 53, потеря 991 CP)
-     Причина включения: свежая ошибка (≤7 дней)
-     FEN: 3k4/1p2p3/p3r3/3P4/2P5/8/P3BP2/4K3 w - - 1 53
-     Сыграно: c5  (UCI c4c5)
-     Лучше:   dxe6  (UCI d5e6)
-     Тренируй: https://lichess.org/analysis/standard/3k4/1p2p3/p3r3/3P4/2P5/8/P3BP2/4K3_w_-_-_1_53
 
   8. MemoryReboot_0 vs Ayrat_1986 (24.11.26, ход 30, потеря 987 CP)
      Причина включения: свежая ошибка (≤7 дней)
