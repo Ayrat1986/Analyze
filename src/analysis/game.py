@@ -1,13 +1,11 @@
 # ============================================================
-# analysis/game.py (v25.3)
-# FIX v25.3:
-#   - Матовые ходы больше не пропускаются: eval_before/eval_after
-#     получают ±10000, чтобы missed_own_mate/allowed_opponent_mate
-#     могли быть обнаружены.
-#   - Исправлена индексация часов: my_time_before = clocks[i-2]
-#     для своего хода (было clocks[i-1] — часы соперника).
-#   - momentum_after_blunder считается ПОСЛЕ цикла.
-#   - base_sec берётся из time_control.
+# analysis/game.py (v25.5)
+# FIX:
+# 1. Часы: my_time_before = clocks[i-2] для своего хода.
+# 2. momentum: считается ПОСЛЕ цикла.
+# 3. Clipping: loss для ACPL ограничивается ±1000, чтобы
+#    не раздувать среднее из-за матовых оценок.
+# 4. Маты: больше не пропускаются (continue убран).
 # ============================================================
 import io
 import chess
@@ -24,6 +22,7 @@ from .helpers import get_opening_name, get_result_info, describe_blunder, calcul
 from core.time_control import parse_time_control_strict, PRIMARY_BASE_SEC
 
 MATE_EVAL = 10000
+CLIP_LIMIT = 1000  # Отсечка для ACPL
 
 
 def _eval_from_score(score) -> int:
@@ -134,15 +133,17 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         info_after = engine.analyse(board, chess.engine.Limit(depth=DEPTH, time=30.0))
         score_after = info_after["score"].white()
 
-        # === МАТЫ НЕ ПРОПУСКАЕМ ===
         eval_before = _eval_from_score(score_before)
         eval_after = _eval_from_score(score_after)
 
-        if not (score_before.is_mate() or score_after.is_mate()):
+        # Флаг, что ход связан с матом (для истории)
+        is_mate_eval = score_before.is_mate() or score_after.is_mate()
+
+        if not is_mate_eval:
             if abs(eval_before) > 2000 or abs(eval_after) > 2000:
                 continue
 
-        if is_white == player_is_white:
+        if is_white == player_is_white and not is_mate_eval:
             eval_by_move[move_num] = eval_before
 
         if move_num == 10 and is_white == player_is_white:
@@ -150,24 +151,27 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
 
         if is_white == player_is_white:
             eval_player = eval_before if player_is_white else -eval_before
-            eval_history.append((move_num, eval_player))
-            eval_history_peak.append(eval_player)
-            if prev_eval is not None and abs(eval_player - prev_eval) >= 200:
-                critical_moments += 1
-            prev_eval = eval_player
+            if not is_mate_eval:
+                eval_history.append((move_num, eval_player))
+                eval_history_peak.append(eval_player)
+                if prev_eval is not None and abs(eval_player - prev_eval) >= 200:
+                    critical_moments += 1
+                prev_eval = eval_player
             if eval_player > 300:
                 moves_in_winning_position += 1
             our_move_indices.append(i)
 
         if is_white:
-            loss = eval_before - eval_after
+            raw_loss = eval_before - eval_after
         else:
-            loss = eval_after - eval_before
+            raw_loss = eval_after - eval_before
+
+        # Отсечка для ACPL
+        loss = max(min(raw_loss, CLIP_LIMIT), -CLIP_LIMIT)
 
         our_move = (is_white == player_is_white)
 
         if our_move:
-            our_moves += 1
             time_spent = 0.0
             if i < len(clocks):
                 prev_clock = clocks[i - 2] if i >= 2 else base_sec
@@ -194,28 +198,31 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
             if my_time_before is not None and my_time_before < BERSERK_TIME and berserk_move_enter is None:
                 berserk_move_enter = move_num
 
-            if is_true_berserk_clock:
-                moves_berserk += 1
-                if loss > 0:
-                    loss_berserk += loss
-            else:
-                if move_num <= 10:
-                    moves_op += 1
+            if not is_mate_eval:
+                our_moves += 1
+                if is_true_berserk_clock:
+                    moves_berserk += 1
                     if loss > 0:
-                        loss_op += loss
-                elif move_num <= 30:
-                    moves_mid += 1
-                    if loss > 0:
-                        loss_mid += loss
+                        loss_berserk += loss
                 else:
-                    moves_end += 1
-                    if loss > 0:
-                        loss_end += loss
+                    if move_num <= 10:
+                        moves_op += 1
+                        if loss > 0:
+                            loss_op += loss
+                    elif move_num <= 30:
+                        moves_mid += 1
+                        if loss > 0:
+                            loss_mid += loss
+                    else:
+                        moves_end += 1
+                        if loss > 0:
+                            loss_end += loss
 
-            if loss > 0:
-                total_loss += loss
+                if loss > 0:
+                    total_loss += loss
 
-            if loss > BLUNDER_THRESHOLD and abs(eval_before) < MATE_EVAL and abs(eval_after) < MATE_EVAL:
+            # Блундеры ищутся по raw_loss, чтобы не пропустить маты
+            if raw_loss > BLUNDER_THRESHOLD:
                 board_before = chess.Board(board_before_fen)
                 board_after_response = board.copy()
                 score_after_response = None
@@ -231,7 +238,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                         pass
 
                 what_happened, pattern_tag = describe_blunder(
-                    board_before, board_after_response, my_color, loss,
+                    board_before, board_after_response, my_color, raw_loss,
                     eval_before, eval_after, score_before, score_after,
                     score_after_response,
                 )
@@ -244,7 +251,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                 elif not is_normal:
                     tag = " [пограничное]"
 
-                eval_swing = (eval_after - eval_before) / 100.0
+                eval_swing = raw_loss / 100.0
                 ply_val = (move_num - 1) * 2 + (0 if player_is_white else 1)
 
                 best_uci = None
@@ -256,7 +263,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                     pass
 
                 missed_threat = 0
-                if i + 1 < len(moves) and loss >= 300:
+                if i + 1 < len(moves) and raw_loss >= 300:
                     next_move = moves[i + 1].move
                     if next_move in board.legal_moves:
                         if board.is_capture(next_move):
@@ -273,7 +280,7 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                 blunders.append({
                     "move_num": move_num,
                     "move": move.uci(),
-                    "loss": loss,
+                    "loss": raw_loss,  # В базу пишем реальный урон (может быть 10000)
                     "eval_before": eval_before,
                     "eval_after": eval_after,
                     "eval_swing": eval_swing,
@@ -294,9 +301,9 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
                 })
         else:
             opp_total_moves += 1
-            if loss > 0:
-                opp_total_loss += loss
-            if loss > BLUNDER_THRESHOLD and abs(eval_before) < 1000:
+            if raw_loss > 0:
+                opp_total_loss += raw_loss
+            if raw_loss > BLUNDER_THRESHOLD and abs(eval_before) < 1000:
                 opp_blunders_count += 1
 
     # === MOMENTUM ПОСЛЕ ЦИКЛА ===
@@ -463,4 +470,4 @@ def analyze_game(game_data: dict, engine: chess.engine.SimpleEngine, player: str
         "my_clock_at_timeout": my_clock_at_timeout,
         "opp_clock_at_timeout": opp_clock_at_timeout,
         "opp_style": opp_style,
-    }
+        }

@@ -1,4 +1,5 @@
 category,fen,move_num,loss_cp,played_uci,best_move_uci,pattern_tag,white,black,url,end_time
+<<<<<<< HEAD
 fresh,1k2r3/1p3Qp1/p1p4p/8/4P2P/1qN5/1B6/1K1R4 b - - 1 31,31,1427,e8c8,b3f7,lost_queen,LifeOfRyan,Ayrat_1986,https://www.chess.com/game/live/187673592752,1795241837
 <<<<<<< HEAD
 fresh,8/p4p1k/3b1Prp/3Pp2Q/P1p5/2PqBR1P/6PK/8 w - - 4 40,40,1308,h5f5,e3h6,positional,Ayrat_1986,bopielmarionglero2,https://www.chess.com/game/live/187885327288,1795495001
@@ -21,3 +22,15 @@ fresh,8/1p6/p2p4/3Pbkp1/2P3p1/1Pr3P1/P3R1K1/5N2 w - - 5 36,36,299,f1d2,f1e3,blun
 fresh,r2q1rk1/3nbppp/p7/3Q4/R7/5N2/1P3PPP/2B1R1K1 b - - 0 17,17,297,f8e8,d7c5,blunder,Tempestly18,Ayrat_1986,https://www.chess.com/game/live/187674559942,1795243442
 fresh,2bqr2k/5Qpp/p3P3/3p4/2pB4/4P3/PP5P/5RK1 b - - 2 28,28,185,e8g8,d8g5,missed_mate,Miftah_JDS,Ayrat_1986,https://www.chess.com/game/live/187673062102,1795240970
 >>>>>>> b0b7f8c9e8d360a85fd369b2ae5b2e10d2b0597c
+=======
+fresh,b2qr1k1/p3b1n1/5BQ1/4P3/3pp3/P7/5PPP/2r1R1K1 w - - 0 26,26,1000,g6g7,g6g7,missed_own_mate,Ayrat_1986,BenjaminAnda,https://www.chess.com/game/live/187642272426,1795199169
+fresh,7r/R5pr/R2nk1p1/5p2/2pP1BP1/2P4P/8/6K1 w - - 0 28,28,1000,a6d6,a6d6,missed_own_mate,Ayrat_1986,Ches_kim_17,https://www.chess.com/game/live/187642731330,1795199597
+fresh,4r1k1/2r2p2/5Q2/pRNP3q/2P5/P7/6P1/4BK2 w - - 0 37,37,1000,e1f2,e1c3,allowed_opponent_mate,Ayrat_1986,adikdubov,https://www.chess.com/game/live/187673418760,1795241599
+fresh,1k2r3/1p3Qp1/p1p4p/8/4P2P/1qN5/1B6/1K1R4 b - - 1 31,31,1000,e8c8,b3f7,lost_queen,LifeOfRyan,Ayrat_1986,https://www.chess.com/game/live/187673592752,1795241837
+fresh,3r4/5p1p/Kpk3p1/p7/P5PP/1P2RP2/8/8 w - - 1 56,56,1000,h4h5,e3c3,allowed_opponent_mate,Ayrat_1986,srebrnalisica65sokobanjam,https://www.chess.com/game/live/187678207328,1795248917
+fresh,8/p4p1k/3b1Prp/3Pp2Q/P1p1q3/2P2R1P/3B2PK/8 w - - 2 39,39,1000,d2e3,d2h6,positional,Ayrat_1986,bopielmarionglero2,https://www.chess.com/game/live/187885327288,1795495001
+fresh,3k4/1p2p3/p3r3/3P4/2P5/8/P3BP2/4K3 w - - 1 53,53,991,c4c5,d5e6,positional,Ayrat_1986,MemoryReboot_0,https://www.chess.com/game/live/187933608156,1795545565
+fresh,4r1k1/pp1r3p/1b2N1p1/q3pP2/3P4/2P5/P4QP1/4BRK1 b - - 0 30,30,987,g6f5,e5d4,lost_piece,MemoryReboot_0,Ayrat_1986,https://www.chess.com/game/live/187933774036,1795545659
+fresh,2rr2k1/p5bp/q4pp1/3ppn2/1N6/1PP4P/P1R1QPP1/B1R4K b - - 7 29,29,974,a6b5,a6e2,lost_queen,Vitaminasvi,Ayrat_1986,https://www.chess.com/game/live/187932409506,1795544451
+fresh,2kr1b1r/ppp2ppp/8/q2np2b/1PB5/P3BP2/2P1N1PP/R2Q1RK1 b - - 0 13,13,849,a5a4,d5e3,lost_piece,alarmm1k,Ayrat_1986,https://www.chess.com/game/live/187885232448,1795494770
+>>>>>>> 381cff34e43cedeb873fcaf32a7ca33e2e0f12f1

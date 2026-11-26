@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 Сформирована: 2026-11-24 09:45
 =======
 Сформирована: 2026-11-24 06:05
 >>>>>>> b0b7f8c9e8d360a85fd369b2ae5b2e10d2b0597c
+=======
+Сформирована: 2026-11-24 19:29
+>>>>>>> 381cff34e43cedeb873fcaf32a7ca33e2e0f12f1
 Причина включения указана у каждой позиции. Не более 1 позиции из одной партии, не более 2 на pattern_tag.
 Свежих (7 дней): 10 | Случайных из топ-100: 0
 
@@ -36,16 +40,21 @@
      Лучше:   Nxe3  (UCI d5e3)
      Тренируй: https://lichess.org/analysis/standard/2kr1b1r/ppp2ppp/8/q2np2b/1PB5/P3BP2/2P1N1PP/R2Q1RK1_b_-_-_0_13
 
+<<<<<<< HEAD
   4. Ayrat_1986 vs sohamk742 (17.11.26, ход 37, потеря 976 CP)
 =======
   2. Ayrat_1986 vs sohamk742 (17.11.26, ход 37, потеря 976 CP)
 >>>>>>> b0b7f8c9e8d360a85fd369b2ae5b2e10d2b0597c
+=======
+  4. Ayrat_1986 vs MemoryReboot_0 (24.11.26, ход 53, потеря 1005 CP)
+>>>>>>> 381cff34e43cedeb873fcaf32a7ca33e2e0f12f1
      Причина включения: свежая ошибка (≤7 дней)
-     FEN: 1b1r2k1/6p1/p2r4/1pN5/1PqP3Q/P6P/1B3PP1/1R2R1K1 w - - 3 37
-     Сыграно: d5  (UCI d4d5)
-     Лучше:   Ne6  (UCI c5e6)
-     Тренируй: https://lichess.org/analysis/standard/1b1r2k1/6p1/p2r4/1pN5/1PqP3Q/P6P/1B3PP1/1R2R1K1_w_-_-_3_37
+     FEN: 3k4/1p2p3/p3r3/3P4/2P5/8/P3BP2/4K3 w - - 1 53
+     Сыграно: c5  (UCI c4c5)
+     Лучше:   dxe6  (UCI d5e6)
+     Тренируй: https://lichess.org/analysis/standard/3k4/1p2p3/p3r3/3P4/2P5/8/P3BP2/4K3_w_-_-_1_53
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   5. Ben2468 vs Ayrat_1986 (21.11.26, ход 21, потеря 866 CP)
 =======
@@ -58,22 +67,29 @@
 
   4. Ben2468 vs Ayrat_1986 (21.11.26, ход 21, потеря 866 CP)
 >>>>>>> b0b7f8c9e8d360a85fd369b2ae5b2e10d2b0597c
+=======
+  5. MemoryReboot_0 vs Ayrat_1986 (24.11.26, ход 30, потеря 981 CP)
+>>>>>>> 381cff34e43cedeb873fcaf32a7ca33e2e0f12f1
      Причина включения: свежая ошибка (≤7 дней)
-     FEN: 2rr2k1/4bppp/pq2pn2/1p1b4/1P6/P3Q3/NB2BPPP/2R1R1K1 b - - 5 21
-     Сыграно: Bxa2  (UCI d5a2)
-     Лучше:   Qxe3  (UCI b6e3)
-     Тренируй: https://lichess.org/analysis/standard/2rr2k1/4bppp/pq2pn2/1p1b4/1P6/P3Q3/NB2BPPP/2R1R1K1_b_-_-_5_21
+     FEN: 4r1k1/pp1r3p/1b2N1p1/q3pP2/3P4/2P5/P4QP1/4BRK1 b - - 0 30
+     Сыграно: gxf5  (UCI g6f5)
+     Лучше:   exd4  (UCI e5d4)
+     Тренируй: https://lichess.org/analysis/standard/4r1k1/pp1r3p/1b2N1p1/q3pP2/3P4/2P5/P4QP1/4BRK1_b_-_-_0_30
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   6. ERIC_FALCON vs Ayrat_1986 (21.11.26, ход 35, потеря 688 CP)
 =======
   5. ERIC_FALCON vs Ayrat_1986 (21.11.26, ход 35, потеря 688 CP)
 >>>>>>> b0b7f8c9e8d360a85fd369b2ae5b2e10d2b0597c
+=======
+  6. Vitaminasvi vs Ayrat_1986 (24.11.26, ход 29, потеря 941 CP)
+>>>>>>> 381cff34e43cedeb873fcaf32a7ca33e2e0f12f1
      Причина включения: свежая ошибка (≤7 дней)
-     FEN: 1b2rq2/5p1k/1p3Qpp/3p4/1P1N1P2/4P1RP/6P1/6K1 b - - 3 35
-     Сыграно: Re6  (UCI e8e6)
-     Лучше:   Bd6  (UCI b8d6)
-     Тренируй: https://lichess.org/analysis/standard/1b2rq2/5p1k/1p3Qpp/3p4/1P1N1P2/4P1RP/6P1/6K1_b_-_-_3_35
+     FEN: 2rr2k1/p5bp/q4pp1/3ppn2/1N6/1PP4P/P1R1QPP1/B1R4K b - - 7 29
+     Сыграно: Qb5  (UCI a6b5)
+     Лучше:   Qxe2  (UCI a6e2)
+     Тренируй: https://lichess.org/analysis/standard/2rr2k1/p5bp/q4pp1/3ppn2/1N6/1PP4P/P1R1QPP1/B1R4K_b_-_-_7_29
 
 <<<<<<< HEAD
 =======
