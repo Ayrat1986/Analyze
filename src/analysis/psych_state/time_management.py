@@ -1,9 +1,9 @@
 # ============================================================
-# analysis/psych_state/time_management.py (v25.0)
-# §28: удалён run_time_management (time_report_windows).
-# Оставлены: report_time_profile, report_lag_report.
+# analysis/psych_state/time_management.py (v26.2)
+# FIX: Объединены time_profile, lag_report, clock_checkpoints.
 # ============================================================
 import os
+import sqlite3
 import json
 import statistics
 from datetime import datetime, timedelta, timezone
@@ -16,8 +16,6 @@ from core.метрики import game_rating as calc_gr
 
 DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
 
-def _conn():
-    return sqlite3.connect(DB_FILE)
 
 def report_clock_checkpoints(conn, w, days=90):
     """
@@ -43,17 +41,6 @@ def report_clock_checkpoints(conn, w, days=90):
             continue
         
         is_white = (white == player)
-        
-        for cp in checkpoints:
-            # Ищем индекс полухода, где заканчивается cp-й ход.
-            # Для белых: (cp-1)*2 + 1. Для черных: (cp-1)*2 + 2.
-            # Но безопаснее просто пройтись по массиву clocks.
-            pass
-
-        # Упрощенный парсинг: мы берем время после хода белых и после хода черных
-        # clocks[0] - после 1-го хода белых, clocks[1] - после 1-го хода черных.
-        # Значит, чтобы получить время после 10-го хода белых, берем clocks[18] (индекс 19-го полухода).
-        # Если массив короче, значит партия не дошла до этого хода.
         
         for cp in checkpoints:
             idx_white = (cp * 2) - 2
@@ -88,58 +75,40 @@ def report_clock_checkpoints(conn, w, days=90):
     w.w("  💡 Зеленая зона: к 20-му ходу >40 сек, к 30-му >30 сек.")
     w.w()
 
+
 def report_time_profile(conn, w, days=90):
-    """Профиль времени и просрочек (старый отчет, обновленный)."""
-    # ... код старого отчета time_profile ...
-    pass
-
-def run_time_management():
-    """Оркестратор отчетов по времени."""
-    conn = _conn()
-    try:
-        with report_context("time_profile") as w:
-            report_time_profile(conn, w)
-        with report_context("clock_checkpoints") as w:
-            report_clock_checkpoints(conn, w)
-    finally:
-        conn.close()
-
-if __name__ == "__main__":
-    run_time_management()
-
-def report_time_profile():
-    conn = _conn(); cur = conn.cursor()
-    with report_context("time_profile") as w:
-        w.w_separator(title="TIME PROFILE: просрочки, менеджмент, тайминг")
-        w.w("📊 СЕКЦИЯ 1: ПРОСРОЧКИ")
-        cur.execute("""
-            SELECT timeout_at_move, COUNT(*), ROUND(AVG(timeout_with_clock), 1)
-            FROM games WHERE is_lag=0 AND is_cheater=0 AND timeout_at_move IS NOT NULL AND reason = 'просрочка'
-            GROUP BY timeout_at_move ORDER BY timeout_at_move
-        """)
-        rows = cur.fetchall()
-        if rows:
-            total = sum(r[1] for r in rows)
-            w.w(f"  Всего просрочек: {total}")
-            for move, cnt, avg_rem in sorted(rows, key=lambda x: -x[1])[:10]:
-                w.w(f"  {move:<6} {cnt:<12} {avg_rem or 0:.1f}")
-        else:
-            w.w("  ⚠️ Нет данных о просрочках.")
-        w.w()
-        w.w("📊 СЕКЦИЯ 2: ТАЙМИНГ ЗЕВКОВ")
-        cur.execute("""
-            SELECT b.move_num, COUNT(*), ROUND(AVG(b.loss_cp)), ROUND(AVG(b.time_spent), 1)
-            FROM blunders b JOIN games g ON g.url = b.game_url
-            WHERE g.is_lag=0 AND g.is_cheater=0 AND b.is_berserk=0 AND b.is_instant=0 AND b.is_my_blunder=1 AND b.time_spent IS NOT NULL
-            GROUP BY b.move_num HAVING COUNT(*) >= 2 ORDER BY COUNT(*) DESC LIMIT 15
-        """)
-        for mn, cnt, avg_loss, avg_time in cur.fetchall():
-            w.w(f"  {mn:<6} {cnt:<8} {avg_loss or 0:<12.0f} {avg_time or 0:.1f} сек")
-    conn.close()
+    """Профиль времени и просрочек."""
+    cur = conn.cursor()
+    w.w_separator(title="TIME PROFILE: просрочки, менеджмент, тайминг")
+    w.w("📊 СЕКЦИЯ 1: ПРОСРОЧКИ")
+    cur.execute("""
+        SELECT timeout_at_move, COUNT(*), ROUND(AVG(timeout_with_clock), 1)
+        FROM games WHERE is_lag=0 AND is_cheater=0 AND timeout_at_move IS NOT NULL AND reason = 'просрочка'
+        GROUP BY timeout_at_move ORDER BY timeout_at_move
+    """)
+    rows = cur.fetchall()
+    if rows:
+        total = sum(r[1] for r in rows)
+        w.w(f"  Всего просрочек: {total}")
+        for move, cnt, avg_rem in sorted(rows, key=lambda x: -x[1])[:10]:
+            w.w(f"  {move:<6} {cnt:<12} {avg_rem or 0:.1f}")
+    else:
+        w.w("  ⚠️ Нет данных о просрочках.")
+    w.w()
+    
+    w.w("📊 СЕКЦИЯ 2: ТАЙМИНГ ЗЕВКОВ")
+    cur.execute("""
+        SELECT b.move_num, COUNT(*), ROUND(AVG(b.loss_cp)), ROUND(AVG(b.time_spent), 1)
+        FROM blunders b JOIN games g ON g.url = b.game_url
+        WHERE g.is_lag=0 AND g.is_cheater=0 AND b.is_berserk=0 AND b.is_instant=0 AND b.is_my_blunder=1 AND b.time_spent IS NOT NULL
+        GROUP BY b.move_num HAVING COUNT(*) >= 2 ORDER BY COUNT(*) DESC LIMIT 15
+    """)
+    for mn, cnt, avg_loss, avg_time in cur.fetchall():
+        w.w(f"  {mn:<6} {cnt:<8} {avg_loss or 0:<12.0f} {avg_time or 0:.1f} сек")
 
 
-def report_lag_report():
-    conn = _conn(); cur = conn.cursor()
+def report_lag_report(conn, w):
+    cur = conn.cursor()
     cur.execute("SELECT url, white, clocks FROM games WHERE is_cheater=0 AND clocks IS NOT NULL AND clocks != '[]'")
     rows = cur.fetchall()
     lag_games = total_games = total_anomalies = 0
@@ -160,11 +129,26 @@ def report_lag_report():
             total_anomalies += len(anomalies)
             anomaly_times.extend(anomalies)
 
-    with report_context("lag_report") as w:
-        w.w_separator(title="LAG REPORT — аномалии времени")
-        w.w(f"Всего партий: {total_games}")
-        w.w(f"Партий с лагом: {lag_games} ({lag_games/max(1,total_games)*100:.1f}%)")
-        w.w(f"Аномальных ходов: {total_anomalies}")
-        if anomaly_times:
-            w.w(f"Среднее время аномалии: {statistics.mean(anomaly_times):.1f} сек")
-    conn.close()
+    w.w_separator(title="LAG REPORT — аномалии времени")
+    w.w(f"Всего партий: {total_games}")
+    w.w(f"Партий с лагом: {lag_games} ({lag_games/max(1,total_games)*100:.1f}%)")
+    w.w(f"Аномальных ходов: {total_anomalies}")
+    if anomaly_times:
+        w.w(f"Среднее время аномалии: {statistics.mean(anomaly_times):.1f} сек")
+
+
+def run_time_management():
+    """Оркестратор отчетов по времени."""
+    conn = _conn()
+    try:
+        with report_context("time_profile") as w:
+            report_time_profile(conn, w)
+            report_clock_checkpoints(conn, w)
+        with report_context("lag_report") as w:
+            report_lag_report(conn, w)
+    finally:
+        conn.close()
+
+
+if __name__ == "__main__":
+    run_time_management()
