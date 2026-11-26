@@ -1,7 +1,6 @@
 # ============================================================
-# analysis/dashboard_helpers.py — v25.1
-# FIX: top3_weaknesses парсит новый формат cascade_tilt.txt (% партий).
-# FIX: убрана ссылка на удалённые отчеты в DASHBOARD_FILES.
+# analysis/dashboard_helpers.py — v26.2
+# FIX: None для momentum, метки P10/P90, get_blade_state.
 # ============================================================
 import os
 import json
@@ -24,6 +23,7 @@ from analysis.dashboard_trends import (
 
 DB_FILE = str(os.path.join(os.path.dirname(__file__), "..", "..", "data", "chess.db"))
 
+
 def get_blade_state(combr):
     """Определяет состояние Клинка по метрике CombR."""
     if combr >= 2650:
@@ -37,91 +37,34 @@ def get_blade_state(combr):
     else:
         return "💀 Сломанный Клинок"
 
-def build_index(conn, w):
-    """Собирает 00_INDEX.txt."""
-    cur = conn.cursor()
-    
-    # --- Получаем основные метрики за 90 дней для шапки ---
-    cutoff_90d = window_cutoff_ts(90)
-    cur.execute("""
-        SELECT 
-            COUNT(*), 
-            ROUND(AVG(acpl), 1),
-            ROUND(AVG(acpl_middlegame), 1),
-            ROUND(AVG(momentum_after_blunder), 1),
-            ROUND(AVG(won + draw*0.5) * 100, 1),
-            ROUND(AVG(my_rating), 0)
-        FROM games
-        WHERE is_lag=0 AND is_cheater=0 AND end_time >= ? AND acpl > 0
-    """, (cutoff_90d,))
-    row = cur.fetchone()
-    games_90 = row[0] or 0
-    acpl_90 = row[1] or 0
-    acpl_mid_90 = row[2] or 0
-    momentum_90 = row[3]
-    winrate_90 = row[4] or 0
-    avg_rating_90 = row[5] or 0
 
-    # Текущий CombR (за 30 дней как репрезентативный)
-    from core.метрики import game_rating, speed_rating, combined_rating
-    cur.execute("SELECT ROUND(AVG(acpl),1), ROUND(AVG(avg_time),1) FROM games WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?", (window_cutoff_ts(30),))
-    acpl_30, avg_t_30 = cur.fetchone()
-    if acpl_30 and avg_t_30:
-        g_r = game_rating(acpl_30)
-        s_r = speed_rating(avg_t_30)
-        combr_30 = combined_rating(g_r, s_r)
-    else:
-        combr_30 = 0
-    
-    blade = get_blade_state(combr_30)
-
-    w.w_separator(title=f"📊 DASHBOARD INDEX — {_common.CONFIG.get('player', '?')} — {datetime.now().strftime('%Y-%m-%d %H:%M')}")
-    w.w(f"  ТЕКУЩЕЕ СОСТОЯНИЕ: {blade} (CombR {combr_30:.0f})")
-    w.w()
-
-    w.w_separator(title="📈 КЛЮЧЕВЫЕ ЦИФРЫ (90 дней)")
-    w.w(f"  Партий:                      {games_90}")
-    w.w(f"  ACPL:                        {acpl_90} (мит: {acpl_mid_90})")
-    
-    mom_str = f"{momentum_90:.1f} CP" if momentum_90 is not None else "нет данных (N=0)"
-    w.w(f"  Моментум после зевка:        {mom_str}")
-    w.w(f"  Winrate:                     {winrate_90}%")
-    w.w(f"  Средний рейтинг (90д):       {avg_rating_90}")
-    
-    # Процентили P10/P90
-    cur.execute("""
-        SELECT acpl FROM games 
-        WHERE is_lag=0 AND is_cheater=0 AND end_time >= ? AND acpl > 0
-        ORDER BY acpl
-    """, (cutoff_90d,))
-    acpls = [r[0] for r in cur.fetchall()]
-    if len(acpls) >= 10:
-        n = len(acpls)
-        p10 = acpls[int(n * 0.1)]
-        p90 = acpls[int(n * 0.9)]
-        w.w(f"  ACPL P10 (лучшие 10%):       {p10:.1f} (GameR {game_rating(p10):.0f})")
-        w.w(f"  ACPL P90 (худшие 10%):       {p90:.1f} (GameR {game_rating(p90):.0f})")
-    else:
-        w.w(f"  ACPL P10 (лучшие 10%):       — (мало данных)")
-        w.w(f"  ACPL P90 (худшие 10%):       — (мало данных)")
-        
 def key_numbers():
-    conn = _conn(); cur = conn.cursor(); ts = window_cutoff_ts(90); result = {}
+    conn = _conn()
+    cur = conn.cursor()
+    ts = window_cutoff_ts(90)
+    result = {}
+
     cur.execute(
         "SELECT COUNT(*), ROUND(AVG(acpl), 1), ROUND(AVG(acpl_middlegame), 1), "
         "ROUND(AVG(momentum_after_blunder), 1) "
         "FROM games WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?", (ts,))
     n, acpl, acpl_mid, mom = cur.fetchone()
-    n = n or 0; acpl = acpl or 0; acpl_mid = acpl_mid or 0; mom = mom or 0
+    n = n or 0
+    acpl = acpl or 0
+    acpl_mid = acpl_mid or 0
+    
     result["Партий:"] = n
     result["ACPL:"] = f"{acpl:.0f} (мит: {acpl_mid:.0f})"
-    result["Моментум после зевка:"] = f"{mom:.0f} CP"
+    result["Моментум после зевка:"] = f"{mom:.0f} CP" if mom is not None else "нет данных (N=0)"
 
     cur.execute(
         "SELECT SUM(won), SUM(draw), ROUND(AVG(opp_rating)), ROUND(AVG(my_rating)) "
         "FROM games WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?", (ts,))
     wins, draws, avg_opp, avg_my = cur.fetchone()
-    wins = wins or 0; draws = draws or 0; avg_opp = avg_opp or 0; avg_my = avg_my or 0
+    wins = wins or 0
+    draws = draws or 0
+    avg_opp = avg_opp or 0
+    avg_my = avg_my or 0
     if n:
         result["Winrate:"] = f"{(wins + 0.5 * draws) / n * 100:.1f}%"
     if avg_my:
@@ -138,7 +81,8 @@ def key_numbers():
         "SELECT SUM(CASE WHEN reason='просрочка' AND won=0 THEN 1 ELSE 0 END), COUNT(*) "
         "FROM games WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?", (ts,))
     lost_to, total_g = cur.fetchone()
-    lost_to = lost_to or 0; total_g = total_g or 1
+    lost_to = lost_to or 0
+    total_g = total_g or 1
     result["Просрочки (90д):"] = f"{lost_to} ({lost_to/total_g*100:.1f}%)"
 
     if avg_opp and n:
@@ -152,12 +96,12 @@ def key_numbers():
         p10 = vals[int(len(vals) * 0.1)]
         p90 = vals[int(len(vals) * 0.9)]
         stddev = statistics.stdev(vals)
-        result["ACPL P10 (потолок):"] = f"{p10:.1f} (GameR {game_rating(p10):.0f})"
-        result["ACPL P90 (дно):"] = f"{p90:.1f} (GameR {game_rating(p90):.0f})"
+        result["ACPL P10 (лучшие 10%):"] = f"{p10:.1f} (GameR {game_rating(p10):.0f})"
+        result["ACPL P90 (худшие 10%):"] = f"{p90:.1f} (GameR {game_rating(p90):.0f})"
         result["StdDev ACPL:"] = f"{stddev:.1f}"
     else:
-        result["ACPL P10 (потолок):"] = "—"
-        result["ACPL P90 (дно):"] = "—"
+        result["ACPL P10 (лучшие 10%):"] = "—"
+        result["ACPL P90 (худшие 10%):"] = "—"
         result["StdDev ACPL:"] = "—"
 
     conn.close()
@@ -168,7 +112,8 @@ def full_dynamics():
     """
     v25.0 (§17): SpeedR и CombR — только из core.метрики.
     """
-    conn = _conn(); cur = conn.cursor()
+    conn = _conn()
+    cur = conn.cursor()
     result = []
     for days in WINDOWS:
         cutoff = window_cutoff_ts(days)
@@ -276,7 +221,8 @@ def monitoring_snapshot():
 
 
 def last_session_vs_windows():
-    conn = _conn(); cur = conn.cursor()
+    conn = _conn()
+    cur = conn.cursor()
     cur.execute(
         "SELECT url, end_time, won, draw, acpl, my_rating FROM games "
         "WHERE is_lag=0 AND is_cheater=0 ORDER BY end_time DESC LIMIT 200")
@@ -362,8 +308,6 @@ def top3_weaknesses():
         if os.path.exists(path):
             with open(path, "r", encoding="utf-8") as f:
                 text = f.read()
-            # §30 FIX: новый формат cascade_tilt (% партий)
-            # Ищем строку "Миттельшпиль    ...  ...  73.0%"
             m = re.search(r"Миттельшпиль\s+\d+\s+\d+\s+([\d.]+)%", text)
             if m:
                 pct = float(m.group(1))
@@ -379,7 +323,8 @@ def top3_weaknesses():
                 text = f.read()
             m = re.search(r"Слито \(поражение\):\s+(\d+)\s+\(([\d.]+)%\)", text)
             if m:
-                cnt = int(m.group(1)); pct = float(m.group(2))
+                cnt = int(m.group(1))
+                pct = float(m.group(2))
                 if pct > 30:
                     candidates.append(("Слив перевеса (+3.0)",
                                        f"{pct:.1f}% ({cnt} партий)",
@@ -406,7 +351,8 @@ def top3_weaknesses():
                 text = f.read()
             m = re.search(r"Партий с лагом:\s*(\d+)\s+\(([\d.]+)%\)", text)
             if m:
-                cnt = int(m.group(1)); pct = float(m.group(2))
+                cnt = int(m.group(1))
+                pct = float(m.group(2))
                 if pct > 25:
                     candidates.append(("Лаги (аномалии времени)",
                                        f"{pct:.1f}% ({cnt} партий)",
@@ -507,7 +453,6 @@ def top_actions():
     ]
 
 
-# §28 FIX: убраны ссылки на удалённые файлы
 DASHBOARD_FILES = [
     ("01_openings.txt", "~80 КБ", "Дебюты: planner, репертуар, шпаргалки"),
     ("02_middlegame.txt", "~35 КБ", "Миттельшпиль: ACPL, план, тактика"),
