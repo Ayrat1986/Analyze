@@ -11,31 +11,25 @@
  OPPONENT WEAKNESS
 ============================================================
 📊 ПО ACPL СОПЕРНИКА (чем выше ACPL соперника — тем он слабее):
-  ACPL < 60 (сильный)       1621п, 42.1%
+  ACPL < 60 (сильный)       1624п, 42.1%
   ACPL 60-75 (средний)       502п, 60.6%
   ACPL 75-90 (слабый)        297п, 56.2%
-  ACPL > 90 (очень слабый)   336п, 37.8%
+  ACPL > 90 (очень слабый)   339п, 37.5%
 
 📊 ПО СТИЛЮ (из opponent_style.csv):
-<<<<<<< HEAD
-<<<<<<< HEAD
-  universal       638п, 44.4%, ACPL 57
-  positional      223п, 66.8%, ACPL 52
-=======
   universal       653п, 44.4%, ACPL 60
-  positional      224п, 66.1%, ACPL 52
->>>>>>> 381cff34e43cedeb873fcaf32a7ca33e2e0f12f1
-  aggressive      119п, 21.0%, ACPL 71
-=======
+  universal       638п, 44.4%, ACPL 57
   universal       631п, 44.5%, ACPL 57
+  positional      224п, 66.1%, ACPL 52
   positional      223п, 66.8%, ACPL 52
+  positional      223п, 66.8%, ACPL 52
+  aggressive      119п, 21.0%, ACPL 71
   aggressive      117п, 20.5%, ACPL 71
->>>>>>> b0b7f8c9e8d360a85fd369b2ae5b2e10d2b0597c
   tactical         45п, 35.6%, ACPL 71
 
 🎯 ВЕРДИКТ:
-  Лучше всего: positional (66%)
-  Хуже всего: aggressive (21%)
+  Лучше всего: positional (67%)
+  Хуже всего: aggressive (20%)
 
 ============================================================
  🩸 ТЕ, КТО РАСКАЛЫВАЕТ (из crushed_by.txt)
