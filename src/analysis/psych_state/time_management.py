@@ -19,7 +19,7 @@ DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
 
 def report_clock_checkpoints(conn, w, days=90):
     """
-    Выводит медианное время игрока, соперника и дельту 
+    Выводит медианное время игрока, соперника и дельту
     на 10, 20, 30, 40, 50, 60 ходах.
     """
     cutoff = int((datetime.now(timezone.utc) - timedelta(days=days)).timestamp())
@@ -39,17 +39,17 @@ def report_clock_checkpoints(conn, w, days=90):
             clocks = json.loads(clocks_raw)
         except Exception:
             continue
-        
+
         is_white = (white == player)
-        
+
         for cp in checkpoints:
             idx_white = (cp * 2) - 2
             idx_black = (cp * 2) - 1
-            
+
             if len(clocks) > max(idx_white, idx_black):
                 my_time = clocks[idx_white] if is_white else clocks[idx_black]
                 opp_time = clocks[idx_black] if is_white else clocks[idx_white]
-                
+
                 if my_time is not None and opp_time is not None:
                     data[cp]["my"].append(my_time)
                     data[cp]["opp"].append(opp_time)
@@ -58,19 +58,19 @@ def report_clock_checkpoints(conn, w, days=90):
     w.w_separator(title="⏱️ ВРЕМЯ ПО КОНТРОЛЬНЫМ ТОЧКАМ (Медиана)")
     w.w(f"  {'Ход':<6} {'Мое время':<12} {'Время сопер.':<12} {'Дельта':<10} {'N партий'}")
     w.w("  " + "-" * 55)
-    
+
     for cp in checkpoints:
         my_vals = data[cp]["my"]
         if not my_vals:
             w.w(f"  {cp:<6} —            —            —          N=0")
             continue
-            
+
         med_my = statistics.median(my_vals)
         med_opp = statistics.median(data[cp]["opp"])
         med_delta = statistics.median(data[cp]["delta"])
-        
+
         w.w(f"  {cp:<6} {med_my:>6.1f} сек     {med_opp:>6.1f} сек     {med_delta:>+6.1f} сек   N={len(my_vals)}")
-    
+
     w.w()
     w.w("  💡 Зеленая зона: к 20-му ходу >40 сек, к 30-му >30 сек.")
     w.w()
@@ -95,7 +95,7 @@ def report_time_profile(conn, w, days=90):
     else:
         w.w("  ⚠️ Нет данных о просрочках.")
     w.w()
-    
+
     w.w("📊 СЕКЦИЯ 2: ТАЙМИНГ ЗЕВКОВ")
     cur.execute("""
         SELECT b.move_num, COUNT(*), ROUND(AVG(b.loss_cp)), ROUND(AVG(b.time_spent), 1)
