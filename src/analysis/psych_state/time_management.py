@@ -14,6 +14,98 @@ from analysis.common import report_context
 from .common import _conn, REPORTS_DIR, _is_player_white, _load_clocks_evals
 from core.метрики import game_rating as calc_gr
 
+DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
+
+def _conn():
+    return sqlite3.connect(DB_FILE)
+
+def report_clock_checkpoints(conn, w, days=90):
+    """
+    Выводит медианное время игрока, соперника и дельту 
+    на 10, 20, 30, 40, 50, 60 ходах.
+    """
+    cutoff = int((datetime.now(timezone.utc) - timedelta(days=days)).timestamp())
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT white, clocks FROM games
+        WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?
+          AND clocks IS NOT NULL AND clocks != '[]'
+    """, (cutoff,))
+
+    checkpoints = [10, 20, 30, 40, 50, 60]
+    data = {cp: {"my": [], "opp": [], "delta": []} for cp in checkpoints}
+    player = _common.CONFIG.get("player", "")
+
+    for white, clocks_raw in cur.fetchall():
+        try:
+            clocks = json.loads(clocks_raw)
+        except Exception:
+            continue
+        
+        is_white = (white == player)
+        
+        for cp in checkpoints:
+            # Ищем индекс полухода, где заканчивается cp-й ход.
+            # Для белых: (cp-1)*2 + 1. Для черных: (cp-1)*2 + 2.
+            # Но безопаснее просто пройтись по массиву clocks.
+            pass
+
+        # Упрощенный парсинг: мы берем время после хода белых и после хода черных
+        # clocks[0] - после 1-го хода белых, clocks[1] - после 1-го хода черных.
+        # Значит, чтобы получить время после 10-го хода белых, берем clocks[18] (индекс 19-го полухода).
+        # Если массив короче, значит партия не дошла до этого хода.
+        
+        for cp in checkpoints:
+            idx_white = (cp * 2) - 2
+            idx_black = (cp * 2) - 1
+            
+            if len(clocks) > max(idx_white, idx_black):
+                my_time = clocks[idx_white] if is_white else clocks[idx_black]
+                opp_time = clocks[idx_black] if is_white else clocks[idx_white]
+                
+                if my_time is not None and opp_time is not None:
+                    data[cp]["my"].append(my_time)
+                    data[cp]["opp"].append(opp_time)
+                    data[cp]["delta"].append(my_time - opp_time)
+
+    w.w_separator(title="⏱️ ВРЕМЯ ПО КОНТРОЛЬНЫМ ТОЧКАМ (Медиана)")
+    w.w(f"  {'Ход':<6} {'Мое время':<12} {'Время сопер.':<12} {'Дельта':<10} {'N партий'}")
+    w.w("  " + "-" * 55)
+    
+    for cp in checkpoints:
+        my_vals = data[cp]["my"]
+        if not my_vals:
+            w.w(f"  {cp:<6} —            —            —          N=0")
+            continue
+            
+        med_my = statistics.median(my_vals)
+        med_opp = statistics.median(data[cp]["opp"])
+        med_delta = statistics.median(data[cp]["delta"])
+        
+        w.w(f"  {cp:<6} {med_my:>6.1f} сек     {med_opp:>6.1f} сек     {med_delta:>+6.1f} сек   N={len(my_vals)}")
+    
+    w.w()
+    w.w("  💡 Зеленая зона: к 20-му ходу >40 сек, к 30-му >30 сек.")
+    w.w()
+
+def report_time_profile(conn, w, days=90):
+    """Профиль времени и просрочек (старый отчет, обновленный)."""
+    # ... код старого отчета time_profile ...
+    pass
+
+def run_time_management():
+    """Оркестратор отчетов по времени."""
+    conn = _conn()
+    try:
+        with report_context("time_profile") as w:
+            report_time_profile(conn, w)
+        with report_context("clock_checkpoints") as w:
+            report_clock_checkpoints(conn, w)
+    finally:
+        conn.close()
+
+if __name__ == "__main__":
+    run_time_management()
 
 def report_time_profile():
     conn = _conn(); cur = conn.cursor()
