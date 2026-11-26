@@ -1,6 +1,6 @@
 # ============================================================
-# analysis/dashboard_helpers.py — v26.2
-# FIX: None для momentum, метки P10/P90, get_blade_state.
+# analysis/dashboard_helpers.py — v26.3
+# FIX: Убрано дублирование функций. None для momentum. Метки P10/P90.
 # ============================================================
 import os
 import json
@@ -462,4 +462,4 @@ DASHBOARD_FILES = [
     ("06_psych_rating.txt", "~20 КБ", "Рейтинг, прогресс, потенциал"),
     ("07_opponents.txt", "~25 КБ", "Соперники: стиль, crushed_by, deep"),
     ("08_coach.txt", "~15 КБ", "Тренер: совет дня, план, колода"),
-]
+                            ]
