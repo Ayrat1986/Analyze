@@ -1,7 +1,6 @@
 # ============================================================
-# 09_psych_state.py — ЛИЧНОЕ: СОСТОЯНИЕ И РЕЖИМ (v25.0)
-# §28: удалены time_report_windows, hours_overview,
-#      endurance (report_endurance), daily_checkin (отчёт).
+# 09_psych_state.py — ЛИЧНОЕ: СОСТОЯНИЕ И РЕЖИМ (v26.4)
+# FIX: Добавлен вызов report_clock_checkpoints.
 # ============================================================
 import os
 import sys
@@ -18,8 +17,7 @@ from analysis.psych_state.daily_checkin import write_checkin, _parse_checkin
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--checkin", type=str, default=None,
-                        help="Чек-ин: 'сон=7,энергия=6,стресс=3'")
+    parser.add_argument("--checkin", type=str, default=None, help="Чек-ин: 'сон=7,энергия=6,стресс=3'")
     args = parser.parse_args()
 
     if args.checkin:
@@ -34,7 +32,7 @@ def main():
         return
 
     print("=" * 60)
-    print(" 09_psych_state.py — ЛИЧНОЕ: СОСТОЯНИЕ И РЕЖИМ (v25.0)")
+    print(" 09_psych_state.py — ЛИЧНОЕ: СОСТОЯНИЕ И РЕЖИМ (v26.4)")
     print("=" * 60)
 
     DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
@@ -68,7 +66,19 @@ def main():
     from analysis.psych_state.psych_tilt import run_psych_tilt
     run_psych_tilt()
 
-    print(f"\n✅ Все 6 блоков готовы. Отчёты в: {_common.REPORTS_DIR}")
+    # НОВЫЙ БЛОК: Контрольные точки времени
+    print("\n── 7/7. Clock Checkpoints (Время на 10-60 ходах) ──")
+    from analysis.psych_state.time_management import report_clock_checkpoints
+    from analysis.common import report_context
+    from .common import _conn
+    conn = _conn()
+    try:
+        with report_context("clock_checkpoints") as w:
+            report_clock_checkpoints(conn, w)
+    finally:
+        conn.close()
+
+    print(f"\n✅ Все 7 блоков готовы. Отчёты в: {_common.REPORTS_DIR}")
 
 
 if __name__ == "__main__":
