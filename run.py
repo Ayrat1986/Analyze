@@ -1,7 +1,7 @@
 # ============================================================
-# run.py — Оркестратор конвейера (v26.1)
-# NEW: Lock-файл (защита от двойного запуска).
-# NEW: Smoke-test (проверка, что дашборды сгенерировались).
+# src/run.py — Оркестратор конвейера (v26.2)
+# FIX: Передача --force в дочерние процессы.
+# FIX: sys.exit(1) при fail_count > 0.
 # ============================================================
 import os
 import sys
@@ -73,7 +73,7 @@ def run_smoke_test():
         return
     for fname in expected_files:
         fpath = os.path.join(dash_dir, fname)
-        if os.path.getsize(fpath) < 100: # Файл меньше 100 байт считается пустым
+        if os.path.getsize(fpath) < 100:
             print(f"⚠️ SMOKE-TEST FAIL: Файл {fname} слишком мал (возможно, пустой).")
             return
     print("✅ SMOKE-TEST OK: Все дашборды сгенерированы и не пусты.")
@@ -100,12 +100,11 @@ def _run_step(step_key, name, filename, fast_mode, force=False):
     start_time = time.time()
     script_path = os.path.join(SRC_DIR, filename)
 
+    cmd = [sys.executable, script_path]
+    if force:
+        cmd.append("--force")
+
     try:
-        # Изолированный запуск через subprocess
-        cmd = [sys.executable, script_path]
-        if force:
-            cmd.append("--force")  # Передаем флаг, чтобы скрипт игнорировал кэш
-        
         result = subprocess.run(
             cmd,
             check=True,
@@ -177,7 +176,7 @@ def main():
 
     try:
         print("=" * 60)
-        print(" ЗАПУСК КОНВЕЙЕРА (v26.1)")
+        print(" ЗАПУСК КОНВЕЙЕРА (v26.2)")
         print("=" * 60)
         print(f"Игрок: {_common.CONFIG.get('player', '?')}")
         print(f"Время: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -212,6 +211,9 @@ def main():
         # --- SMOKE TEST ---
         if 13 in steps_to_run and fail_count == 0:
             run_smoke_test()
+
+        if fail_count > 0:
+            sys.exit(1)
 
     finally:
         release_lock()
