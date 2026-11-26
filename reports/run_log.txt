@@ -1386,3 +1386,31 @@
 [2026-11-26 09:04:19] END   12_coach.py — OK
 [2026-11-26 09:04:19] START 13_dashboard_final.py
 [2026-11-26 09:04:25] END   13_dashboard_final.py — OK
+[2026-11-26 11:57:53] START 00_data_quality.py
+[2026-11-26 11:57:54] END   00_data_quality.py — OK
+[2026-11-26 11:57:54] START 01_fetch_chess_api.py
+[2026-11-26 11:57:57] END   01_fetch_chess_api.py — OK
+[2026-11-26 11:57:57] START 02_analyze_stockfish.py
+[2026-11-26 11:57:57] END   02_analyze_stockfish.py — OK
+[2026-11-26 11:57:57] START 03_migrate_sqlite.py
+[2026-11-26 11:57:57] END   03_migrate_sqlite.py — OK
+[2026-11-26 11:57:57] START 04_export_csv.py
+[2026-11-26 11:57:58] END   04_export_csv.py — ERROR: subprocess code 2
+[2026-11-26 11:57:58] START 05_openings.py
+[2026-11-26 11:58:11] END   05_openings.py — OK
+[2026-11-26 11:58:11] START 06_middlegame.py
+[2026-11-26 11:58:18] END   06_middlegame.py — OK
+[2026-11-26 11:58:18] START 07_endgame.py
+[2026-11-26 11:58:18] END   07_endgame.py — OK
+[2026-11-26 11:58:18] START 08_psych_focus.py
+[2026-11-26 11:58:19] END   08_psych_focus.py — OK
+[2026-11-26 11:58:19] START 09_psych_state.py
+[2026-11-26 11:58:19] END   09_psych_state.py — ERROR: subprocess code 2
+[2026-11-26 11:58:19] START 10_psych_rating.py
+[2026-11-26 11:58:19] END   10_psych_rating.py — OK
+[2026-11-26 11:58:19] START 11_psych_opponents.py
+[2026-11-26 11:58:24] END   11_psych_opponents.py — OK
+[2026-11-26 11:58:25] START 12_coach.py
+[2026-11-26 11:58:25] END   12_coach.py — OK
+[2026-11-26 11:58:25] START 13_dashboard_final.py
+[2026-11-26 11:58:31] END   13_dashboard_final.py — OK
