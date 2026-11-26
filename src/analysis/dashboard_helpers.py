@@ -9,6 +9,8 @@ import statistics
 import re
 import sqlite3
 from datetime import datetime, timezone, timedelta
+import _common
+from analysis.common import WINDOWS, window_label, window_cutoff_ts
 
 from analysis.common import _conn, PLAYER, REPORTS_DIR, WINDOWS, WINDOW_LABELS, window_cutoff_ts
 from core.метрики import game_rating, speed_rating, combined_rating
@@ -22,7 +24,87 @@ from analysis.dashboard_trends import (
 
 DB_FILE = str(os.path.join(os.path.dirname(__file__), "..", "..", "data", "chess.db"))
 
+def get_blade_state(combr):
+    """Определяет состояние Клинка по метрике CombR."""
+    if combr >= 2650:
+        return "🗡️ Острый Клинок"
+    elif combr >= 2550:
+        return "⚔️ Боевой Клинок"
+    elif combr >= 2450:
+        return "🪵 Тупеющий Клинок"
+    elif combr >= 2300:
+        return "🧱 Тупой Клинок"
+    else:
+        return "💀 Сломанный Клинок"
 
+def build_index(conn, w):
+    """Собирает 00_INDEX.txt."""
+    cur = conn.cursor()
+    
+    # --- Получаем основные метрики за 90 дней для шапки ---
+    cutoff_90d = window_cutoff_ts(90)
+    cur.execute("""
+        SELECT 
+            COUNT(*), 
+            ROUND(AVG(acpl), 1),
+            ROUND(AVG(acpl_middlegame), 1),
+            ROUND(AVG(momentum_after_blunder), 1),
+            ROUND(AVG(won + draw*0.5) * 100, 1),
+            ROUND(AVG(my_rating), 0)
+        FROM games
+        WHERE is_lag=0 AND is_cheater=0 AND end_time >= ? AND acpl > 0
+    """, (cutoff_90d,))
+    row = cur.fetchone()
+    games_90 = row[0] or 0
+    acpl_90 = row[1] or 0
+    acpl_mid_90 = row[2] or 0
+    momentum_90 = row[3]
+    winrate_90 = row[4] or 0
+    avg_rating_90 = row[5] or 0
+
+    # Текущий CombR (за 30 дней как репрезентативный)
+    from core.метрики import game_rating, speed_rating, combined_rating
+    cur.execute("SELECT ROUND(AVG(acpl),1), ROUND(AVG(avg_time),1) FROM games WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?", (window_cutoff_ts(30),))
+    acpl_30, avg_t_30 = cur.fetchone()
+    if acpl_30 and avg_t_30:
+        g_r = game_rating(acpl_30)
+        s_r = speed_rating(avg_t_30)
+        combr_30 = combined_rating(g_r, s_r)
+    else:
+        combr_30 = 0
+    
+    blade = get_blade_state(combr_30)
+
+    w.w_separator(title=f"📊 DASHBOARD INDEX — {_common.CONFIG.get('player', '?')} — {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+    w.w(f"  ТЕКУЩЕЕ СОСТОЯНИЕ: {blade} (CombR {combr_30:.0f})")
+    w.w()
+
+    w.w_separator(title="📈 КЛЮЧЕВЫЕ ЦИФРЫ (90 дней)")
+    w.w(f"  Партий:                      {games_90}")
+    w.w(f"  ACPL:                        {acpl_90} (мит: {acpl_mid_90})")
+    
+    mom_str = f"{momentum_90:.1f} CP" if momentum_90 is not None else "нет данных (N=0)"
+    w.w(f"  Моментум после зевка:        {mom_str}")
+    w.w(f"  Winrate:                     {winrate_90}%")
+    w.w(f"  Средний рейтинг (90д):       {avg_rating_90}")
+    
+    # Процентили P10/P90
+    cur.execute("""
+        SELECT acpl FROM games 
+        WHERE is_lag=0 AND is_cheater=0 AND end_time >= ? AND acpl > 0
+        ORDER BY acpl
+    """, (cutoff_90d,))
+    acpls = [r[0] for r in cur.fetchall()]
+    if len(acpls) >= 10:
+        n = len(acpls)
+        p10 = acpls[int(n * 0.1)]
+        p90 = acpls[int(n * 0.9)]
+        w.w(f"  ACPL P10 (лучшие 10%):       {p10:.1f} (GameR {game_rating(p10):.0f})")
+        w.w(f"  ACPL P90 (худшие 10%):       {p90:.1f} (GameR {game_rating(p90):.0f})")
+    else:
+        w.w(f"  ACPL P10 (лучшие 10%):       — (мало данных)")
+        w.w(f"  ACPL P90 (худшие 10%):       — (мало данных)")
+        
 def key_numbers():
     conn = _conn(); cur = conn.cursor(); ts = window_cutoff_ts(90); result = {}
     cur.execute(
