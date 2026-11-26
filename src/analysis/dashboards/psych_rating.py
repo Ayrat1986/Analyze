@@ -1,13 +1,14 @@
-# analysis/dashboards/psych_rating.py (v26.2)
-# FIX: Добавлен вывод Состояния Клинка (CombR). Убран фейковый 0 для momentum.
+# ============================================================
+# analysis/dashboards/psych_rating.py (v26.3)
+# FIX: Объединены дублирующиеся функции. Добавлен вывод Клинков и чтение REPORTS.
 # ============================================================
 import os
 import sqlite3
-import _common
+import json
 from datetime import datetime, timezone, timedelta
-from analysis.common import report_context, window_cutoff_ts
+import _common
+from analysis.common import report_context, window_cutoff_ts, read_report_file
 from core.метрики import game_rating, speed_rating, combined_rating
-from analysis.common import read_report_file
 
 REPORTS = [
     ("bullet_stats_report.txt", "📊 BULLET STATS"),
@@ -20,6 +21,7 @@ REPORTS = [
 
 DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
 
+
 def get_blade_state(combr):
     if combr >= 2650: return "🗡️ Острый Клинок"
     if combr >= 2550: return "⚔️ Боевой Клинок"
@@ -27,12 +29,18 @@ def get_blade_state(combr):
     if combr >= 2300: return "🧱 Тупой Клинок"
     return "💀 Сломанный Клинок"
 
+
 def build_psych_rating(w):
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
     
-    w.w_separator(title="РЕЙТИНГОВЫЕ МЕТРИКИ И СОСТОЯНИЕ")
+    w.w_separator(title="🧠 РЕЙТИНГ И ПРОГРЕСС")
+    w.w("Файл: 06_psych_rating.txt")
+    w.w("Источник: 10_psych_rating.py")
+    w.w()
 
+    w.w_separator(title="РЕЙТИНГОВЫЕ МЕТРИКИ И СОСТОЯНИЕ")
+    
     # 1. Текущий CombR (за последние 30 дней)
     cutoff_30 = window_cutoff_ts(30)
     cur.execute("""
@@ -46,17 +54,21 @@ def build_psych_rating(w):
     n_30 = n_30 or 0
     
     # Расчет скорости
-    cur.execute("SELECT clocks, white FROM games WHERE is_lag=0 AND is_cheater=0 AND end_time >= ? AND clocks IS NOT NULL", (cutoff_30,))
+    cur.execute("""
+        SELECT clocks, white FROM games 
+        WHERE is_lag=0 AND is_cheater=0 AND end_time >= ? AND clocks IS NOT NULL AND clocks != '[]'
+    """, (cutoff_30,))
     from _chess_utils import parse_time_spent
     times = []
+    player = _common.CONFIG.get("player", "")
     for clocks_raw, white in cur.fetchall():
-        import json
         try:
             clocks = json.loads(clocks_raw)
-            is_white = (white == _common.CONFIG.get("player", ""))
+            is_white = (white == player)
             t = parse_time_spent(clocks, is_white)
             if t: times.extend(t)
-        except: pass
+        except Exception: 
+            pass
         
     avg_time = sum(times) / len(times) if times else 0
     g_r = game_rating(acpl_30)
@@ -88,12 +100,8 @@ def build_psych_rating(w):
     w.w()
 
     conn.close()
-    
-def build_psych_rating(w):
-    w.w_separator(char="#", length=60, title="🧠 РЕЙТИНГ И ПРОГРЕСС")
-    w.w("Файл: 06_psych_rating.txt")
-    w.w("Источник: 10_psych_rating.py")
-    w.w()
+
+    # Вывод остальных отчетов
     for filename, title in REPORTS:
         w.w_separator(title=f"{title} (из {filename})")
         lines = read_report_file(filename)
