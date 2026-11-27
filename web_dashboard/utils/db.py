@@ -15,6 +15,12 @@ except ModuleNotFoundError:
     try:
         import libsql_experimental as libsql
         _USE_LIBSQL_CLIENT = False
+    except ModuleNotFoundError as e:
+        raise RuntimeError(
+            "Не установлен ни libsql-client, ни libsql-experimental. "
+            "Добавьте один из пакетов в requirements.txt."
+        ) from e
+
 
 class _LibsqlClientCursor:
     """Минимальный DB-API-совместимый курсор для libsql_client."""
