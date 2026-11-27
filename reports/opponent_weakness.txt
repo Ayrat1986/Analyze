@@ -8,10 +8,10 @@
   ACPL > 90 (очень слабый)   348п, 37.4%
 
 📊 ПО СТИЛЮ (из opponent_style.csv):
-  universal       615п, 44.6%, ACPL 56
-  positional      206п, 67.5%, ACPL 51
-  aggressive      104п, 22.1%, ACPL 67
-  tactical         44п, 34.1%, ACPL 58
+  universal       601п, 44.4%, ACPL 56
+  positional      200п, 67.5%, ACPL 50
+  aggressive      100п, 22.0%, ACPL 68
+  tactical         43п, 32.6%, ACPL 58
 
 🎯 ВЕРДИКТ:
   Лучше всего: positional (68%)

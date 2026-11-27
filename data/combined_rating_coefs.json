@@ -6,9 +6,9 @@
   "mae": 324.0,
   "game_r_mae": 326.7,
   "speed_r_mae": 361.1,
-  "n": 2346,
-  "n_train": 1642,
+  "n": 2344,
+  "n_train": 1640,
   "n_test": 704,
-  "calibrated_at": "2026-11-27T11:50:56.556455+00:00",
+  "calibrated_at": "2026-11-27T19:07:57.432153+00:00",
   "is_default": false
 }
