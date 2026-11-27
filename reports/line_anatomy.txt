@@ -7,14 +7,17 @@
   A43 Old Benoni Defense                | 6п, 83%, ACPL 40
     └─ 1. d4 c5 2. c4 cxd4 3. Qxd4 Nc6 4. Qd3 Nf6 5. Nf3 e5 6. Nc3 Bb4 7. e4 O-O 8...
 
+  E61 Kings Indian Defense Semi Class   | 5п, 80%, ACPL 36
+    └─ 1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. Nf3 O-O 5. e3 d6 6. Be2 Nbd7 7. O-O Re8 8....
+
+  B01 Scandinavian Defense Mieses Kot   | 10п, 80%, ACPL 58
+    └─ 1. e4 d5 2. exd5 Qxd5 3. Nc3 Qa5 4. Nf3 Nf6 5. d4 Bg4 6. Bc4 Nc6 7. Be3 O-O...
+
   B01 Scandinavian Defense Closed 2..   | 5п, 80%, ACPL 37
     └─ 1. e4 d5 2. Nc3 d4 3. Nce2 c5 4. d3 Nc6 5. f4 e5 6. Nf3 exf4 7. Bxf4 Bd6 8....
 
   B01 Scandinavian Defense Mieses Kot   | 7п, 79%, ACPL 67
     └─ 1. e4 d5 2. exd5 Qxd5 3. Nc3 Qa5 4. b4 Qxb4 5. Rb1 Qd6 6. Nf3 c6 7. d4 Nf6 ...
-
-  B01 Scandinavian Defense Mieses Kot   | 9п, 78%, ACPL 61
-    └─ 1. e4 d5 2. exd5 Qxd5 3. Nc3 Qa5 4. Nf3 Nf6 5. d4 Bg4 6. Bc4 Nc6 7. O-O O-O...
 
   B01 Scandinavian Defense Mieses Kot   | 7п, 71%, ACPL 51
     └─ 1. e4 d5 2. exd5 Qxd5 3. Nc3 Qa5 4. Nf3 Nf6 5. Bc4 Bg4 6. O-O Nc6 7. d3 Qh5...
@@ -30,9 +33,6 @@
 
   B01 Scandinavian Defense Mieses Kot   | 5п, 60%, ACPL 47
     └─ 1. e4 d5 2. exd5 Qxd5 3. Nc3 Qa5 4. d4 Nf6 5. Nf3 Bg4 6. Bd2 Nc6 7. h3 Bh5 ...
-
-  D15 Slav Defense Modern Three Knigh   | 5п, 60%, ACPL 46
-    └─ 1. d4 c6 2. c4 d5 3. Nc3 Nf6 4. Nf3 Bg4 5. Bf4 Bxf3 6. gxf3 e6 7. e3 Bd6 8....
 
 📉 ЛИНИИ-УБИЙЦЫ (winrate <= 40%, n >= 5):
   B01 Scandinavian Defense Modern Var   | 5п, 20%, ACPL 55

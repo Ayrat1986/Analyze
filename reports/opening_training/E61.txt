@@ -1,33 +1,33 @@
 # Домашняя работа: E61
-# Winrate: 45.5%
-# ACPL: деб 17 / мит 55 / энд 56
-# Eval после дебюта: +16.9
+# Winrate: 45.0%
+# ACPL: деб 17 / мит 55 / энд 55
+# Eval после дебюта: +16.7
 # Линия-убийца: d2d4 g7g6 c2c4 f8g7 b1c3 g8f6 e2e3 d7d6 g1f3 e8g8 f1e2 b8c6 e1g1 e7e5 b2b3 e5d4 e3d4 c8g4 c1b2 f8e8 (15 зевков)
 # Окно уязвимости: 31+ (176 зевков)
 # Точка невозврата: после 57-го хода (100% поражений)
 
-# Позиция 1: Ход 36, потеря 1000 CP
+# Позиция 1: Ход 22, потеря 9918 CP
+FEN: r3r1k1/pp1n1pb1/3p2p1/2pP1qn1/2P1p3/1PN1P1pP/PBQ1BP1K/5R1R w - - 0 22
+Лучший ход (Stockfish): Kg2
+Ссылка: https://lichess.org/analysis/standard/r3r1k1/pp1n1pb1/3p2p1/2pP1qn1/2P1p3/1PN1P1pP/PBQ1BP1K/5R1R_w_-_-_0_22
+
+# Позиция 2: Ход 36, потеря 1000 CP
 FEN: 4r3/1p2rp2/1q1p4/3B2k1/ppP5/1P2PQ1R/P4K1P/4R3 w - - 0 36
 Лучший ход (Stockfish): Rg1#
 Ссылка: https://lichess.org/analysis/standard/4r3/1p2rp2/1q1p4/3B2k1/ppP5/1P2PQ1R/P4K1P/4R3_w_-_-_0_36
 
-# Позиция 2: Ход 36, потеря 1000 CP
+# Позиция 3: Ход 36, потеря 1000 CP
 FEN: 8/ppk3qp/3NQ1p1/2PP1p1r/5P2/8/PP3KR1/8 w - - 5 36
 Лучший ход (Stockfish): Qc8#
 Ссылка: https://lichess.org/analysis/standard/8/ppk3qp/3NQ1p1/2PP1p1r/5P2/8/PP3KR1/8_w_-_-_5_36
 
-# Позиция 3: Ход 35, потеря 1000 CP
+# Позиция 4: Ход 35, потеря 1000 CP
 FEN: 1Q3b1k/3q3p/2p3p1/5p2/3p4/6P1/5P1P/3R2K1 w - - 0 35
 Лучший ход (Stockfish): Qxf8#
 Ссылка: https://lichess.org/analysis/standard/1Q3b1k/3q3p/2p3p1/5p2/3p4/6P1/5P1P/3R2K1_w_-_-_0_35
 
-# Позиция 4: Ход 60, потеря 1000 CP
+# Позиция 5: Ход 60, потеря 1000 CP
 FEN: 4k3/6Q1/5RK1/3Bp3/4Pp2/5P2/5P2/8 w - - 3 60
 Лучший ход (Stockfish): Rf8#
 Ссылка: https://lichess.org/analysis/standard/4k3/6Q1/5RK1/3Bp3/4Pp2/5P2/5P2/8_w_-_-_3_60
-
-# Позиция 5: Ход 37, потеря 1000 CP
-FEN: 7r/5k2/p2p4/3P4/1P1Q1pPn/8/P4PPK/4r3 w - - 5 37
-Лучший ход (Stockfish): Qxh8
-Ссылка: https://lichess.org/analysis/standard/7r/5k2/p2p4/3P4/1P1Q1pPn/8/P4PPK/4r3_w_-_-_5_37
 

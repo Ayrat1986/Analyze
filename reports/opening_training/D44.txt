@@ -1,33 +1,33 @@
 # Домашняя работа: D44
-# Winrate: 52.4%
-# ACPL: деб 19 / мит 57 / энд 41
-# Eval после дебюта: +41.1
+# Winrate: 50.0%
+# ACPL: деб 19 / мит 56 / энд 49
+# Eval после дебюта: +36.8
 # Линия-убийца: d2d4 d7d5 c2c4 e7e6 b1c3 g8f6 g1f3 f8e7 c1g5 e8g8 e2e3 d5c4 f1c4 c7c5 e1g1 c5d4 e3d4 a7a6 a2a4 b8c6 (10 зевков)
-# Окно уязвимости: 31+ (29 зевков)
-# Точка невозврата: после 19-го хода (100% поражений)
+# Окно уязвимости: 31+ (32 зевков)
+# Точка невозврата: после 31-го хода (100% поражений)
 
-# Позиция 1: Ход 44, потеря 1000 CP
+# Позиция 1: Ход 37, потеря 10000 CP
+FEN: Q7/P4pp1/3bp1k1/8/1p2P1K1/5Pp1/7q/R1R5 w - - 2 37
+Лучший ход (Stockfish): Ra5
+Ссылка: https://lichess.org/analysis/standard/Q7/P4pp1/3bp1k1/8/1p2P1K1/5Pp1/7q/R1R5_w_-_-_2_37
+
+# Позиция 2: Ход 34, потеря 1280 CP
+FEN: Q7/P4ppk/3bp3/4q3/1p2P3/5Pp1/1P5P/R1R4K w - - 1 34
+Лучший ход (Stockfish): Rc2
+Ссылка: https://lichess.org/analysis/standard/Q7/P4ppk/3bp3/4q3/1p2P3/5Pp1/1P5P/R1R4K_w_-_-_1_34
+
+# Позиция 3: Ход 44, потеря 1000 CP
 FEN: 8/1R4Bk/4P3/3P2Q1/7P/2p5/5PP1/7K w - - 0 44
 Лучший ход (Stockfish): Bxc3#
 Ссылка: https://lichess.org/analysis/standard/8/1R4Bk/4P3/3P2Q1/7P/2p5/5PP1/7K_w_-_-_0_44
 
-# Позиция 2: Ход 39, потеря 1000 CP
+# Позиция 4: Ход 39, потеря 1000 CP
 FEN: 5k2/3R4/6p1/5p2/1P1BpP2/4Pn2/5PKP/3r4 w - - 3 39
 Лучший ход (Stockfish): Bc5+
 Ссылка: https://lichess.org/analysis/standard/5k2/3R4/6p1/5p2/1P1BpP2/4Pn2/5PKP/3r4_w_-_-_3_39
 
-# Позиция 3: Ход 27, потеря 1000 CP
+# Позиция 5: Ход 27, потеря 1000 CP
 FEN: 2r5/1p4pk/4Qp1p/q7/b2P4/P3P3/1B3PPP/3R2K1 w - - 0 27
 Лучший ход (Stockfish): Qxc8
 Ссылка: https://lichess.org/analysis/standard/2r5/1p4pk/4Qp1p/q7/b2P4/P3P3/1B3PPP/3R2K1_w_-_-_0_27
-
-# Позиция 4: Ход 41, потеря 852 CP
-FEN: 6k1/6p1/4p1Np/3n4/P1RP4/6PP/1r3P2/6K1 w - - 0 41
-Лучший ход (Stockfish): Rc8+
-Ссылка: https://lichess.org/analysis/standard/6k1/6p1/4p1Np/3n4/P1RP4/6PP/1r3P2/6K1_w_-_-_0_41
-
-# Позиция 5: Ход 21, потеря 738 CP
-FEN: 1rbQ1bk1/p1N1rp2/1pn2q1p/6p1/1P6/P3P1B1/4BPPP/2R1K2R w K - 8 21
-Лучший ход (Stockfish): Nd5
-Ссылка: https://lichess.org/analysis/standard/1rbQ1bk1/p1N1rp2/1pn2q1p/6p1/1P6/P3P1B1/4BPPP/2R1K2R_w_K_-_8_21
 

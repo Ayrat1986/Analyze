@@ -1,33 +1,33 @@
 # Домашняя работа: D10
-# Winrate: 36.7%
+# Winrate: 36.1%
 # ACPL: деб 22 / мит 62 / энд 74
-# Eval после дебюта: +76.3
+# Eval после дебюта: +75.9
 # Линия-убийца: d2d4 d7d5 c2c4 c7c6 b1c3 g8f6 g1f3 a7a6 e2e3 b7b5 b2b3 b5c4 b3c4 c8f5 f1d3 f5d3 d1d3 b8d7 e1g1 e7e6 (14 зевков)
-# Окно уязвимости: 31+ (97 зевков)
+# Окно уязвимости: 31+ (99 зевков)
 # Точка невозврата: после 51-го хода (100% поражений)
 
-# Позиция 1: Ход 36, потеря 1000 CP
+# Позиция 1: Ход 42, потеря 1023 CP
+FEN: 8/p3qkp1/2p3p1/1p3p2/1P1Q3P/6P1/5P2/6K1 b - - 0 42
+Лучший ход (Stockfish): Kg8
+Ссылка: https://lichess.org/analysis/standard/8/p3qkp1/2p3p1/1p3p2/1P1Q3P/6P1/5P2/6K1_b_-_-_0_42
+
+# Позиция 2: Ход 36, потеря 1000 CP
 FEN: 6r1/3kb3/p1p1p3/3PBq2/5N2/P3KQ2/1P5r/2R5 b - - 6 36
 Лучший ход (Stockfish): Qxe5+
 Ссылка: https://lichess.org/analysis/standard/6r1/3kb3/p1p1p3/3PBq2/5N2/P3KQ2/1P5r/2R5_b_-_-_6_36
 
-# Позиция 2: Ход 32, потеря 1000 CP
+# Позиция 3: Ход 32, потеря 1000 CP
 FEN: 4r3/6k1/8/5R2/6N1/1P4B1/4nPPK/8 b - - 0 32
 Лучший ход (Stockfish): Rh8+
 Ссылка: https://lichess.org/analysis/standard/4r3/6k1/8/5R2/6N1/1P4B1/4nPPK/8_b_-_-_0_32
 
-# Позиция 3: Ход 39, потеря 1000 CP
+# Позиция 4: Ход 39, потеря 1000 CP
 FEN: 1kr1R3/5p2/2qr4/4Q3/2p4p/3b4/PP3PPP/5RK1 b - - 15 39
 Лучший ход (Stockfish): Rxe8
 Ссылка: https://lichess.org/analysis/standard/1kr1R3/5p2/2qr4/4Q3/2p4p/3b4/PP3PPP/5RK1_b_-_-_15_39
 
-# Позиция 4: Ход 33, потеря 1000 CP
+# Позиция 5: Ход 33, потеря 1000 CP
 FEN: Q3n1k1/5ppp/8/pB6/Pp6/4P2P/1Pq1NBP1/6K1 w - - 5 33
 Лучший ход (Stockfish): Qxe8#
 Ссылка: https://lichess.org/analysis/standard/Q3n1k1/5ppp/8/pB6/Pp6/4P2P/1Pq1NBP1/6K1_w_-_-_5_33
-
-# Позиция 5: Ход 27, потеря 990 CP
-FEN: 1r2k1r1/5p2/2Q1p2p/1p1pP3/4n1q1/4P3/PP2R1Pp/R3B2K b - - 5 27
-Лучший ход (Stockfish): Kf8
-Ссылка: https://lichess.org/analysis/standard/1r2k1r1/5p2/2Q1p2p/1p1pP3/4n1q1/4P3/PP2R1Pp/R3B2K_b_-_-_5_27
 

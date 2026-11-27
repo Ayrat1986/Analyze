@@ -1,0 +1,90 @@
+Сформирована: 2026-11-27 06:37
+Причина включения указана у каждой позиции. Не более 1 позиции из одной партии, не более 2 на pattern_tag.
+Свежих (7 дней): 10 | Случайных из топ-100: 0
+
+ РЕЖИМЫ ТРЕНИРОВКИ:
+  A) Быстрый — 3 сек на позицию.
+     Задача: назвать угрозу, шахи, взятия или тактический мотив.
+  B) Расчётный — 30–60 сек на позицию (для 58+ ходов и эндшпилей).
+     Задача: выбрать ход, объяснить план, проверить вариант.
+  Оценка успеха: ✅ решено / ⚠️ частично / ❌ не решено.
+
+ СВЕЖИЕ (последние 7 дней):
+  1. Ayrat_1986 vs unclerizzwan24 (27.11.26, ход 22, потеря 20000 CP)
+     Причина включения: свежая ошибка (≤7 дней)
+     FEN: r1bqr1k1/p6p/2p1p1p1/2b1Qp2/5P2/1P1P2P1/PBP2RBP/R5K1 w - - 0 22
+     Сыграно: Qg7#  (UCI e5g7)
+     Лучше:   Qg7#  (UCI e5g7)
+     Тренируй: https://lichess.org/analysis/standard/r1bqr1k1/p6p/2p1p1p1/2b1Qp2/5P2/1P1P2P1/PBP2RBP/R5K1_w_-_-_0_22
+
+  2. chepf vs Ayrat_1986 (26.11.26, ход 33, потеря 10476 CP)
+     Причина включения: свежая ошибка (≤7 дней)
+     FEN: 6Q1/p1q5/1p4pk/2P1b1Np/1P5P/P5r1/4K2n/2B1R3 b - - 3 33
+     Сыграно: Qg7  (UCI c7g7)
+     Лучше:   Rg2+  (UCI g3g2)
+     Тренируй: https://lichess.org/analysis/standard/6Q1/p1q5/1p4pk/2P1b1Np/1P5P/P5r1/4K2n/2B1R3_b_-_-_3_33
+
+  3. Randoms_1 vs Ayrat_1986 (27.11.26, ход 48, потеря 10014 CP)
+     Причина включения: свежая ошибка (≤7 дней)
+     FEN: 6k1/P4p1p/4p1p1/2b1q3/2p2P2/6PK/6RP/8 b - - 0 48
+     Сыграно: Kg7  (UCI g8g7)
+     Лучше:   Qh5#  (UCI e5h5)
+     Тренируй: https://lichess.org/analysis/standard/6k1/P4p1p/4p1p1/2b1q3/2p2P2/6PK/6RP/8_b_-_-_0_48
+
+  4. Ayrat_1986 vs HonzaRubes95 (27.11.26, ход 37, потеря 10000 CP)
+     Причина включения: свежая ошибка (≤7 дней)
+     FEN: Q7/P4pp1/3bp1k1/8/1p2P1K1/5Pp1/7q/R1R5 w - - 2 37
+     Сыграно: Qe8  (UCI a8e8)
+     Лучше:   Ra5  (UCI a1a5)
+     Тренируй: https://lichess.org/analysis/standard/Q7/P4pp1/3bp1k1/8/1p2P1K1/5Pp1/7q/R1R5_w_-_-_2_37
+
+  5. unclerizzwan24 vs Ayrat_1986 (27.11.26, ход 42, потеря 1023 CP)
+     Причина включения: свежая ошибка (≤7 дней)
+     FEN: 8/p3qkp1/2p3p1/1p3p2/1P1Q3P/6P1/5P2/6K1 b - - 0 42
+     Сыграно: Qd7  (UCI e7d7)
+     Лучше:   Kg8  (UCI f7g8)
+     Тренируй: https://lichess.org/analysis/standard/8/p3qkp1/2p3p1/1p3p2/1P1Q3P/6P1/5P2/6K1_b_-_-_0_42
+
+  6. KidColombia7 vs Ayrat_1986 (26.11.26, ход 44, потеря 1014 CP)
+     Причина включения: свежая ошибка (≤7 дней)
+     FEN: 8/5R2/1k3p2/3p4/P2b2P1/4p2P/5P2/6K1 b - - 1 44
+     Сыграно: exf2+  (UCI e3f2)
+     Лучше:   e2  (UCI e3e2)
+     Тренируй: https://lichess.org/analysis/standard/8/5R2/1k3p2/3p4/P2b2P1/4p2P/5P2/6K1_b_-_-_1_44
+
+  7. LifeOfRyan vs Ayrat_1986 (21.11.26, ход 31, потеря 1000 CP)
+     Причина включения: свежая ошибка (≤7 дней)
+     FEN: 1k2r3/1p3Qp1/p1p4p/8/4P2P/1qN5/1B6/1K1R4 b - - 1 31
+     Сыграно: Rc8  (UCI e8c8)
+     Лучше:   Qxf7  (UCI b3f7)
+     Тренируй: https://lichess.org/analysis/standard/1k2r3/1p3Qp1/p1p4p/8/4P2P/1qN5/1B6/1K1R4_b_-_-_1_31
+
+  8. Ayrat_1986 vs bopielmariongle (24.11.26, ход 39, потеря 1000 CP)
+     Причина включения: свежая ошибка (≤7 дней)
+     FEN: 8/p4p1k/3b1Prp/3Pp2Q/P1p1q3/2P2R1P/3B2PK/8 w - - 2 39
+     Сыграно: Be3  (UCI d2e3)
+     Лучше:   Bxh6  (UCI d2h6)
+     Тренируй: https://lichess.org/analysis/standard/8/p4p1k/3b1Prp/3Pp2Q/P1p1q3/2P2R1P/3B2PK/8_w_-_-_2_39
+
+  9. MemoryReboot_0 vs Ayrat_1986 (24.11.26, ход 30, потеря 987 CP)
+     Причина включения: свежая ошибка (≤7 дней)
+     FEN: 4r1k1/pp1r3p/1b2N1p1/q3pP2/3P4/2P5/P4QP1/4BRK1 b - - 0 30
+     Сыграно: gxf5  (UCI g6f5)
+     Лучше:   exd4  (UCI e5d4)
+     Тренируй: https://lichess.org/analysis/standard/4r1k1/pp1r3p/1b2N1p1/q3pP2/3P4/2P5/P4QP1/4BRK1_b_-_-_0_30
+
+  10. alarmm1k vs Ayrat_1986 (24.11.26, ход 13, потеря 849 CP)
+     Причина включения: свежая ошибка (≤7 дней)
+     FEN: 2kr1b1r/ppp2ppp/8/q2np2b/1PB5/P3BP2/2P1N1PP/R2Q1RK1 b - - 0 13
+     Сыграно: Qa4  (UCI a5a4)
+     Лучше:   Nxe3  (UCI d5e3)
+     Тренируй: https://lichess.org/analysis/standard/2kr1b1r/ppp2ppp/8/q2np2b/1PB5/P3BP2/2P1N1PP/R2Q1RK1_b_-_-_0_13
+
+ СЛУЧАЙНЫЕ ИЗ ТОП-100:
+ ⚠️ random: пусто.
+
+ КАК ТРЕНИРОВАТЬ:
+  1. Открой Lichess Analysis (ссылка у каждой позиции).
+  2. НЕ смотри лучший ход сразу — попробуй найти сам.
+  3. Сравни с Stockfish. Если ошибся — запиши, ПОЧЕМУ.
+  4. Отметь результат (✅/⚠️/❌) — это основа для прогресса.
