@@ -1,5 +1,6 @@
 # ============================================================
-# 04_export_csv.py — v25.0
+# 04_export_csv.py — v25.1
+# FIX: Добавлен флаг --force (совместимость с run.py v26.2).
 # §28: удалены 11 мёртвых CSV-экспортов (portrait, coach_insights,
 #      acpl_by_phase, acpl_phase_weekly, patterns, openings,
 #      opening_tree, time_of_day, timeouts, timeout_by_move,
@@ -176,10 +177,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--days", type=int, default=30)
     parser.add_argument("--date", type=str, default=None)
+    parser.add_argument("--force", action="store_true", help="Игнорировать кэш")
     args = parser.parse_args()
 
     print("=" * 60)
-    print(" 04_export_csv.py — v25.0 (только нужное)")
+    print(" 04_export_csv.py — v25.1 (только нужное)")
     print("=" * 60)
 
     if not os.path.exists(DB_FILE):

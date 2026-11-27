@@ -1,6 +1,8 @@
 # ============================================================
-# 09_psych_state.py — ЛИЧНОЕ: СОСТОЯНИЕ И РЕЖИМ (v26.5)
-# FIX: Исправлен относительный импорт _conn на абсолютный.
+# 09_psych_state.py — ЛИЧНОЕ: СОСТОЯНИЕ И РЕЖИМ (v26.6)
+# FIX: Добавлен флаг --force (совместимость с run.py v26.2).
+# FIX: Исправлены вызовы report_time_profile(conn, w) и
+#      report_lag_report(conn, w) через report_context.
 # ============================================================
 import os
 import sys
@@ -12,11 +14,14 @@ sys.path.insert(0, BASE_DIR)
 sys.path.insert(0, SRC_DIR)
 
 import _common
+from analysis.common import report_context
+from analysis.psych_state.common import _conn
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--checkin", type=str, default=None, help="Чек-ин: 'сон=7,энергия=6,стресс=3'")
+    parser.add_argument("--force", action="store_true", help="Игнорировать кэш")
     args = parser.parse_args()
 
     if args.checkin:
@@ -32,7 +37,7 @@ def main():
         return
 
     print("=" * 60)
-    print(" 09_psych_state.py — ЛИЧНОЕ: СОСТОЯНИЕ И РЕЖИМ (v26.5)")
+    print(" 09_psych_state.py — ЛИЧНОЕ: СОСТОЯНИЕ И РЕЖИМ (v26.6)")
     print("=" * 60)
 
     DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
@@ -42,11 +47,21 @@ def main():
 
     print("\n── 1/7. Time Profile (просрочки, менеджмент) ──")
     from analysis.psych_state.time_management import report_time_profile
-    report_time_profile()
+    conn = _conn()
+    try:
+        with report_context("time_profile") as w:
+            report_time_profile(conn, w)
+    finally:
+        conn.close()
 
     print("\n── 2/7. Lag Report (аномалии времени) ──")
     from analysis.psych_state.time_management import report_lag_report
-    report_lag_report()
+    conn = _conn()
+    try:
+        with report_context("lag_report") as w:
+            report_lag_report(conn, w)
+    finally:
+        conn.close()
 
     print("\n── 3/7. Time Target (ЦЕЛЕВОЕ ВРЕМЯ) ──")
     from analysis.psych_state.time_target import report_time_target
@@ -66,12 +81,8 @@ def main():
     from analysis.psych_state.psych_tilt import run_psych_tilt
     run_psych_tilt()
 
-    # НОВЫЙ БЛОК: Контрольные точки времени
     print("\n── 7/7. Clock Checkpoints (Время на 10-60 ходах) ──")
     from analysis.psych_state.time_management import report_clock_checkpoints
-    from analysis.common import report_context
-    from analysis.psych_state.common import _conn  # <--- ИСПРАВЛЕНО ЗДЕСЬ
-    
     conn = _conn()
     try:
         with report_context("clock_checkpoints") as w:
