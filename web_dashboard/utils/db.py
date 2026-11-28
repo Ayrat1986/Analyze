@@ -55,7 +55,7 @@ class _TursoHttpCursor:
         self.rowcount = 0
         self.lastrowid = None
 
-    def execute(self, query: str, params=None):
+    def _send_stmt(self, query: str, params=None) -> dict:
         stmt: dict = {"sql": query}
         if isinstance(params, dict):
             stmt["named_args"] = [
@@ -87,13 +87,26 @@ class _TursoHttpCursor:
                 data = json.loads(resp.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
             err_body = e.read().decode("utf-8", errors="replace")
-            raise RuntimeError(f"Turso HTTP {e.code}: {err_body}") from e
+            st.error(f"Turso HTTP {e.code}: {err_body}")
+            st.stop()
 
-        first = data["results"][0]
+        return data["results"][0]
+
+    def execute(self, query: str, params=None):
+        first = self._send_stmt(query, params)
         if first.get("type") == "error":
             err = first.get("error", {})
             msg = err.get("message", str(err)) if isinstance(err, dict) else str(err)
-            raise RuntimeError(f"Turso SQL error: {msg}")
+
+            tables_info = ""
+            diag = self._send_stmt("SELECT name FROM sqlite_master WHERE type='table'")
+            if diag.get("type") != "error":
+                rows = diag["response"]["result"].get("rows", [])
+                tables = [r[0].get("value") for r in rows if r]
+                tables_info = f"\n\nТаблицы в базе Turso: {tables or 'пусто (0 таблиц)'}"
+
+            st.error(f"Turso SQL error: {msg}{tables_info}")
+            st.stop()
 
         res = first["response"]["result"]
         cols = [c["name"] for c in res.get("cols", [])]
