@@ -1,10 +1,7 @@
 # web_dashboard/utils/sync_to_turso.py
 # ============================================================
 # Двусторонняя синхронизация локальной SQLite (data/chess.db)
-# и облачной Turso через HTTP Pipeline API v2:
-#   1) Забирает прогресс тренажёра (trainer_progress, checkins)
-#      из Turso и объединяет с локальной базой.
-#   2) Выгружает все таблицы и индексы из chess.db в Turso.
+# и облачной Turso через HTTP Pipeline API v2.
 # ============================================================
 import argparse
 import base64
@@ -37,7 +34,6 @@ def load_turso_credentials(interactive: bool = False) -> Tuple[Optional[str], Op
     url = os.environ.get("TURSO_DATABASE_URL") or os.environ.get("TURSO_URL")
     token = os.environ.get("TURSO_AUTH_TOKEN") or os.environ.get("TURSO_TOKEN")
 
-    # 1. Проверяем secrets.toml (в web_dashboard/.streamlit или .streamlit)
     if (not url or not token) and tomllib is not None:
         for secret_file in [
             WEB_DIR / ".streamlit" / "secrets.toml",
@@ -52,7 +48,6 @@ def load_turso_credentials(interactive: bool = False) -> Tuple[Optional[str], Op
                 except Exception:
                     pass
 
-    # 2. Проверяем data/config.json
     config_file = BASE_DIR / "data" / "config.json"
     if (not url or not token) and config_file.exists():
         try:
@@ -63,7 +58,6 @@ def load_turso_credentials(interactive: bool = False) -> Tuple[Optional[str], Op
         except Exception:
             pass
 
-    # 3. Запрос в консоли только при ручном интерактивном запуске
     if interactive:
         if not url:
             url = input("Введи Turso URL (libsql://... или https://...): ").strip()
@@ -152,18 +146,13 @@ def _turso_query(pipeline_url: str, token: str, sql: str, args: Optional[list] =
         return [], []
     res = res_list[0]
     cols = [c["name"] for c in res.get("cols", [])]
-    rows = [
-        tuple(_decode_val(cell) for cell in row)
-        for row in res.get("rows", [])
-    ]
+    rows = [tuple(_decode_val(cell) for cell in row) for row in res.get("rows", [])]
     return cols, rows
 
 
 def _pull_cloud_progress(conn: sqlite3.Connection, pipeline_url: str, token: str, quiet: bool = False):
-    """Забирает прогресс из Turso в локальную chess.db перед перезаписью облака."""
     _, table_rows = _turso_query(
-        pipeline_url,
-        token,
+        pipeline_url, token,
         "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('trainer_progress', 'checkins')",
     )
     remote_tables = {r[0] for r in table_rows}
@@ -183,14 +172,12 @@ def _pull_cloud_progress(conn: sqlite3.Connection, pipeline_url: str, token: str
             )
         """)
         cols, rows = _turso_query(
-            pipeline_url,
-            token,
+            pipeline_url, token,
             "SELECT task_hash, task_type, fen, status, attempts, last_seen, next_review, created_at FROM trainer_progress",
         )
         if rows:
             for r in rows:
-                conn.execute(
-                    """
+                conn.execute("""
                     INSERT INTO trainer_progress
                         (task_hash, task_type, fen, status, attempts, last_seen, next_review, created_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -200,17 +187,13 @@ def _pull_cloud_progress(conn: sqlite3.Connection, pipeline_url: str, token: str
                         last_seen = excluded.last_seen,
                         next_review = excluded.next_review
                     WHERE COALESCE(excluded.last_seen, 0) >= COALESCE(trainer_progress.last_seen, 0)
-                    """,
-                    r,
-                )
+                """, r)
             conn.commit()
             if not quiet:
                 print(f"← Подтянуто записей trainer_progress из Turso: {len(rows)}")
 
     if "checkins" in remote_tables:
-        local_exists = conn.execute(
-            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='checkins'"
-        ).fetchone()
+        local_exists = conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='checkins'").fetchone()
         if local_exists:
             cols, rows = _turso_query(pipeline_url, token, 'SELECT * FROM "checkins"')
             if cols and rows:
@@ -225,7 +208,6 @@ def _pull_cloud_progress(conn: sqlite3.Connection, pipeline_url: str, token: str
 
 def _acquire_lock() -> bool:
     if LOCK_FILE.exists():
-        # Снимаем зависший lock старше 5 минут
         if time.time() - LOCK_FILE.stat().st_mtime > 300:
             LOCK_FILE.unlink(missing_ok=True)
         else:
@@ -244,20 +226,12 @@ def _save_sync_state():
         return
     st = DB_PATH.stat()
     STATE_FILE.write_text(
-        json.dumps(
-            {
-                "db_mtime": st.st_mtime,
-                "db_size": st.st_size,
-                "synced_at": int(time.time()),
-            },
-            indent=2,
-        ),
+        json.dumps({"db_mtime": st.st_mtime, "db_size": st.st_size, "synced_at": int(time.time())}, indent=2),
         encoding="utf-8",
     )
 
 
 def is_sync_needed() -> bool:
-    """Возвращает True, если локальная chess.db обновилась после последней выгрузки в Turso."""
     if not DB_PATH.exists():
         return False
     url, token = load_turso_credentials(interactive=False)
@@ -277,7 +251,6 @@ def is_sync_needed() -> bool:
 
 
 def sync_now(interactive: bool = False, quiet: bool = False) -> bool:
-    """Выполняет полную двустороннюю синхронизацию chess.db <-> Turso."""
     if not DB_PATH.exists():
         if not quiet:
             print(f"⚠️ Локальная база не найдена: {DB_PATH}")
@@ -301,27 +274,20 @@ def sync_now(interactive: bool = False, quiet: bool = False) -> bool:
 
         conn = sqlite3.connect(str(DB_PATH), timeout=30.0)
         try:
-            # 1. Сначала забираем облачный прогресс тренажёра
             _pull_cloud_progress(conn, pipeline_url, token, quiet=quiet)
 
-            # 2. Выгружаем все таблицы из chess.db в Turso
             cur = conn.cursor()
             tables = cur.execute(
-                "SELECT name, sql FROM sqlite_master "
-                "WHERE type='table' AND name NOT LIKE 'sqlite_%' AND sql IS NOT NULL"
+                "SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND sql IS NOT NULL"
             ).fetchall()
 
             for table_name, create_sql in tables:
                 if not quiet:
                     print(f"→ Выгрузка таблицы '{table_name}'...")
-                _turso_pipeline(
-                    pipeline_url,
-                    token,
-                    [
-                        {"sql": f'DROP TABLE IF EXISTS "{table_name}"'},
-                        {"sql": create_sql},
-                    ],
-                )
+                _turso_pipeline(pipeline_url, token, [
+                    {"sql": f'DROP TABLE IF EXISTS "{table_name}"'},
+                    {"sql": create_sql},
+                ])
 
                 col_info = cur.execute(f'PRAGMA table_info("{table_name}")').fetchall()
                 cols = [c[1] for c in col_info]
@@ -337,10 +303,7 @@ def sync_now(interactive: bool = False, quiet: bool = False) -> bool:
                     batch = rows_cur.fetchmany(BATCH_SIZE)
                     if not batch:
                         break
-                    stmts = [
-                        {"sql": insert_sql, "args": [_encode_arg(v) for v in row]}
-                        for row in batch
-                    ]
+                    stmts = [{"sql": insert_sql, "args": [_encode_arg(v) for v in row]} for row in batch]
                     _turso_pipeline(pipeline_url, token, stmts)
                     total += len(batch)
                     if not quiet:
@@ -349,10 +312,7 @@ def sync_now(interactive: bool = False, quiet: bool = False) -> bool:
                 if not quiet:
                     print(f"   ✅ {table_name}: {total} строк        ")
 
-            indexes = cur.execute(
-                "SELECT name, sql FROM sqlite_master "
-                "WHERE type='index' AND sql IS NOT NULL"
-            ).fetchall()
+            indexes = cur.execute("SELECT name, sql FROM sqlite_master WHERE type='index' AND sql IS NOT NULL").fetchall()
             if indexes:
                 _turso_pipeline(pipeline_url, token, [{"sql": sql} for _, sql in indexes])
         finally:
@@ -367,23 +327,18 @@ def sync_now(interactive: bool = False, quiet: bool = False) -> bool:
 
 
 def sync_if_needed(quiet: bool = True) -> bool:
-    """Синхронизирует только если chess.db изменилась с момента прошлой синхронизации."""
     if not is_sync_needed():
         return False
     return sync_now(interactive=False, quiet=quiet)
 
 
-def main():
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Синхронизация chess.db с Turso")
-    parser.add_argument("--if-needed", action="store_true", help="Выгружать только при изменении chess.db")
-    parser.add_argument("--quiet", action="store_true", help="Минимум вывода в консоль")
+    parser.add_argument("--if-needed", action="store_true")
+    parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
 
     if args.if_needed:
         sync_if_needed(quiet=args.quiet)
     else:
         sync_now(interactive=True, quiet=args.quiet)
-
-
-if __name__ == "__main__":
-    main()

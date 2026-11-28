@@ -1,17 +1,14 @@
 # ============================================================
-# src/run.py — Оркестратор конвейера (v26.2)
-# FIX: Передача --force в дочерние процессы.
-# FIX: sys.exit(1) при fail_count > 0.
+# src/run.py — Оркестратор конвейера (v26.4)
+# FIX: Надежный импорт sync_to_turso (проверка sys.path).
 # ============================================================
 import os
 import sys
 import time
 import argparse
 import subprocess
-import traceback
 from datetime import datetime
 
-# --- ИСПРАВЛЕНИЕ ПУТЕЙ (v25.5) ---
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(CURRENT_DIR) if os.path.basename(CURRENT_DIR).lower() == "src" else CURRENT_DIR
 SRC_DIR = os.path.join(BASE_DIR, "src")
@@ -49,10 +46,8 @@ STEPS = {
 }
 
 def check_lock():
-    """Проверяет, не запущен ли уже конвейер."""
     if os.path.exists(LOCK_FILE):
         print(f"\n🛑 ОШИБКА: Найден файл {LOCK_FILE}.")
-        print("   Возможно, конвейер уже запущен в другом окне, или произошло падение.")
         print(f"   Если вы уверены, что ничего не работает, удалите файл: {LOCK_FILE}")
         return False
     with open(LOCK_FILE, "w") as f:
@@ -60,12 +55,10 @@ def check_lock():
     return True
 
 def release_lock():
-    """Удаляет lock-файл."""
     if os.path.exists(LOCK_FILE):
         os.remove(LOCK_FILE)
 
 def run_smoke_test():
-    """Проверяет, что все 8 файлов дашбордов созданы и не пусты."""
     dash_dir = os.path.join(str(_common.REPORTS_DIR), "dashboards")
     expected_files = [f for f in os.listdir(dash_dir) if f.endswith(".txt")] if os.path.exists(dash_dir) else []
     if len(expected_files) < 8:
@@ -77,6 +70,17 @@ def run_smoke_test():
             print(f"⚠️ SMOKE-TEST FAIL: Файл {fname} слишком мал (возможно, пустой).")
             return
     print("✅ SMOKE-TEST OK: Все дашборды сгенерированы и не пусты.")
+
+def _auto_sync_turso():
+    """Автоматически выгружает обновлённую chess.db в Turso."""
+    try:
+        # Защита для GitHub Actions: гарантируем, что корень проекта в sys.path
+        if BASE_DIR not in sys.path:
+            sys.path.insert(0, BASE_DIR)
+        from web_dashboard.utils.sync_to_turso import sync_if_needed
+        sync_if_needed(quiet=False)
+    except Exception as e:
+        print(f"⚠️ Автосинхронизация с Turso не выполнена: {e}")
 
 def _run_step(step_key, name, filename, fast_mode, force=False):
     step_info = STEPS[step_key]
@@ -105,15 +109,9 @@ def _run_step(step_key, name, filename, fast_mode, force=False):
         cmd.append("--force")
 
     try:
-        result = subprocess.run(
-            cmd,
-            check=True,
-            capture_output=False,
-            text=True
-        )
+        result = subprocess.run(cmd, check=True, capture_output=False, text=True)
         elapsed = time.time() - start_time
         print(f"\n✅ ШАГ {step_key} завершен за {elapsed:.1f} сек")
-        
         _common.log_end(filename, "OK")
         if not always_run:
             mark_completed(name, deps)
@@ -131,11 +129,11 @@ def _run_step(step_key, name, filename, fast_mode, force=False):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--steps", type=str, default="all", help="Шаги через запятую")
-    parser.add_argument("--keep-going", action="store_true", help="Не останавливаться при ошибке")
-    parser.add_argument("--fast", action="store_true", help="Пропустить тяжелые шаги")
-    parser.add_argument("--force", action="store_true", help="Игнорировать кэш")
-    parser.add_argument("--dry-run", action="store_true", help="Показать план без запуска")
+    parser.add_argument("--steps", type=str, default="all")
+    parser.add_argument("--keep-going", action="store_true")
+    parser.add_argument("--fast", action="store_true")
+    parser.add_argument("--force", action="store_true")
+    parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
     if args.steps == "all":
@@ -167,16 +165,14 @@ def main():
             skip_fast = " (--fast)" if args.fast and is_heavy else ""
             skip_cache = " (нет изменений)" if not args.force and not always_run and is_up_to_date(name, deps) else ""
             print(f"  {s:>2}. {name:<25} {filename}{skip_fast}{skip_cache}")
-        print(f"\nВсего шагов: {len(steps_to_run)}")
         return
 
-    # --- LOCK LOGIC ---
     if not check_lock():
         return
 
     try:
         print("=" * 60)
-        print(" ЗАПУСК КОНВЕЙЕРА (v26.2)")
+        print(" ЗАПУСК КОНВЕЙЕРА (v26.4)")
         print("=" * 60)
         print(f"Игрок: {_common.CONFIG.get('player', '?')}")
         print(f"Время: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -208,9 +204,11 @@ def main():
         print(f"  ⏱️  Время:  {total_time:.1f} сек")
         print("=" * 60)
 
-        # --- SMOKE TEST ---
         if 13 in steps_to_run and fail_count == 0:
             run_smoke_test()
+
+        if success_count > 0:
+            _auto_sync_turso()
 
         if fail_count > 0:
             sys.exit(1)
