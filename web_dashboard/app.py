@@ -1,30 +1,54 @@
 # ============================================================
-# web_dashboard/app.py — Главная страница (v20.0)
+# web_dashboard/app.py — Главная страница (v20.1)
 # ============================================================
 import sys
 import os
 import subprocess
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+WEB_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(WEB_DIR)
 SRC_DIR = os.path.join(BASE_DIR, "src")
-if BASE_DIR not in sys.path: sys.path.insert(0, BASE_DIR)
-if SRC_DIR not in sys.path: sys.path.insert(0, SRC_DIR)
+if WEB_DIR not in sys.path:
+    sys.path.insert(0, WEB_DIR)
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+if SRC_DIR not in sys.path:
+    sys.path.insert(0, SRC_DIR)
 
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 from analysis.dashboard_helpers import key_numbers, get_daily_metrics_trend
+from utils.sync_to_turso import sync_if_needed
 
 st.set_page_config(page_title="Дашборд", page_icon="🏆", layout="wide")
+
+
+def _auto_sync_on_startup():
+    if st.session_state.get("_turso_startup_checked"):
+        return
+    st.session_state["_turso_startup_checked"] = True
+    try:
+        if sync_if_needed(quiet=True):
+            st.cache_data.clear()
+            st.toast("☁️ Новые партии автоматически выгружены в Turso", icon="✅")
+    except Exception:
+        pass
+
+
+_auto_sync_on_startup()
+
 
 # --- Кэширование ---
 @st.cache_data(ttl=3600)
 def load_key_numbers():
     return key_numbers()
 
+
 @st.cache_data(ttl=3600)
 def load_trend(days=30):
     return get_daily_metrics_trend(days)
+
 
 # --- Заголовок ---
 col_title, col_btn = st.columns([4, 1])
@@ -33,10 +57,10 @@ with col_title:
     st.caption("Твой потенциал, скорость и результат в одном месте.")
 with col_btn:
     if st.button("🔄 Обновить данные (run.py)", use_container_width=True):
-        with st.spinner("Запускаю конвейер..."):
+        with st.spinner("Запускаю конвейер и синхронизацию с Turso..."):
             result = subprocess.run([sys.executable, os.path.join(SRC_DIR, "run.py")], capture_output=True, text=True)
             if result.returncode == 0:
-                st.success("Данные обновлены!")
+                st.success("Данные обновлены и синхронизированы с Turso!")
                 st.cache_data.clear()
             else:
                 st.error(f"Ошибка: {result.stderr[:200]}")
@@ -73,14 +97,14 @@ st.subheader("📈 Тренд за 30 дней (GameR vs SpeedR vs CombR vs Perf
 if trend:
     df = pd.DataFrame(trend)
     df['Дата'] = pd.to_datetime(df['Дата'])
-    
+
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=df['Дата'], y=df['GameR'], mode='lines+markers', name='GameR', line=dict(color='#00CC96', width=3)))
     fig.add_trace(go.Scatter(x=df['Дата'], y=df['SpeedR'], mode='lines+markers', name='SpeedR', line=dict(color='#EF553B', width=3)))
     fig.add_trace(go.Scatter(x=df['Дата'], y=df['CombR'], mode='lines+markers', name='CombR', line=dict(color='#AB63FA', width=3, dash='dot')))
     fig.add_trace(go.Scatter(x=df['Дата'], y=df['Perf'], mode='lines+markers', name='Perf', line=dict(color='#FFA15A', width=2)))
     fig.add_trace(go.Scatter(x=df['Дата'], y=df['Rating'], mode='lines+markers', name='Рейтинг', line=dict(color='#636EFA', width=3, dash='dash')))
-    
+
     fig.update_layout(hovermode="x unified", height=400, margin=dict(l=0, r=0, t=30, b=0), legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
     st.plotly_chart(fig, use_container_width=True)
 else:
