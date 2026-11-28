@@ -27,8 +27,8 @@ SpeedR = speed_b + speed_k × avg_time
      GameR: 2561 | SpeedR: 2526 | CombR: 2553 | Perf: 2641 | Δ: +36
   Окно 2 дня      (31 игр):
      GameR: 2580 | SpeedR: 2541 | CombR: 2570 | Perf: 2544 | Δ: +39
-  Окно 7 дней     (99 игр):
-     GameR: 2580 | SpeedR: 2550 | CombR: 2572 | Perf: 2516 | Δ: +30
+  Окно 7 дней     (91 игр):
+     GameR: 2568 | SpeedR: 2553 | CombR: 2564 | Perf: 2499 | Δ: +15
   Окно 30 дней    (931 игр):
      GameR: 2554 | SpeedR: 2504 | CombR: 2542 | Perf: 2507 | Δ: +50
   Окно 90 дней    (2356 игр):
