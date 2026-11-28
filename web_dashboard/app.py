@@ -1,6 +1,7 @@
 # ============================================================
-# web_dashboard/app.py — Главная страница (v20.3)
-# FIX: Надежное скрытие кнопки run.py на Streamlit Cloud.
+# web_dashboard/app.py — Главная страница (v20.4)
+# FIX: Вывод 4-факторного CombR v2 (Мышление, Интуиция,
+#      Ощущения, Чувства) и актуальная ссылка на Trainer.
 # ============================================================
 import json
 import os
@@ -28,13 +29,10 @@ st.set_page_config(page_title="Дашборд", page_icon="🏆", layout="wide")
 
 def _can_run_local_pipeline() -> bool:
     """True только на локальном ПК, где есть run.py и установлен Stockfish."""
-    # 1. Проверка на Streamlit Cloud (путь /mount/src или переменная окружения)
     if os.environ.get("STREAMLIT_SHARING_MODE") or str(BASE_DIR).startswith("/mount/src"):
         return False
-    # 2. Есть ли сам run.py
     if not os.path.exists(os.path.join(SRC_DIR, "run.py")):
         return False
-    # 3. Есть ли локальный Stockfish
     cfg_path = os.path.join(BASE_DIR, "data", "config.json")
     if os.path.exists(cfg_path):
         try:
@@ -93,7 +91,7 @@ with col_btn:
 
 st.divider()
 
-# --- Ключевые цифры ---
+# --- Ключевые цифры (90 дней + 4 контура CombR v2) ---
 kn = load_key_numbers()
 games = kn.get("Партий:", 0)
 winrate = kn.get("Winrate:", "—")
@@ -103,17 +101,25 @@ perf = kn.get("Perf (90д):", "—")
 trend = load_trend(30)
 if trend:
     latest = trend[-1]
-    gamr = latest["GameR"]
-    speedr = latest["SpeedR"]
-    combr = latest["CombR"]
+    gamr_fallback = latest["GameR"]
+    speedr_fallback = latest["SpeedR"]
+    combr_fallback = latest["CombR"]
+    avg_t_str = f"AvgT {latest.get('AvgT', 0)} сек"
 else:
-    gamr = speedr = combr = 0
+    gamr_fallback = speedr_fallback = combr_fallback = 0
+    avg_t_str = "—"
 
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("Партий (90д)", games, delta=f"Win: {winrate}")
-col2.metric("GameR (Точность)", gamr, delta=f"ACPL {acpl}")
-col3.metric("SpeedR (Скорость)", speedr, delta=f"AvgT {latest.get('AvgT', 0)} сек" if trend else "—")
-col4.metric("CombR (Потенциал)", combr, delta=f"Perf {perf}")
+col2.metric("GameR (Мышление)", kn.get("  (Мышление):", gamr_fallback), delta=f"ACPL {acpl}")
+col3.metric("SpeedR (Интуиция)", kn.get("  (Интуиция):", speedr_fallback), delta=avg_t_str)
+col4.metric("CombR v2 (Потенциал)", kn.get("CombR v2:", combr_fallback), delta=f"Perf {perf}")
+
+c_state, c_aggr, c_feel, c_mom = st.columns(4)
+c_state.metric("Состояние (90д)", kn.get("Состояние:", "—"))
+c_aggr.metric("AggrR (Ощущения)", kn.get("  (Ощущения):", "—"))
+c_feel.metric("StateR (Чувства)", kn.get("  (Чувства):", "—"))
+c_mom.metric("Моментум после зевка", kn.get("Моментум после зевка:", "—"))
 
 st.divider()
 
@@ -145,5 +151,5 @@ st.divider()
 st.subheader("🚀 Быстрый доступ")
 col_a, col_b, col_c = st.columns(3)
 col_a.info("📖 **00_INDEX.txt** — Полный обзор в корне проекта.")
-col_b.info("🎯 **11_Trainer.py** — Умная колода твоих зевков.")
+col_b.info("🎯 **Trainer** — Умная колода твоих зевков в боковом меню.")
 col_c.info("📊 **00_INDEX.txt** — Смотри на P90 (дно). Цель: 70.")

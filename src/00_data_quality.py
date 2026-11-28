@@ -1,5 +1,7 @@
 # ============================================================
-# 00_data_quality.py — Кросс-проверки целостности (v25.0)
+# 00_data_quality.py — Кросс-проверки целостности (v25.1)
+# FIX: check_acpl_sanity исключает короткие партии (<20 полуходов)
+#      с автоопределением колонки длины партии.
 # Удалены: check_aggregation_consistency, check_metrics_json,
 #          check_trainer_progress (см. PROJECT_RULES §28).
 # ============================================================
@@ -173,33 +175,47 @@ def check_next_move_time(chk: Checker, conn: sqlite3.Connection):
 
 def check_acpl_sanity(chk: Checker, conn: sqlite3.Connection):
     cur = conn.cursor()
-    cur.execute("""
+
+    cur.execute("PRAGMA table_info(games)")
+    game_cols = {row[1] for row in cur.fetchall()}
+    len_filter = ""
+    for candidate_col in ("plies", "total_moves", "game_length", "moves_normal", "moves"):
+        if candidate_col in game_cols:
+            min_val = 20 if candidate_col == "plies" else 10
+            len_filter = f" AND COALESCE({candidate_col}, 0) >= {min_val}"
+            break
+    if not len_filter and "pgn" in game_cols:
+        len_filter = " AND LENGTH(COALESCE(pgn, '')) > 150"
+
+    cur.execute(
+        f"""
         SELECT
             COUNT(*) FILTER (WHERE acpl > 0),
             MIN(CASE WHEN acpl > 0 THEN acpl END),
             MAX(CASE WHEN acpl > 0 THEN acpl END),
             AVG(CASE WHEN acpl > 0 THEN acpl END)
         FROM games
-        WHERE is_lag=0 AND is_cheater=0
-    """)
+        WHERE is_lag=0 AND is_cheater=0{len_filter}
+        """
+    )
     n, mn, mx, avg = cur.fetchone()
 
-    if n == 0:
+    if not n:
         chk.warn("ACPL: нет партий с acpl > 0")
         return
 
     issues = []
     if mn < 5:
         issues.append(f"min={mn:.1f} (слишком мало)")
-    if mx > 500:
-        issues.append(f"max={mx:.1f} (слишком много)")
+    if mx > 300:
+        issues.append(f"max={mx:.1f} (выброс >300 CP, старые партии с матами)")
     if avg < 20 or avg > 150:
         issues.append(f"avg={avg:.1f} (вне нормы 20-150)")
 
     if issues:
         chk.warn(f"ACPL sanity: {'; '.join(issues)}")
     else:
-        chk.ok(f"ACPL: n={n}, min={mn:.0f}, avg={avg:.0f}, max={mx:.0f}")
+        chk.ok(f"ACPL: n={n}, min={mn:.1f}, avg={avg:.1f}, max={mx:.1f}")
 
 
 def check_opening_line(chk: Checker, conn: sqlite3.Connection):
@@ -225,7 +241,7 @@ def check_opening_line(chk: Checker, conn: sqlite3.Connection):
 
 def check_stockfish_cache(chk: Checker):
     if not os.path.exists(STOCKFISH_CACHE):
-        chk.warn(f"stockfish_cache.json не найден")
+        chk.warn("stockfish_cache.json не найден")
         return
 
     size_mb = os.path.getsize(STOCKFISH_CACHE) / (1024 * 1024)
@@ -233,7 +249,7 @@ def check_stockfish_cache(chk: Checker):
         with open(STOCKFISH_CACHE, "r", encoding="utf-8") as f:
             cache = json.load(f)
         if not isinstance(cache, dict):
-            chk.fail(f"stockfish_cache: не dict")
+            chk.fail("stockfish_cache: не dict")
             return
         n = len(cache)
         sample_key = next(iter(cache))
@@ -250,7 +266,7 @@ def check_stockfish_cache(chk: Checker):
 
 def main():
     print("=" * 60)
-    print(" 00_data_quality.py — Кросс-проверки целостности (v25.0)")
+    print(" 00_data_quality.py — Кросс-проверки целостности (v25.1)")
     print("=" * 60)
     print()
 
@@ -280,7 +296,7 @@ def main():
     os.makedirs(REPORTS_DIR, exist_ok=True)
     with open(report_path, "w", encoding="utf-8") as f:
         f.write("=" * 60 + "\n")
-        f.write(" DATA QUALITY REPORT (v25.0)\n")
+        f.write(" DATA QUALITY REPORT (v25.1)\n")
         f.write("=" * 60 + "\n\n")
         for m in chk.messages:
             clean = m
