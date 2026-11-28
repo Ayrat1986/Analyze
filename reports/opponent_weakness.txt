@@ -2,17 +2,17 @@
  OPPONENT WEAKNESS
 ============================================================
 📊 ПО ACPL СОПЕРНИКА (чем выше ACPL соперника — тем он слабее):
-  ACPL < 60 (сильный)       1639п, 42.2%
+  ACPL < 60 (сильный)       1641п, 42.2%
   ACPL 60-75 (средний)       506п, 60.7%
   ACPL 75-90 (слабый)        298п, 56.4%
   ACPL > 90 (очень слабый)   350п, 37.4%
 
 📊 ПО СТИЛЮ (из opponent_style.csv):
-  universal       592п, 44.4%, ACPL 55
+  universal       593п, 44.4%, ACPL 55
   positional      198п, 67.7%, ACPL 50
-  aggressive       98п, 21.4%, ACPL 67
+  aggressive       99п, 22.2%, ACPL 67
   tactical         43п, 34.9%, ACPL 56
 
 🎯 ВЕРДИКТ:
   Лучше всего: positional (68%)
-  Хуже всего: aggressive (21%)
+  Хуже всего: aggressive (22%)
