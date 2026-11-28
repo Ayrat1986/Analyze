@@ -1,14 +1,21 @@
 # ============================================================
-# core/метрики.py (v27.2)
+# core/метрики.py (v27.6)
 # Единый источник формул (PROJECT_RULES §17).
-# 4-факторная модель: Мышление (GameR) + Интуиция (SpeedR)
-# + Ощущения (AggrR) + Чувства (StateR).
+# Основной CombR — 4-факторная модель:
+#   Точность/Мышление (GameR) + Скорость/Интуиция (SpeedR)
+#   + Агрессия/Ощущения (AggrR) + Тильт/Чувства (StateR).
+# Калибровка: Δ = CombR − Дом ≈ 0 на окнах 90 и 365 дней (база 2538).
 # ============================================================
 import json
 import os
 
 GAMER_BASE = 3110.0
 GAMER_SLOPE = 10.0
+
+CALIBRATED_HOME_BASE = 2538.0
+AGGR_BASELINE = 7.4
+CONV_BASELINE = 66.0
+CASCADE_BASELINE = 71.5
 
 _DEFAULT_SPEED_B = 3178.0
 _DEFAULT_SPEED_K = -545.0
@@ -50,14 +57,14 @@ def _load_coefs() -> dict:
 
 
 def game_rating(acpl: float) -> float:
-    """Мышление (Материя). Точность ходов."""
+    """Точность/Мышление (Материя)."""
     if acpl is None or acpl <= 0:
         return 0.0
     return max(1000.0, min(3200.0, GAMER_BASE - float(acpl) * GAMER_SLOPE))
 
 
 def speed_rating(avg_time: float, coefs: dict = None) -> float:
-    """Интуиция (Время). Скорость принятия решений."""
+    """Скорость/Интуиция (Время)."""
     if avg_time is None or avg_time <= 0:
         return 0.0
     if coefs is None:
@@ -68,22 +75,50 @@ def speed_rating(avg_time: float, coefs: dict = None) -> float:
 
 
 def aggression_rating(aggr_score: float) -> float:
-    """Ощущения (Пространство). Индекс агрессии (база 7.8 -> 2537)."""
+    """Агрессия/Ощущения (Пространство). База 7.4 -> 2538."""
     if aggr_score is None or aggr_score <= 0:
         return 0.0
-    return max(1000.0, min(3200.0, 2537.0 + (float(aggr_score) - 7.8) * 60.0))
-
-
-def state_rating(conv_pct: float, cascade_pct: float) -> float:
-    """Чувства (Энергия). Конверсия +3.0 (база 80%) и анти-тильт (база 50%)."""
-    if conv_pct is None or cascade_pct is None:
-        return 0.0
-    val = 2537.0 + (float(conv_pct) - 80.0) * 8.0 - (float(cascade_pct) - 50.0) * 2.0
+    val = CALIBRATED_HOME_BASE + (float(aggr_score) - AGGR_BASELINE) * 60.0
     return max(1000.0, min(3200.0, val))
 
 
-def combined_rating(game_r: float, speed_r: float, coefs: dict = None) -> float:
-    """Базовая 2-факторная модель (обратная совместимость)."""
+def state_rating(conv_pct: float, cascade_pct: float) -> float:
+    """Тильт/Чувства (Энергия). Конверсия +3.0 (база 66%) и каскадный тильт (база 71.5%)."""
+    if conv_pct is None or cascade_pct is None:
+        return 0.0
+    val = (
+        CALIBRATED_HOME_BASE
+        + (float(conv_pct) - CONV_BASELINE) * 6.0
+        - (float(cascade_pct) - CASCADE_BASELINE) * 2.5
+    )
+    return max(1000.0, min(3200.0, val))
+
+
+def combined_rating(
+    game_r: float,
+    speed_r: float,
+    aggr_r: float = None,
+    state_r: float = None,
+    coefs: dict = None,
+) -> float:
+    """
+    Основной CombR (4-факторная модель при передаче aggr_r и state_r;
+    2-факторный фолбэк для обратной совместимости со старыми модулями).
+    """
+    if isinstance(aggr_r, dict):
+        coefs = aggr_r
+        aggr_r = None
+
+    if aggr_r is not None and state_r is not None:
+        if not all([game_r, speed_r, aggr_r, state_r]):
+            return 0.0
+        return (
+            0.40 * float(game_r)
+            + 0.20 * float(speed_r)
+            + 0.20 * float(aggr_r)
+            + 0.20 * float(state_r)
+        )
+
     if not game_r or not speed_r:
         return 0.0
     if coefs is None:
@@ -94,15 +129,8 @@ def combined_rating(game_r: float, speed_r: float, coefs: dict = None) -> float:
 
 
 def combined_rating_v2(game_r: float, speed_r: float, aggr_r: float, state_r: float) -> float:
-    """4-факторная модель: Мышление + Интуиция + Ощущения + Чувства."""
-    if not all([game_r, speed_r, aggr_r, state_r]):
-        return 0.0
-    return (
-        0.40 * float(game_r)
-        + 0.20 * float(speed_r)
-        + 0.20 * float(aggr_r)
-        + 0.20 * float(state_r)
-    )
+    """Алиас обратной совместимости на основной 4-факторный combined_rating."""
+    return combined_rating(game_r, speed_r, aggr_r, state_r)
 
 
 def perf_rating(avg_opp: float, wins: int, draws: int, total: int) -> float:

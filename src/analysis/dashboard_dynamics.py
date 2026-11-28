@@ -1,6 +1,7 @@
 # ============================================================
-# analysis/dashboard_dynamics.py — v27.5
-# Таблицы динамики по окнам, снапшоты мониторинга и темп vs рейтинг.
+# analysis/dashboard_dynamics.py — v27.6
+# Таблицы динамики по окнам с 4-факторным CombR, AggrR, StateR,
+# дельтами (Δ = CombR - Дом, ΔGS, ΔAS), снапшоты и темп vs рейтинг.
 # ============================================================
 import json
 import statistics
@@ -14,7 +15,8 @@ from analysis.common import (
     window_label,
 )
 from analysis.dashboard_db import game_aggr_scores, get_conn, percentile
-from core.метрики import combined_rating, game_rating, speed_rating
+from analysis.dashboard_kpis import calc_window_factors
+from core.метрики import game_rating
 
 
 def last_session_vs_windows() -> list:
@@ -122,81 +124,48 @@ def last_session_vs_windows() -> list:
 
 
 def full_dynamics() -> list:
+    """Полная динамика по окнам WINDOWS с 4 контурами (GameR, SpeedR, AggrR, StateR) и CombR."""
     conn = get_conn()
     cur = conn.cursor()
     result = []
     try:
         for days in WINDOWS:
             cutoff = window_cutoff_ts(days)
-            cur.execute(
-                """
-                SELECT MAX(my_rating), AVG(my_rating), MIN(my_rating), COUNT(*),
-                       AVG(acpl), AVG(opp_rating), SUM(won), SUM(draw)
-                FROM games WHERE is_lag=0 AND is_cheater=0 AND my_rating > 0 AND end_time >= ?
-                """,
-                (cutoff,),
-            )
-            peak, home, bottom, n, avg_acpl, avg_opp, wins, draws = cur.fetchone()
-            n, avg_acpl = n or 0, avg_acpl or 0.0
-            wins, draws = wins or 0, draws or 0
+            m = calc_window_factors(cur, cutoff)
+            n = m["games"]
             if not n:
                 continue
 
-            cur.execute(
-                """
-                SELECT acpl FROM games
-                WHERE is_lag=0 AND is_cheater=0 AND end_time >= ? AND acpl > 0
-                ORDER BY acpl ASC
-                """,
-                (cutoff,),
-            )
-            acpl_vals = [float(r[0]) for r in cur.fetchall() if r[0] is not None]
-            p10 = round(percentile(acpl_vals, 0.10)) if acpl_vals else 0
-            p50 = round(percentile(acpl_vals, 0.50)) if acpl_vals else 0
-            p90 = round(percentile(acpl_vals, 0.90)) if acpl_vals else 0
-
-            score = (wins + 0.5 * draws) / n
-            perf = (avg_opp + (score - 0.5) * 800) if avg_opp else 0.0
-
-            cur.execute(
-                """
-                SELECT clocks, white FROM games
-                WHERE is_lag=0 AND is_cheater=0 AND end_time >= ? AND clocks IS NOT NULL
-                """,
-                (cutoff,),
-            )
-            times = []
-            for c_raw, w in cur.fetchall():
-                try:
-                    c = json.loads(c_raw)
-                    t = parse_time_spent(c, w == PLAYER)
-                    if t:
-                        times.extend(t)
-                except Exception:
-                    pass
-            avg_t = statistics.mean(times) if times else 0.0
-
-            g_r = game_rating(avg_acpl)
-            s_r = speed_rating(avg_t)
-            c_r = combined_rating(g_r, s_r)
+            home = round(m["avg_my"]) if m["avg_my"] else 0
+            g_r = round(m["gamr"])
+            s_r = round(m["speedr"])
+            a_r = round(m["aggr_r"])
+            st_r = round(m["state_r"])
+            c_r = round(m["combr"])
+            score = (m["wins"] + 0.5 * m["draws"]) / n
 
             result.append({
                 "window": WINDOW_LABELS[days],
                 "games": n,
-                "peak": peak or 0,
-                "home": round(home) if home else 0,
-                "bottom": bottom or 0,
+                "peak": m["peak"],
+                "home": home,
+                "bottom": m["bottom"],
                 "win_rate": round(score * 100, 1),
-                "avg_opp": round(avg_opp) if avg_opp else 0,
-                "gamr": round(g_r),
-                "speedr": round(s_r),
-                "combined_r": round(c_r),
-                "avg_time": round(avg_t, 2),
-                "perf": round(perf),
-                "p10": p10,
-                "p50": p50,
-                "p90": p90,
-                "acpl": round(avg_acpl, 1),
+                "avg_opp": round(m["avg_opp"]) if m["avg_opp"] else 0,
+                "gamr": g_r,
+                "speedr": s_r,
+                "aggr_r": a_r,
+                "state_r": st_r,
+                "combined_r": c_r,
+                "delta": (c_r - home) if home else 0,
+                "delta_gs": g_r - s_r,
+                "delta_as": a_r - st_r,
+                "avg_time": round(m["avg_t"], 2),
+                "perf": round(m["perf"]),
+                "p10": round(m["p10"]),
+                "p50": round(m["p50"]),
+                "p90": round(m["p90"]),
+                "acpl": round(m["acpl"], 1),
             })
     finally:
         try:
@@ -218,39 +187,13 @@ def monitoring_snapshot() -> list:
     try:
         for days, label in windows_spec:
             cutoff = window_cutoff_ts(days)
-            cur.execute(
-                """
-                SELECT acpl, clocks, white FROM games
-                WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?
-                """,
-                (cutoff,),
-            )
-            rows = cur.fetchall()
-            if not rows:
+            m = calc_window_factors(cur, cutoff)
+            if not m["games"]:
                 continue
 
-            acpl_vals = [float(r[0]) for r in rows if r[0] is not None and r[0] > 0]
-            avg_acpl = statistics.mean(acpl_vals) if acpl_vals else 0.0
-            stddev_acpl = statistics.pstdev(acpl_vals) if len(acpl_vals) > 1 else 0.0
-
-            times = []
-            for c_raw, w in ((r[1], r[2]) for r in rows if r[1]):
-                try:
-                    c = json.loads(c_raw)
-                    t = parse_time_spent(c, w == PLAYER)
-                    if t:
-                        times.extend(t)
-                except Exception:
-                    pass
-            avg_t = statistics.mean(times) if times else 0.0
-
-            g_r = game_rating(avg_acpl)
-            s_r = speed_rating(avg_t)
-            c_r = combined_rating(g_r, s_r)
-            delta = round(g_r - s_r) if (g_r and s_r) else 0
-
+            c_r = round(m["combr"])
+            home = round(m["avg_my"]) if m["avg_my"] else 0
             aggr_scores = game_aggr_scores(cur, cutoff)
-            avg_aggr = statistics.mean(aggr_scores) if aggr_scores else 7.8
             hunter_pct = (
                 sum(1 for a in aggr_scores if a > 8.0) / len(aggr_scores) * 100.0
                 if aggr_scores else 0.0
@@ -259,10 +202,10 @@ def monitoring_snapshot() -> list:
             snapshots.append({
                 "window": label,
                 "date": today_str,
-                "combined_r": round(c_r),
-                "delta": delta,
-                "stddev_acpl": round(stddev_acpl, 1),
-                "aggression": round(avg_aggr, 1),
+                "combined_r": c_r,
+                "delta": (c_r - home) if home else 0,
+                "stddev_acpl": round(m["std_acpl"], 1),
+                "aggression": round(m["aggr_score"], 1),
                 "hunter_pct": round(hunter_pct),
             })
     finally:
@@ -335,7 +278,7 @@ def time_vs_rating() -> list:
 
 
 def combined_vs_perf() -> list:
-    """Сравнение расчётного CombR и фактического Perf по окнам."""
+    """Сравнение расчётного 4-факторного CombR и фактического Perf по окнам."""
     return [
         {
             "window": d["window"],
