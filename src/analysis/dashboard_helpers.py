@@ -6,6 +6,7 @@
 # FIX: Поддержка Turso и 4-факторный CombR v2 без хардкода.
 # ============================================================
 import json
+import os
 import re
 import sqlite3
 import statistics
@@ -44,11 +45,13 @@ from analysis.dashboard_trends import (  # noqa: F401
     get_hourly_rhythm,
 )
 
-try:
-    from web_dashboard.utils.db import get_connection
-    HAS_TURSO = True
-except ImportError:
-    HAS_TURSO = False
+HAS_TURSO = False
+if os.environ.get("GITHUB_ACTIONS") != "true":
+    try:
+        from web_dashboard.utils.db import get_connection
+        HAS_TURSO = True
+    except ImportError:
+        HAS_TURSO = False
 
 DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
 
