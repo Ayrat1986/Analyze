@@ -5,10 +5,10 @@
   "w2": 0.25,
   "mae": 324.1,
   "game_r_mae": 325.9,
-  "speed_r_mae": 362.0,
-  "n": 2361,
-  "n_train": 1652,
+  "speed_r_mae": 361.9,
+  "n": 2363,
+  "n_train": 1654,
   "n_test": 709,
-  "calibrated_at": "2026-11-28T10:43:14.395923+00:00",
+  "calibrated_at": "2026-11-28T11:18:30.828069+00:00",
   "is_default": false
 }
