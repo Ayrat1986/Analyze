@@ -3,3 +3,4 @@ plotly>=5.20
 pandas>=2.0
 python-chess>=1.999
 streamlit-autorefresh>=1.0
+libsql-client>=0.3.0
