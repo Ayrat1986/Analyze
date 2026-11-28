@@ -1,83 +1,19 @@
 # web_dashboard/utils/db.py
 # ============================================================
-# Подключение к Turso (libSQL / HTTP API v2) или локальной
+# Подключение к Turso (HTTP Pipeline API v2) или локальной
 # SQLite (data/chess.db) для Streamlit.
 # ============================================================
 import base64
 import json
+import numbers
 import os
 import sqlite3
+import urllib.error
 import urllib.request
 from pathlib import Path
 from typing import Any, List, Optional, Tuple
 import pandas as pd
 import streamlit as st
-
-_DRIVER = "http"
-try:
-    import libsql_client
-    _DRIVER = "libsql_client"
-except ModuleNotFoundError:
-    try:
-        import libsql_experimental as libsql
-        _DRIVER = "libsql_experimental"
-    except ModuleNotFoundError:
-        _DRIVER = "http"
-
-
-class _LibsqlClientCursor:
-    """Минимальный DB-API-совместимый курсор для libsql_client."""
-    def __init__(self, client):
-        self._client = client
-        self._rows: List[Any] = []
-        self._row_index = 0
-        self.description = None
-        self.rowcount = 0
-        self.lastrowid = None
-
-    def execute(self, query: str, params=None):
-        result = self._client.execute(query, params or ())
-        self._rows = list(result) if result is not None else []
-        self._row_index = 0
-        columns = getattr(result, "columns", None)
-        self.description = [(col,) for col in columns] if columns else None
-        self.rowcount = int(getattr(result, "rows_affected", 0) or 0)
-        self.lastrowid = getattr(result, "last_insert_rowid", None)
-        return self
-
-    def fetchone(self):
-        if self._row_index >= len(self._rows):
-            return None
-        row = self._rows[self._row_index]
-        self._row_index += 1
-        return row
-
-    def fetchall(self):
-        if self._row_index >= len(self._rows):
-            return []
-        rows = self._rows[self._row_index:]
-        self._row_index = len(self._rows)
-        return rows
-
-
-class _LibsqlClientConnection:
-    """Обёртка соединения libsql_client под интерфейс sqlite3.Connection."""
-    def __init__(self, client):
-        self._client = client
-
-    def cursor(self):
-        return _LibsqlClientCursor(self._client)
-
-    def commit(self):
-        return None
-
-    def rollback(self):
-        return None
-
-    def close(self):
-        close_fn = getattr(self._client, "close", None)
-        if callable(close_fn):
-            close_fn()
 
 
 def _encode_http_arg(val: Any) -> dict:
@@ -85,10 +21,10 @@ def _encode_http_arg(val: Any) -> dict:
         return {"type": "null"}
     if isinstance(val, bool):
         return {"type": "integer", "value": "1" if val else "0"}
-    if isinstance(val, int):
-        return {"type": "integer", "value": str(val)}
-    if isinstance(val, float):
-        return {"type": "float", "value": val}
+    if isinstance(val, numbers.Integral):
+        return {"type": "integer", "value": str(int(val))}
+    if isinstance(val, numbers.Real):
+        return {"type": "float", "value": float(val)}
     if isinstance(val, (bytes, bytearray)):
         return {"type": "blob", "base64": base64.b64encode(bytes(val)).decode("ascii")}
     return {"type": "text", "value": str(val)}
@@ -127,7 +63,7 @@ class _TursoHttpCursor:
                 for k, v in params.items()
             ]
         elif params:
-            stmt["args"] = [_encode_http_arg(p) for p in params]
+            stmt["args"] = [_encode_http_arg(p) for p in list(params)]
 
         payload = json.dumps({
             "requests": [
@@ -145,12 +81,19 @@ class _TursoHttpCursor:
             },
             method="POST",
         )
-        with urllib.request.urlopen(req, timeout=20) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
+
+        try:
+            with urllib.request.urlopen(req, timeout=20) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            err_body = e.read().decode("utf-8", errors="replace")
+            raise RuntimeError(f"Turso HTTP {e.code}: {err_body}") from e
 
         first = data["results"][0]
         if first.get("type") == "error":
-            raise RuntimeError(f"Turso SQL error: {first.get('error')}")
+            err = first.get("error", {})
+            msg = err.get("message", str(err)) if isinstance(err, dict) else str(err)
+            raise RuntimeError(f"Turso SQL error: {msg}")
 
         res = first["response"]["result"]
         cols = [c["name"] for c in res.get("cols", [])]
@@ -212,6 +155,16 @@ def _get_turso_credentials() -> Tuple[Optional[str], Optional[str]]:
 
     url = url or os.environ.get("TURSO_DATABASE_URL") or os.environ.get("TURSO_URL")
     token = token or os.environ.get("TURSO_AUTH_TOKEN") or os.environ.get("TURSO_TOKEN")
+
+    if url:
+        url = url.strip()
+        if url.startswith("libsql://"):
+            url = "https://" + url[len("libsql://"):]
+        elif url.startswith("wss://"):
+            url = "https://" + url[len("wss://"):]
+    if token:
+        token = token.strip()
+
     return url, token
 
 
@@ -223,21 +176,10 @@ def _find_local_sqlite() -> Optional[Path]:
 
 @st.cache_resource(show_spinner="Подключение к базе данных…")
 def get_connection():
-    """Возвращает соединение с Turso, а при отсутствии секретов — с локальной chess.db."""
+    """Возвращает HTTP-соединение с Turso, а при отсутствии секретов — с локальной chess.db."""
     url, token = _get_turso_credentials()
 
     if url and token:
-        if _DRIVER == "libsql_client":
-            if url.startswith("libsql://"):
-                url = "https://" + url[len("libsql://"):]
-            client = libsql_client.create_client_sync(url, auth_token=token)
-            return _LibsqlClientConnection(client)
-
-        if _DRIVER == "libsql_experimental":
-            return libsql.connect(database=url, auth_token=token)
-
-        if url.startswith("libsql://"):
-            url = "https://" + url[len("libsql://"):]
         return _TursoHttpConnection(url, token)
 
     local_db = _find_local_sqlite()
