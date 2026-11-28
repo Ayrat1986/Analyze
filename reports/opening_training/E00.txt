@@ -1,33 +1,33 @@
 # Домашняя работа: E00
-# Winrate: 69.2%
-# ACPL: деб 22 / мит 61 / энд 43
-# Eval после дебюта: +37.2
+# Winrate: 71.4%
+# ACPL: деб 21 / мит 65 / энд 43
+# Eval после дебюта: +38.9
 # Линия-убийца: d2d4 c7c6 c2c4 d7d5 b1c3 e7e6 g2g3 g8f6 f1g2 f8e7 g1f3 e8g8 e1g1 b8d7 c1f4 b7b6 a1c1 c8b7 a2a3 a8c8 (12 зевков)
-# Окно уязвимости: 31+ (30 зевков)
+# Окно уязвимости: 31+ (32 зевков)
 # Точка невозврата: после 55-го хода (100% поражений)
 
-# Позиция 1: Ход 30, потеря 1000 CP
+# Позиция 1: Ход 43, потеря 9114 CP
+FEN: 1n4k1/pP6/8/1P6/P5p1/3b2P1/4r2P/6K1 w - - 1 43
+Лучший ход (Stockfish): Kh1
+Ссылка: https://lichess.org/analysis/standard/1n4k1/pP6/8/1P6/P5p1/3b2P1/4r2P/6K1_w_-_-_1_43
+
+# Позиция 2: Ход 28, потеря 1015 CP
+FEN: 5rk1/pp6/2pq3Q/3Ppr1b/2P1R1p1/PP3nP1/1B4BP/5R1K w - - 0 28
+Лучший ход (Stockfish): Qxd6
+Ссылка: https://lichess.org/analysis/standard/5rk1/pp6/2pq3Q/3Ppr1b/2P1R1p1/PP3nP1/1B4BP/5R1K_w_-_-_0_28
+
+# Позиция 3: Ход 30, потеря 1000 CP
 FEN: 6k1/2q2pbp/3p2p1/3P4/R4P2/6PP/2p2nBK/2r1Q3 w - - 0 30
 Лучший ход (Stockfish): Qe8+
 Ссылка: https://lichess.org/analysis/standard/6k1/2q2pbp/3p2p1/3P4/R4P2/6PP/2p2nBK/2r1Q3_w_-_-_0_30
 
-# Позиция 2: Ход 32, потеря 1000 CP
+# Позиция 4: Ход 32, потеря 1000 CP
 FEN: b3q1k1/5ppp/3p4/3P4/Q1P1P3/6P1/5P1P/5BK1 w - - 2 32
 Лучший ход (Stockfish): Qxe8#
 Ссылка: https://lichess.org/analysis/standard/b3q1k1/5ppp/3p4/3P4/Q1P1P3/6P1/5P1P/5BK1_w_-_-_2_32
 
-# Позиция 3: Ход 46, потеря 1000 CP
+# Позиция 5: Ход 46, потеря 1000 CP
 FEN: 8/1R3R2/p5pk/8/4PP1p/6PP/6BK/8 w - - 1 46
 Лучший ход (Stockfish): Rh7#
 Ссылка: https://lichess.org/analysis/standard/8/1R3R2/p5pk/8/4PP1p/6PP/6BK/8_w_-_-_1_46
-
-# Позиция 4: Ход 39, потеря 1000 CP
-FEN: 6rk/5R1p/7p/8/4B2P/4P1P1/5P1K/8 w - - 0 39
-Лучший ход (Stockfish): Rxh7#
-Ссылка: https://lichess.org/analysis/standard/6rk/5R1p/7p/8/4B2P/4P1P1/5P1K/8_w_-_-_0_39
-
-# Позиция 5: Ход 49, потеря 1000 CP
-FEN: 8/2b5/p1p1bkpp/1p1p1p2/1P1P4/P1Q2BPP/3Nq3/6K1 b - - 13 49
-Лучший ход (Stockfish): Qe1+
-Ссылка: https://lichess.org/analysis/standard/8/2b5/p1p1bkpp/1p1p1p2/1P1P4/P1Q2BPP/3Nq3/6K1_b_-_-_13_49
 

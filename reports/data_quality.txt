@@ -5,12 +5,12 @@
 ✅ OK  БД найдена: 18.1 МБ
 ✅ OK  PRAGMA integrity_check: ok (файл БД цел)
 ✅ OK  PRAGMA foreign_key_check: 0 нарушений (FK работают)
-✅ OK  FK целостность: 11112 зевков, 0 orphans
-✅ OK  Уникальность games: 2897 партий, 0 дубликатов
+✅ OK  FK целостность: 11116 зевков, 0 orphans
+✅ OK  Уникальность games: 2898 партий, 0 дубликатов
 ✅ OK  Дубликаты PGN: 0 (все партии уникальны)
-✅ OK  next_move_time: 10333/11112 (93.0%) заполнено
+✅ OK  next_move_time: 10336/11116 (93.0%) заполнено
 ⚠️  WARN ACPL sanity: min=4.8 (слишком мало); max=1461.0 (выброс >300 CP, старые партии с матами)
-✅ OK  opening_line: 2795/2795 (100.0%) заполнено
-✅ OK  stockfish_cache: 2898 партий (19.1 МБ)
+✅ OK  opening_line: 2796/2796 (100.0%) заполнено
+✅ OK  stockfish_cache: 2899 партий (19.1 МБ)
 
 Итог: passed=9, warnings=1, failed=0

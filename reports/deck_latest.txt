@@ -1,4 +1,4 @@
-Сформирована: 2026-11-28 10:27
+Сформирована: 2026-11-28 10:43
 Причина включения указана у каждой позиции. Не более 1 позиции из одной партии, не более 2 на pattern_tag.
 Свежих (7 дней): 10 | Случайных из топ-100: 0
 
@@ -45,40 +45,40 @@
      Лучше:   Kg8  (UCI f7g8)
      Тренируй: https://lichess.org/analysis/standard/8/p3qkp1/2p3p1/1p3p2/1P1Q3P/6P1/5P2/6K1_b_-_-_0_42
 
-  6. KidColombia7 vs Ayrat_1986 (26.11.26, ход 44, потеря 1014 CP)
+  6. Ayrat_1986 vs TrickyTrapChess (28.11.26, ход 28, потеря 1015 CP)
+     Причина включения: свежая ошибка (≤7 дней)
+     FEN: 5rk1/pp6/2pq3Q/3Ppr1b/2P1R1p1/PP3nP1/1B4BP/5R1K w - - 0 28
+     Сыграно: dxc6  (UCI d5c6)
+     Лучше:   Qxd6  (UCI h6d6)
+     Тренируй: https://lichess.org/analysis/standard/5rk1/pp6/2pq3Q/3Ppr1b/2P1R1p1/PP3nP1/1B4BP/5R1K_w_-_-_0_28
+
+  7. KidColombia7 vs Ayrat_1986 (26.11.26, ход 44, потеря 1014 CP)
      Причина включения: свежая ошибка (≤7 дней)
      FEN: 8/5R2/1k3p2/3p4/P2b2P1/4p2P/5P2/6K1 b - - 1 44
      Сыграно: exf2+  (UCI e3f2)
      Лучше:   e2  (UCI e3e2)
      Тренируй: https://lichess.org/analysis/standard/8/5R2/1k3p2/3p4/P2b2P1/4p2P/5P2/6K1_b_-_-_1_44
 
-  7. Ayrat_1986 vs Karateloru (28.11.26, ход 60, потеря 1006 CP)
+  8. Ayrat_1986 vs Karateloru (28.11.26, ход 60, потеря 1006 CP)
      Причина включения: свежая ошибка (≤7 дней)
      FEN: 3k4/8/1n1K1p1p/1B4p1/4P1P1/7P/8/8 w - - 0 60
      Сыграно: Bc4  (UCI b5c4)
      Лучше:   Ke6  (UCI d6e6)
      Тренируй: https://lichess.org/analysis/standard/3k4/8/1n1K1p1p/1B4p1/4P1P1/7P/8/8_w_-_-_0_60
 
-  8. Ayrat_1986 vs bopielmariongle (24.11.26, ход 39, потеря 1000 CP)
+  9. Ayrat_1986 vs bopielmariongle (24.11.26, ход 39, потеря 1000 CP)
      Причина включения: свежая ошибка (≤7 дней)
      FEN: 8/p4p1k/3b1Prp/3Pp2Q/P1p1q3/2P2R1P/3B2PK/8 w - - 2 39
      Сыграно: Be3  (UCI d2e3)
      Лучше:   Bxh6  (UCI d2h6)
      Тренируй: https://lichess.org/analysis/standard/8/p4p1k/3b1Prp/3Pp2Q/P1p1q3/2P2R1P/3B2PK/8_w_-_-_2_39
 
-  9. MemoryReboot_0 vs Ayrat_1986 (24.11.26, ход 30, потеря 987 CP)
+  10. MemoryReboot_0 vs Ayrat_1986 (24.11.26, ход 30, потеря 987 CP)
      Причина включения: свежая ошибка (≤7 дней)
      FEN: 4r1k1/pp1r3p/1b2N1p1/q3pP2/3P4/2P5/P4QP1/4BRK1 b - - 0 30
      Сыграно: gxf5  (UCI g6f5)
      Лучше:   exd4  (UCI e5d4)
      Тренируй: https://lichess.org/analysis/standard/4r1k1/pp1r3p/1b2N1p1/q3pP2/3P4/2P5/P4QP1/4BRK1_b_-_-_0_30
-
-  10. Vitaminasvi vs Ayrat_1986 (24.11.26, ход 29, потеря 974 CP)
-     Причина включения: свежая ошибка (≤7 дней)
-     FEN: 2rr2k1/p5bp/q4pp1/3ppn2/1N6/1PP4P/P1R1QPP1/B1R4K b - - 7 29
-     Сыграно: Qb5  (UCI a6b5)
-     Лучше:   Qxe2  (UCI a6e2)
-     Тренируй: https://lichess.org/analysis/standard/2rr2k1/p5bp/q4pp1/3ppn2/1N6/1PP4P/P1R1QPP1/B1R4K_b_-_-_7_29
 
  СЛУЧАЙНЫЕ ИЗ ТОП-100:
  ⚠️ random: пусто.
