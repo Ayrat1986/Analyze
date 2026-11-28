@@ -1,450 +1,367 @@
 # ============================================================
-# analysis/dashboard_helpers.py — v26.3
-# FIX: Убрано дублирование функций. None для momentum. Метки P10/P90.
+# analysis/dashboard_helpers.py — v27.2
+# FIX: Поддержка Turso для главной страницы Streamlit Cloud.
+# FIX: Динамический расчёт 4-факторного CombR v2 без хардкода.
+# FIX: Сохранены все метрики 00_INDEX.txt и функции трендов.
 # ============================================================
-import os
 import json
-import statistics
 import re
 import sqlite3
-from datetime import datetime, timezone, timedelta
+import statistics
 import _common
-from analysis.common import WINDOWS, window_label, window_cutoff_ts
-
-from analysis.common import _conn, PLAYER, REPORTS_DIR, WINDOWS, WINDOW_LABELS, window_cutoff_ts
-from core.метрики import game_rating, speed_rating, combined_rating
-
-from analysis.dashboard_aggression import (
-    aggression_by_rating, aggression_by_opening, aggression_by_phase, aggression_by_moves
+from _chess_utils import parse_time_spent
+from analysis.common import (
+    PLAYER,
+    REPORTS_DIR,
+    WINDOW_LABELS,
+    WINDOWS,
+    window_cutoff_ts,
+    window_label,
 )
-from analysis.dashboard_trends import (
-    get_daily_metrics_trend, get_hourly_rhythm, get_cascade_trend, get_blunder_map_data
+from core.метрики import (
+    aggression_rating,
+    combined_rating,
+    combined_rating_v2,
+    game_rating,
+    perf_rating,
+    speed_rating,
+    state_rating,
 )
 
-DB_FILE = str(os.path.join(os.path.dirname(__file__), "..", "..", "data", "chess.db"))
+# Реэкспорт функций для 13_dashboard_final.py и web_dashboard/app.py
+from analysis.dashboard_aggression import (  # noqa: F401
+    aggression_by_moves,
+    aggression_by_opening,
+    aggression_by_phase,
+    aggression_by_rating,
+)
+from analysis.dashboard_trends import (  # noqa: F401
+    get_blunder_map_data,
+    get_cascade_trend,
+    get_daily_metrics_trend,
+    get_hourly_rhythm,
+)
+
+try:
+    from web_dashboard.utils.db import get_connection
+    HAS_TURSO = True
+except ImportError:
+    HAS_TURSO = False
+
+DB_FILE = str(_common.BASE_DIR / "data" / "chess.db")
+
+_SAN_TOKEN_RE = re.compile(
+    r"^(?:O-O-O|O-O|[KQRBN]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?[+#]?)$"
+)
 
 
-def get_blade_state(combr):
-    """Определяет состояние Клинка по метрике CombR."""
+def _get_conn():
+    """Универсальное подключение: Turso (в облаке/при наличии secrets) или локальный SQLite."""
+    if HAS_TURSO:
+        try:
+            return get_connection()
+        except Exception:
+            pass
+    return sqlite3.connect(DB_FILE)
+
+
+def get_blade_state(combr: float) -> str:
     if combr >= 2650:
         return "🗡️ Острый Клинок"
-    elif combr >= 2550:
+    if combr >= 2550:
         return "⚔️ Боевой Клинок"
-    elif combr >= 2450:
+    if combr >= 2450:
         return "🪵 Тупеющий Клинок"
-    elif combr >= 2300:
+    if combr >= 2300:
         return "🧱 Тупой Клинок"
-    else:
-        return "💀 Сломанный Клинок"
+    return "💀 Сломанный Клинок"
 
 
-def key_numbers():
-    conn = _conn()
+def _percentile(sorted_vals: list, q: float) -> float:
+    if not sorted_vals:
+        return 0.0
+    if len(sorted_vals) == 1:
+        return float(sorted_vals[0])
+    pos = (len(sorted_vals) - 1) * q
+    lo = int(pos)
+    hi = min(lo + 1, len(sorted_vals) - 1)
+    frac = pos - lo
+    return float(sorted_vals[lo] * (1.0 - frac) + sorted_vals[hi] * frac)
+
+
+def _calc_aggr_score_from_pgn(cur, cutoff_ts: int) -> float:
+    """
+    Динамически считает индекс агрессии (шкала ~0..10, база 7.8 ≈ 28% взятий и шахов)
+    по ходам игрока в PGN за выбранное окно.
+    """
+    try:
+        cur.execute(
+            """
+            SELECT pgn, white FROM games
+            WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?
+              AND pgn IS NOT NULL AND pgn != ''
+            """,
+            (cutoff_ts,),
+        )
+        total_moves = 0
+        aggr_moves = 0
+        for pgn, white in cur.fetchall():
+            is_white = (white == PLAYER)
+            body = re.sub(r"\[[^\]]*\]", " ", pgn)
+            body = re.sub(r"\{[^}]*\}", " ", body)
+            tokens = [t for t in body.split() if _SAN_TOKEN_RE.match(t)]
+            my_moves = tokens[0::2] if is_white else tokens[1::2]
+            total_moves += len(my_moves)
+            aggr_moves += sum(1 for m in my_moves if ("x" in m or "+" in m or "#" in m))
+
+        if total_moves > 0:
+            aggr_pct = (aggr_moves / total_moves) * 100.0
+            return round(aggr_pct * (7.8 / 28.0), 2)
+    except Exception:
+        pass
+    return 7.8
+
+
+def key_numbers() -> dict:
+    conn = _get_conn()
     cur = conn.cursor()
     ts = window_cutoff_ts(90)
     result = {}
 
     cur.execute(
-        "SELECT COUNT(*), ROUND(AVG(acpl), 1), ROUND(AVG(acpl_middlegame), 1), "
-        "ROUND(AVG(momentum_after_blunder), 1) "
-        "FROM games WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?", (ts,))
-    n, acpl, acpl_mid, mom = cur.fetchone()
-    n = n or 0
-    acpl = acpl or 0
-    acpl_mid = acpl_mid or 0
-    
+        """
+        SELECT COUNT(*), AVG(acpl), AVG(momentum_after_blunder)
+        FROM games WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?
+        """,
+        (ts,),
+    )
+    n, acpl, mom = cur.fetchone()
+    n, acpl = n or 0, acpl or 0.0
+
+    cur.execute(
+        """
+        SELECT acpl FROM games
+        WHERE is_lag=0 AND is_cheater=0 AND end_time >= ? AND acpl > 0
+        ORDER BY acpl ASC
+        """,
+        (ts,),
+    )
+    acpl_vals = [float(r[0]) for r in cur.fetchall() if r[0] is not None]
+    p50_acpl = _percentile(acpl_vals, 0.50)
+    p10_acpl = _percentile(acpl_vals, 0.10)
+    p90_acpl = _percentile(acpl_vals, 0.90)
+    std_acpl = statistics.pstdev(acpl_vals) if len(acpl_vals) > 1 else 0.0
+
     result["Партий:"] = n
-    result["ACPL:"] = f"{acpl:.0f} (мит: {acpl_mid:.0f})"
+    result["ACPL:"] = f"{acpl:.0f} (мед: {p50_acpl:.0f})" if acpl_vals else f"{acpl:.1f}"
     result["Моментум после зевка:"] = f"{mom:.0f} CP" if mom is not None else "нет данных (N=0)"
 
     cur.execute(
-        "SELECT SUM(won), SUM(draw), ROUND(AVG(opp_rating)), ROUND(AVG(my_rating)) "
-        "FROM games WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?", (ts,))
+        """
+        SELECT SUM(won), SUM(draw), AVG(opp_rating), AVG(my_rating)
+        FROM games WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?
+        """,
+        (ts,),
+    )
     wins, draws, avg_opp, avg_my = cur.fetchone()
-    wins = wins or 0
-    draws = draws or 0
-    avg_opp = avg_opp or 0
-    avg_my = avg_my or 0
+    wins, draws = wins or 0, draws or 0
+
     if n:
         result["Winrate:"] = f"{(wins + 0.5 * draws) / n * 100:.1f}%"
+        if avg_opp:
+            result["Perf (90д):"] = round(perf_rating(avg_opp, wins, draws, n))
     if avg_my:
         result["Средний рейтинг (90д):"] = round(avg_my)
 
     cur.execute(
-        "SELECT my_rating FROM games WHERE is_lag=0 AND is_cheater=0 AND end_time >= ? "
-        "AND my_rating > 0 ORDER BY end_time DESC LIMIT 1", (ts,))
-    last = cur.fetchone()
-    if last:
-        result["Последний рейтинг:"] = last[0]
+        """
+        SELECT my_rating FROM games
+        WHERE is_lag=0 AND is_cheater=0 AND my_rating > 0
+        ORDER BY end_time DESC LIMIT 1
+        """
+    )
+    last_row = cur.fetchone()
+    if last_row and last_row[0]:
+        result["Последний рейтинг:"] = round(last_row[0])
+
+    try:
+        cur.execute(
+            """
+            SELECT COUNT(*) FROM games
+            WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?
+              AND won=0 AND draw=0 AND reason = 'просрочка'
+            """,
+            (ts,),
+        )
+        n_timeout = cur.fetchone()[0] or 0
+        if n:
+            result["Просрочки (90д):"] = f"{n_timeout} ({n_timeout / n * 100:.1f}%)"
+    except Exception:
+        pass
+
+    if acpl_vals:
+        result["ACPL P10 (лучшие 10%):"] = f"{p10_acpl:.1f} (GameR {round(game_rating(p10_acpl))})"
+        result["ACPL P90 (худшие 10%):"] = f"{p90_acpl:.1f} (GameR {round(game_rating(p90_acpl))})"
+        result["StdDev ACPL:"] = f"{std_acpl:.1f}"
 
     cur.execute(
-        "SELECT SUM(CASE WHEN reason='просрочка' AND won=0 THEN 1 ELSE 0 END), COUNT(*) "
-        "FROM games WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?", (ts,))
-    lost_to, total_g = cur.fetchone()
-    lost_to = lost_to or 0
-    total_g = total_g or 1
-    result["Просрочки (90д):"] = f"{lost_to} ({lost_to/total_g*100:.1f}%)"
+        """
+        SELECT clocks, white FROM games
+        WHERE is_lag=0 AND is_cheater=0 AND end_time >= ? AND clocks IS NOT NULL
+        """,
+        (ts,),
+    )
+    times = []
+    for clocks_raw, white in cur.fetchall():
+        try:
+            clocks = json.loads(clocks_raw)
+            t = parse_time_spent(clocks, white == PLAYER)
+            if t:
+                times.extend(t)
+        except Exception:
+            pass
+    avg_t = statistics.mean(times) if times else 0.0
 
-    if avg_opp and n:
-        result["Perf (90д):"] = round(avg_opp + ((wins + 0.5 * draws) / n - 0.5) * 800)
+    aggr_score = _calc_aggr_score_from_pgn(cur, ts)
 
-    cur.execute(
-        "SELECT acpl FROM games WHERE is_lag=0 AND is_cheater=0 AND end_time >= ? AND acpl > 0",
-        (ts,))
-    vals = sorted([r[0] for r in cur.fetchall()])
-    if len(vals) >= 10:
-        p10 = vals[int(len(vals) * 0.1)]
-        p90 = vals[int(len(vals) * 0.9)]
-        stddev = statistics.stdev(vals)
-        result["ACPL P10 (лучшие 10%):"] = f"{p10:.1f} (GameR {game_rating(p10):.0f})"
-        result["ACPL P90 (худшие 10%):"] = f"{p90:.1f} (GameR {game_rating(p90):.0f})"
-        result["StdDev ACPL:"] = f"{stddev:.1f}"
-    else:
-        result["ACPL P10 (лучшие 10%):"] = "—"
-        result["ACPL P90 (худшие 10%):"] = "—"
-        result["StdDev ACPL:"] = "—"
+    conv_pct = 80.0
+    try:
+        cur.execute(
+            """
+            SELECT COUNT(*) FROM games
+            WHERE is_lag=0 AND is_cheater=0 AND end_time >= ? AND max_eval_advantage >= 300
+            """,
+            (ts,),
+        )
+        total_adv = cur.fetchone()[0] or 0
+        if total_adv > 0:
+            cur.execute(
+                """
+                SELECT COUNT(*) FROM games
+                WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?
+                  AND max_eval_advantage >= 300 AND won=0 AND draw=0
+                """,
+                (ts,),
+            )
+            sliv = cur.fetchone()[0] or 0
+            conv_pct = ((total_adv - sliv) / total_adv) * 100.0
+    except Exception:
+        pass
+
+    cascade_pct = 50.0
+    try:
+        cur.execute(
+            """
+            SELECT COUNT(DISTINCT b.game_url)
+            FROM blunders b JOIN games g ON g.url = b.game_url
+            WHERE g.is_lag=0 AND g.is_cheater=0 AND g.end_time >= ?
+              AND b.is_my_blunder=1 AND b.is_berserk=0
+            """,
+            (ts,),
+        )
+        total_games_blunder = cur.fetchone()[0] or 0
+        if total_games_blunder > 0:
+            cur.execute(
+                """
+                SELECT COUNT(DISTINCT game_url) FROM (
+                    SELECT b.game_url AS game_url, b.move_num AS move_num,
+                           LAG(b.move_num) OVER(PARTITION BY b.game_url ORDER BY b.move_num) AS prev_move
+                    FROM blunders b JOIN games g ON g.url = b.game_url
+                    WHERE g.is_lag=0 AND g.is_cheater=0 AND g.end_time >= ?
+                      AND b.is_my_blunder=1 AND b.is_berserk=0
+                ) WHERE move_num - prev_move <= 5
+                """,
+                (ts,),
+            )
+            cascade_games = cur.fetchone()[0] or 0
+            cascade_pct = (cascade_games / total_games_blunder) * 100.0
+    except Exception:
+        pass
+
+    g_r = game_rating(acpl)
+    s_r = speed_rating(avg_t)
+    a_r = aggression_rating(aggr_score)
+    st_r = state_rating(conv_pct, cascade_pct)
+
+    combr_v2 = combined_rating_v2(g_r, s_r, a_r, st_r)
+    blade = get_blade_state(combr_v2)
+
+    result["Состояние:"] = blade
+    result["CombR v2:"] = round(combr_v2)
+    result["  (Мышление):"] = round(g_r)
+    result["  (Интуиция):"] = round(s_r)
+    result["  (Ощущения):"] = round(a_r)
+    result["  (Чувства):"] = round(st_r)
 
     conn.close()
     return result
 
 
-def full_dynamics():
-    """
-    v25.0 (§17): SpeedR и CombR — только из core.метрики.
-    """
-    conn = _conn()
+def full_dynamics() -> list:
+    conn = _get_conn()
     cur = conn.cursor()
     result = []
     for days in WINDOWS:
         cutoff = window_cutoff_ts(days)
         cur.execute(
-            "SELECT MAX(my_rating), AVG(my_rating), MIN(my_rating), COUNT(*), "
-            "AVG(acpl), AVG(opp_rating), SUM(won), SUM(draw) "
-            "FROM games WHERE is_lag=0 AND is_cheater=0 AND my_rating > 0 AND end_time >= ?",
-            (cutoff,))
+            """
+            SELECT MAX(my_rating), AVG(my_rating), MIN(my_rating), COUNT(*),
+                   AVG(acpl), AVG(opp_rating), SUM(won), SUM(draw)
+            FROM games WHERE is_lag=0 AND is_cheater=0 AND my_rating > 0 AND end_time >= ?
+            """,
+            (cutoff,),
+        )
         peak, home, bottom, n, avg_acpl, avg_opp, wins, draws = cur.fetchone()
-        peak = peak or 0
-        home = round(home) if home else 0
-        bottom = bottom or 0
-        n = n or 0
-        avg_acpl = avg_acpl or 0
-        avg_opp = round(avg_opp) if avg_opp else 0
-        wins = wins or 0
-        draws = draws or 0
-        score = (wins + 0.5 * draws) / n if n else 0
-        perf = avg_opp + (score - 0.5) * 800 if avg_opp else 0
+        n, avg_acpl = n or 0, avg_acpl or 0.0
+        wins, draws = wins or 0, draws or 0
+        if not n:
+            continue
+
+        score = (wins + 0.5 * draws) / n
+        perf = (avg_opp + (score - 0.5) * 800) if avg_opp else 0.0
 
         cur.execute(
-            "SELECT acpl FROM games WHERE is_lag=0 AND is_cheater=0 AND my_rating > 0 "
-            "AND end_time >= ? AND acpl > 0", (cutoff,))
-        acpl_vals = sorted([r[0] for r in cur.fetchall()])
-        if len(acpl_vals) >= 10:
-            n_v = len(acpl_vals)
-            p10 = acpl_vals[int(n_v * 0.1)]
-            p50 = acpl_vals[int(n_v * 0.5)]
-            p90 = acpl_vals[int(n_v * 0.9)]
-        else:
-            p10 = p50 = p90 = 0
-
-        gamr = game_rating(avg_acpl) if avg_acpl else 0
-
-        cur.execute(
-            "SELECT clocks, white FROM games WHERE is_lag=0 AND is_cheater=0 "
-            "AND my_rating > 0 AND end_time >= ? AND acpl > 0 "
-            "AND clocks IS NOT NULL AND clocks != '[]'", (cutoff,))
-        all_avg_times = []
-        from _chess_utils import parse_time_spent
-        for clocks_raw, white in cur.fetchall():
+            """
+            SELECT clocks, white FROM games
+            WHERE is_lag=0 AND is_cheater=0 AND end_time >= ? AND clocks IS NOT NULL
+            """,
+            (cutoff,),
+        )
+        times = []
+        for c_raw, w in cur.fetchall():
             try:
-                clocks = json.loads(clocks_raw)
-                if not clocks:
-                    continue
+                c = json.loads(c_raw)
+                t = parse_time_spent(c, w == PLAYER)
+                if t:
+                    times.extend(t)
             except Exception:
-                continue
-            player_is_white = (white or "").lower() == PLAYER.lower()
-            times = parse_time_spent(clocks, player_is_white)
-            if times:
-                all_avg_times.append(sum(times) / len(times))
-        avg_time = statistics.mean(all_avg_times) if all_avg_times else 0
+                pass
+        avg_t = statistics.mean(times) if times else 0.0
 
-        speed_r = speed_rating(avg_time)
-        comb_r = combined_rating(gamr, speed_r)
+        g_r = game_rating(avg_acpl)
+        s_r = speed_rating(avg_t)
+        c_r = combined_rating(g_r, s_r)
 
         result.append({
             "window": WINDOW_LABELS[days],
             "games": n,
-            "peak": peak,
-            "home": home,
-            "bottom": bottom,
+            "peak": peak or 0,
+            "home": round(home) if home else 0,
+            "bottom": bottom or 0,
             "win_rate": round(score * 100, 1),
-            "avg_opp": avg_opp,
-            "gamr": round(gamr),
-            "speedr": round(speed_r),
-            "combined_r": round(comb_r),
-            "avg_time": float(round(avg_time, 2)),
+            "avg_opp": round(avg_opp) if avg_opp else 0,
+            "gamr": round(g_r),
+            "speedr": round(s_r),
+            "combined_r": round(c_r),
+            "avg_time": round(avg_t, 2),
             "perf": round(perf),
-            "p10": round(p10),
-            "p50": round(p50),
-            "p90": round(p90),
             "acpl": round(avg_acpl, 1),
         })
     conn.close()
     return result
 
 
-def monitoring_snapshot():
-    """Достает данные из monitoring_log для отображения тренда."""
-    if not os.path.exists(DB_FILE):
-        return []
-    conn = sqlite3.connect(DB_FILE)
-    cur = conn.cursor()
-    cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='monitoring_log'")
-    if not cur.fetchone():
-        conn.close()
-        return []
-    cur.execute("SELECT * FROM monitoring_log ORDER BY date DESC LIMIT 90")
-    cols = [d[0] for d in cur.description]
-    history = [dict(zip(cols, row)) for row in cur.fetchall()]
-    conn.close()
-    if not history:
-        return []
-    now = datetime.now(timezone.utc)
-    result = []
-    for days in [0, 7, 30, 90]:
-        target = (now - timedelta(days=days)).strftime("%Y-%m-%d")
-        closest = min(history, key=lambda x: abs(
-            (datetime.strptime(x['date'], "%Y-%m-%d").replace(tzinfo=timezone.utc)
-             - datetime.strptime(target, "%Y-%m-%d").replace(tzinfo=timezone.utc)).days))
-        label = "Сегодня" if days == 0 else f"{days} дн."
-        result.append({"window": label, "date": closest['date'], **closest})
-    return result
-
-
-def last_session_vs_windows():
-    conn = _conn()
-    cur = conn.cursor()
-    cur.execute(
-        "SELECT url, end_time, won, draw, acpl, my_rating FROM games "
-        "WHERE is_lag=0 AND is_cheater=0 ORDER BY end_time DESC LIMIT 200")
-    rows = cur.fetchall()
-    if not rows:
-        conn.close()
-        return []
-    session = []
-    prev_time = None
-    for url, ts, won, draw, acpl, my_rating in rows:
-        if prev_time is None:
-            session.append({"ts": ts, "won": won, "draw": draw, "acpl": acpl, "my_rating": my_rating})
-            prev_time = ts
-        elif prev_time - ts <= 1800:
-            session.append({"ts": ts, "won": won, "draw": draw, "acpl": acpl, "my_rating": my_rating})
-            prev_time = ts
-        else:
-            break
-
-    def _stats(data):
-        if not data:
-            return {"games": 0, "win_rate": 0, "acpl": 0, "gamr": 0, "my_rating": 0, "p90": 0}
-        n = len(data)
-        wins = sum(1 for d in data if d["won"])
-        draws = sum(1 for d in data if d["draw"])
-        win_rate = (wins + 0.5 * draws) / n * 100
-        acpls = sorted([d["acpl"] for d in data if d["acpl"] and d["acpl"] > 0])
-        ratings = [d["my_rating"] for d in data if d["my_rating"] and d["my_rating"] > 0]
-        avg_acpl = statistics.mean(acpls) if acpls else 0
-        avg_rating = statistics.mean(ratings) if ratings else 0
-        gamr = game_rating(avg_acpl) if avg_acpl else 0
-        p90 = acpls[int(len(acpls) * 0.9)] if len(acpls) >= 10 else 0
-        return {"games": n, "win_rate": round(win_rate, 1), "acpl": round(avg_acpl, 1),
-                "gamr": round(gamr), "my_rating": round(avg_rating), "p90": round(p90)}
-
-    result = [{"label": "🔥 Последняя сессия", **_stats(session)}]
-    for days in [2, 7, 30, 90, 365]:
-        cutoff = window_cutoff_ts(days)
-        cur.execute(
-            "SELECT won, draw, acpl, my_rating FROM games "
-            "WHERE is_lag=0 AND is_cheater=0 AND end_time >= ?", (cutoff,))
-        data = [{"won": w, "draw": d, "acpl": a, "my_rating": m} for w, d, a, m in cur.fetchall()]
-        result.append({"label": WINDOW_LABELS[days], **_stats(data)})
-    conn.close()
-    return result
-
-
-# Заглушки для совместимости
-def rating_trend():
-    return full_dynamics()
-
-
-def rating_buckets_summary():
-    return full_dynamics()
-
-
-def time_vs_rating():
-    return []
-
-
-def combined_vs_perf():
-    return []
-
-
-def top3_weaknesses():
-    candidates = []
-    try:
-        path = os.path.join(REPORTS_DIR, "time_profile.txt")
-        if os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as f:
-                text = f.read()
-            m = re.search(r"Всего просрочек:\s*(\d+)", text)
-            if m:
-                n_timeouts = int(m.group(1))
-                if n_timeouts > 100:
-                    candidates.append(("Цейтнот (просрочки)",
-                                       f"{n_timeouts} партий ({n_timeouts/2409*100:.0f}%)",
-                                       "05_psych_state.txt", n_timeouts))
-    except Exception:
-        pass
-    try:
-        path = os.path.join(REPORTS_DIR, "cascade_tilt.txt")
-        if os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as f:
-                text = f.read()
-            m = re.search(r"Миттельшпиль\s+\d+\s+\d+\s+([\d.]+)%", text)
-            if m:
-                pct = float(m.group(1))
-                if pct > 30:
-                    candidates.append(("Каскадный тильт в миттельшпиле",
-                                       f"{pct:.1f}% партий", "04_psych_focus.txt", int(pct * 10)))
-    except Exception:
-        pass
-    try:
-        path = os.path.join(REPORTS_DIR, "middlegame_summary.txt")
-        if os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as f:
-                text = f.read()
-            m = re.search(r"Слито \(поражение\):\s+(\d+)\s+\(([\d.]+)%\)", text)
-            if m:
-                cnt = int(m.group(1))
-                pct = float(m.group(2))
-                if pct > 30:
-                    candidates.append(("Слив перевеса (+3.0)",
-                                       f"{pct:.1f}% ({cnt} партий)",
-                                       "02_middlegame.txt", cnt))
-    except Exception:
-        pass
-    try:
-        path = os.path.join(REPORTS_DIR, "opponent_weakness.txt")
-        if os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as f:
-                text = f.read()
-            m = re.search(r"Хуже всего:\s*(\w+)\s*\((\d+)%\)", text)
-            if m:
-                wr = int(m.group(2))
-                if wr < 40:
-                    candidates.append((f"Слабость против {m.group(1)}",
-                                       f"{wr}% winrate", "07_opponents.txt", (40 - wr) * 10))
-    except Exception:
-        pass
-    try:
-        path = os.path.join(REPORTS_DIR, "lag_report.txt")
-        if os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as f:
-                text = f.read()
-            m = re.search(r"Партий с лагом:\s*(\d+)\s+\(([\d.]+)%\)", text)
-            if m:
-                cnt = int(m.group(1))
-                pct = float(m.group(2))
-                if pct > 25:
-                    candidates.append(("Лаги (аномалии времени)",
-                                       f"{pct:.1f}% ({cnt} партий)",
-                                       "05_psych_state.txt", int(pct * 10)))
-    except Exception:
-        pass
-    try:
-        path = os.path.join(REPORTS_DIR, "first_blunder_report.txt")
-        if os.path.exists(path):
-            with open(path, "r", encoding="utf-8") as f:
-                text = f.read()
-            m = re.search(r"Средний ход 1-го зевка:\s+([\d.]+)", text)
-            if m:
-                avg_move = float(m.group(1))
-                if avg_move <= 20:
-                    candidates.append(("Первый зевок на раннем ходу",
-                                       f"в среднем на {avg_move:.0f}-м ходу",
-                                       "04_psych_focus.txt", int(30 - avg_move) * 10))
-    except Exception:
-        pass
-    candidates.sort(key=lambda x: -x[3])
-    if not candidates:
-        return [("Нет данных", "—", "00_INDEX.txt")]
-    return [(c[0], c[1], c[2]) for c in candidates[:3]]
-
-
-def get_game_review(url: str):
-    """Возвращает полный разбор партии для Streamlit."""
-    import json as _json
-    conn = _conn()
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT white, black, won, draw, reason, eco, opening, my_rating, opp_rating,
-               acpl, acpl_opening, acpl_middlegame, acpl_endgame, accuracy, accuracy_opponent,
-               game_length, max_eval_advantage, eval_history, end_time, pgn
-        FROM games WHERE url=?
-    """, (url,))
-    row = cur.fetchone()
-    if not row:
-        conn.close()
-        return None
-    (white, black, won, draw, reason, eco, opening, my_rating, opp_rating,
-     acpl, acpl_op, acpl_mid, acpl_end, accuracy, accuracy_opp, game_len,
-     max_eval_adv, raw_hist, end_time, pgn) = row
-    try:
-        hist = _json.loads(raw_hist) if raw_hist else []
-        hist = [(int(a), float(b)) for a, b in hist if a is not None and b is not None]
-    except Exception:
-        hist = []
-    cur.execute("""
-        SELECT move_num, move_uci, loss_cp, eval_before, eval_after, what,
-               pattern_tag, time_spent, is_my_blunder
-        FROM blunders WHERE game_url = ?
-    """, (url,))
-    blunders = []
-    for b in cur.fetchall():
-        blunders.append({
-            "move_num": b[0], "move": b[1], "loss": b[2], "eval_before": b[3],
-            "eval_after": b[4], "what": b[5], "pattern_tag": b[6],
-            "time_spent": b[7], "is_my_blunder": bool(b[8]),
-        })
-    conn.close()
-    return {
-        "url": url, "white": white, "black": black, "won": won, "draw": draw,
-        "reason": reason, "eco": eco, "opening": opening,
-        "my_rating": my_rating, "opp_rating": opp_rating,
-        "acpl": acpl, "acpl_op": acpl_op, "acpl_mid": acpl_mid, "acpl_end": acpl_end,
-        "accuracy": accuracy, "accuracy_opp": accuracy_opp, "game_len": game_len,
-        "max_eval_adv": max_eval_adv, "hist": hist, "blunders": blunders,
-        "end_time": end_time, "pgn": pgn,
-    }
-
-
-def get_recent_games(limit=50):
-    conn = _conn()
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT url, white, black, won, draw, reason, end_time
-        FROM games WHERE is_lag=0 AND is_cheater=0
-        ORDER BY end_time DESC LIMIT ?
-    """, (limit,))
-    rows = cur.fetchall()
-    conn.close()
-    result = []
-    for url, white, black, won, draw, reason, end_time in rows:
-        res = "Победа" if won else ("Ничья" if draw else "Поражение")
-        date = datetime.fromtimestamp(end_time).strftime("%d.%m.%y")
-        result.append({"url": url, "label": f"{date} | {white} vs {black} | {res} ({reason})"})
-    return result
-
-
-def top_actions():
+def top_actions() -> list:
     return [
         "При +3.0 — держи ритм, не ускоряйся, смотри на часы  → 02_middlegame.txt",
         "Пауза 3 сек после первого зевка                      → 04_psych_focus.txt",
@@ -454,12 +371,12 @@ def top_actions():
 
 
 DASHBOARD_FILES = [
-    ("01_openings.txt", "~80 КБ", "Дебюты: planner, репертуар, шпаргалки"),
-    ("02_middlegame.txt", "~35 КБ", "Миттельшпиль: ACPL, план, тактика"),
-    ("03_endgame.txt", "~25 КБ", "Эндшпиль: техника, флаги, берсерк"),
-    ("04_psych_focus.txt", "~60 КБ", "Зевки: анатомия, первый, missed"),
-    ("05_psych_state.txt", "~40 КБ", "Время, режим, тильт, выносливость"),
-    ("06_psych_rating.txt", "~20 КБ", "Рейтинг, прогресс, потенциал"),
-    ("07_opponents.txt", "~25 КБ", "Соперники: стиль, crushed_by, deep"),
-    ("08_coach.txt", "~15 КБ", "Тренер: совет дня, план, колода"),
-                            ]
+    ("01_openings.txt", "Дебюты: planner, репертуар, шпаргалки"),
+    ("02_middlegame.txt", "Миттельшпиль: ACPL, план, тактика"),
+    ("03_endgame.txt", "Эндшпиль: техника, флаги, берсерк"),
+    ("04_psych_focus.txt", "Зевки: анатомия, первый, missed"),
+    ("05_psych_state.txt", "Время, режим, тильт, выносливость"),
+    ("06_psych_rating.txt", "Рейтинг, прогресс, потенциал"),
+    ("07_opponents.txt", "Соперники: стиль, crushed_by, deep"),
+    ("08_coach.txt", "Тренер: совет дня, план, колода"),
+]

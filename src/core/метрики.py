@@ -1,11 +1,11 @@
 # ============================================================
-# core/метрики.py (v26.1)
+# core/метрики.py (v27.2)
 # Единый источник формул (PROJECT_RULES §17).
-# GAMER_BASE = 3130.0 — зафиксировано после калибровки:
-#   ACPL 60 → GameR 2530 (точно Perf 2537 и Дом 2540).
+# 4-факторная модель: Мышление (GameR) + Интуиция (SpeedR)
+# + Ощущения (AggrR) + Чувства (StateR).
 # ============================================================
-import os
 import json
+import os
 
 GAMER_BASE = 3110.0
 GAMER_SLOPE = 10.0
@@ -50,12 +50,14 @@ def _load_coefs() -> dict:
 
 
 def game_rating(acpl: float) -> float:
+    """Мышление (Материя). Точность ходов."""
     if acpl is None or acpl <= 0:
         return 0.0
     return max(1000.0, min(3200.0, GAMER_BASE - float(acpl) * GAMER_SLOPE))
 
 
 def speed_rating(avg_time: float, coefs: dict = None) -> float:
+    """Интуиция (Время). Скорость принятия решений."""
     if avg_time is None or avg_time <= 0:
         return 0.0
     if coefs is None:
@@ -65,7 +67,23 @@ def speed_rating(avg_time: float, coefs: dict = None) -> float:
     return max(1000.0, min(3200.0, b + k * float(avg_time)))
 
 
+def aggression_rating(aggr_score: float) -> float:
+    """Ощущения (Пространство). Индекс агрессии (база 7.8 -> 2537)."""
+    if aggr_score is None or aggr_score <= 0:
+        return 0.0
+    return max(1000.0, min(3200.0, 2537.0 + (float(aggr_score) - 7.8) * 60.0))
+
+
+def state_rating(conv_pct: float, cascade_pct: float) -> float:
+    """Чувства (Энергия). Конверсия +3.0 (база 80%) и анти-тильт (база 50%)."""
+    if conv_pct is None or cascade_pct is None:
+        return 0.0
+    val = 2537.0 + (float(conv_pct) - 80.0) * 8.0 - (float(cascade_pct) - 50.0) * 2.0
+    return max(1000.0, min(3200.0, val))
+
+
 def combined_rating(game_r: float, speed_r: float, coefs: dict = None) -> float:
+    """Базовая 2-факторная модель (обратная совместимость)."""
     if not game_r or not speed_r:
         return 0.0
     if coefs is None:
@@ -73,6 +91,18 @@ def combined_rating(game_r: float, speed_r: float, coefs: dict = None) -> float:
     w1 = float(coefs.get("w1", _DEFAULT_W1))
     w2 = float(coefs.get("w2", _DEFAULT_W2))
     return w1 * float(game_r) + w2 * float(speed_r)
+
+
+def combined_rating_v2(game_r: float, speed_r: float, aggr_r: float, state_r: float) -> float:
+    """4-факторная модель: Мышление + Интуиция + Ощущения + Чувства."""
+    if not all([game_r, speed_r, aggr_r, state_r]):
+        return 0.0
+    return (
+        0.40 * float(game_r)
+        + 0.20 * float(speed_r)
+        + 0.20 * float(aggr_r)
+        + 0.20 * float(state_r)
+    )
 
 
 def perf_rating(avg_opp: float, wins: int, draws: int, total: int) -> float:
