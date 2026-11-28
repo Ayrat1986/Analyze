@@ -11,20 +11,20 @@
  OPPONENT WEAKNESS
 ============================================================
 📊 ПО ACPL СОПЕРНИКА (чем выше ACPL соперника — тем он слабее):
-  ACPL < 60 (сильный)       1631п, 42.1%
-  ACPL 60-75 (средний)       505п, 60.6%
-  ACPL 75-90 (слабый)        297п, 56.2%
-  ACPL > 90 (очень слабый)   348п, 37.4%
+  ACPL < 60 (сильный)       1639п, 42.2%
+  ACPL 60-75 (средний)       506п, 60.7%
+  ACPL 75-90 (слабый)        298п, 56.4%
+  ACPL > 90 (очень слабый)   350п, 37.4%
 
 📊 ПО СТИЛЮ (из opponent_style.csv):
-  universal       601п, 44.4%, ACPL 56
-  positional      200п, 67.5%, ACPL 50
-  aggressive      100п, 22.0%, ACPL 68
-  tactical         43п, 32.6%, ACPL 58
+  universal       592п, 44.4%, ACPL 55
+  positional      198п, 67.7%, ACPL 50
+  aggressive       98п, 21.4%, ACPL 67
+  tactical         43п, 34.9%, ACPL 56
 
 🎯 ВЕРДИКТ:
   Лучше всего: positional (68%)
-  Хуже всего: aggressive (22%)
+  Хуже всего: aggressive (21%)
 
 ============================================================
  🩸 ТЕ, КТО РАСКАЛЫВАЕТ (из crushed_by.txt)
@@ -36,7 +36,7 @@
 
   Соперник               Рейт   Игр   W/D/L        Score%   Мой ACPL   Его ACPL
   ----------------------------------------------------------------------------------------
-  bopielmarionglero2     2580   13    2/0/11       15.4     91         73
+  bopielmarionglero2     2572   14    3/0/11       21.4     90         72
   zumpili                2555   13    3/0/10       23.1     55         45
   canadiandragon         2578   9     1/1/7        16.7     54         46
   gidel33                2518   8     1/1/6        18.8     70         58
@@ -66,12 +66,12 @@
 
 Найдено 'раскалывающих': 13
 
-♟️ bopielmarionglero2 (13 партий, Score 15%)
+♟️ bopielmarionglero2 (14 партий, Score 21%)
   Дебюты, где он тебя ломает:
     D18 Slav Defense Modern Alapin Variation Czec   3п, Score 0%
     D19 Slav Defense Modern Alapin Variation Czec   2п, Score 0%
     B01 Scandinavian Defense Mieses Kotrc Main Li   2п, Score 0%
-  📉 Средний финальный перевес: -4.7 (ты часто доминируешь в начале)
+  📉 Средний финальный перевес: -4.4 (ты часто доминируешь в начале)
 
 ♟️ zumpili (13 партий, Score 23%)
   Дебюты, где он тебя ломает:
