@@ -18,3 +18,9 @@ stockfish/
 reports/ai_export/2026-11-27/opponent_style.csv
 /reports/ai_export
 /reports/ai_export
+d:\Analyze\_Архив\
+
+# Вебдашборд
+.streamlit/secrets.toml
+**/secrets.toml
+/_Архив

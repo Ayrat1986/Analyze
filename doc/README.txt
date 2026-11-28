@@ -1,12 +1,16 @@
 ================================================================
  CHESS ANALYTICS PROJECT — README
- Версия: v26.1 (GitHub Actions + Turso)
- Обновлён: 2026-11-25
+ Версия: v26.2 (GitHub Actions + Turso)
+ Обновлён: 2026-11-28
 ================================================================
 
 🌐 ССЫЛКИ НА ПРОЕКТ:
   • GitHub Repository: https://github.com/Ayrat1986/Analyze
   • Streamlit Dashboard: https://analyze-9xd3ohlvpzsie2mxuyvpmz.streamlit.app/
+https://app.turso.tech/ayrat1986
+libsql://analyze-ayrat1986.aws-ap-southeast-1.turso.io
+
+
 
 ЦЕЛЬ ПРОЕКТА:
   Анализ партий chess.com для игрока ~2500-2600 в bullet (1+0).
